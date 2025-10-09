@@ -1,0 +1,107 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <!-- Título -->
+    <mat-card-header>
+      <mat-card-title class="login-title">MedySupply</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Formulario de Login -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Campo Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email"
+            placeholder="Introducir correo electrónico"
+            formControlName="email"
+            [attr.aria-label]="'Campo de correo electrónico'"
+          >
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="loginForm.get('email')?.value"
+            (click)="clearEmail()"
+            [attr.aria-label]="'Limpiar correo electrónico'">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            {{ getEmailErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Campo Contraseña -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input 
+            matInput 
+            type="password"
+            placeholder="Contraseña"
+            formControlName="password"
+            [attr.aria-label]="'Campo de contraseña'"
+          >
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="loginForm.get('password')?.value"
+            (click)="clearPassword()"
+            [attr.aria-label]="'Limpiar contraseña'">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            {{ getPasswordErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Checkbox Recordarme -->
+        <div class="remember-me-container">
+          <mat-checkbox formControlName="rememberMe" color="primary">
+            Recordarme
+          </mat-checkbox>
+        </div>
+
+        <!-- Mensaje de Error -->
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botón Iniciar Sesión -->
+        <!-- H-1: Visibilidad del estado del sistema - Muestra spinner durante la carga -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          class="full-width login-button"
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+          <mat-spinner 
+            *ngIf="isLoading" 
+            diameter="20" 
+            class="button-spinner">
+          </mat-spinner>
+        </button>
+
+        <!-- Enlaces de Navegación -->
+        <div class="navigation-links">
+          <a 
+            href="javascript:void(0)" 
+            (click)="onForgotPassword()"
+            class="link">
+            ¿Recuperar contraseña?
+          </a>
+          <span class="link-separator">¿No tienes una cuenta?</span>
+          <a 
+            href="javascript:void(0)" 
+            (click)="onCreateAccount()"
+            class="link primary-link">
+            Crear cuenta
+          </a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

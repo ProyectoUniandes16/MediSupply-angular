@@ -1,0 +1,124 @@
+.proveedores-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.header-info {
+  flex: 1;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #424242;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+}
+
+// H-6: Reconocimiento antes que recuerdo - Filtros claros y visibles
+.filters-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.estado-field {
+  width: 200px;
+}
+
+.register-button {
+  height: 48px;
+  background-color: #673AB7;
+  white-space: nowrap;
+  
+  &:hover {
+    background-color: #5e35b1;
+  }
+
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+// H-8: Estética y diseño minimalista - Tabla limpia y ordenada
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.proveedores-table {
+  width: 100%;
+
+  th {
+    background-color: #FAFAFA;
+    font-weight: 500;
+    color: #424242;
+    padding: 16px;
+  }
+
+  td {
+    padding: 16px;
+    color: #616161;
+  }
+
+  tr {
+    &:hover {
+      background-color: #F5F5F5;
+    }
+  }
+
+  button {
+    color: #757575;
+
+    &:hover {
+      color: #673AB7;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .register-button {
+    width: 100%;
+  }
+
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-field,
+  .estado-field {
+    width: 100%;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+}

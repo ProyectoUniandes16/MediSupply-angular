@@ -1,0 +1,87 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Navegación Lateral -->
+  <mat-sidenav 
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    [class.collapsed]="isCollapsed && !isMobile"
+    class="sidenav">
+    
+    <!-- Logo/Nombre -->
+    <div class="sidenav-header">
+      <h2 class="app-name" *ngIf="!isCollapsed || isMobile">MedySupply</h2>
+      <h2 class="app-name-short" *ngIf="isCollapsed && !isMobile">MS</h2>
+    </div>
+
+    <!-- Lista de Navegación -->
+    <mat-nav-list>
+      <mat-list-item 
+        *ngFor="let item of navigationItems"
+        [class.active]="isActiveRoute(item.route)"
+        (click)="navigate(item.route)">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemTitle *ngIf="!isCollapsed || isMobile">{{ item.label }}</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenido Principal -->
+  <mat-sidenav-content>
+    <!-- Barra Superior -->
+    <mat-toolbar class="toolbar">
+      <!-- Botón Menu -->
+      <button 
+        mat-icon-button 
+        (click)="toggleSidenav()"
+        [attr.aria-label]="'Alternar menú'">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <!-- Título/Breadcrumb -->
+      <span class="toolbar-title">{{ currentRoute }}</span>
+
+      <span class="spacer"></span>
+
+      <!-- Iconos de Acción -->
+      <button 
+        mat-icon-button
+        [attr.aria-label]="'Localización'">
+        <mat-icon>location_on</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [attr.aria-label]="'Perfil de usuario'">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <div class="menu-header">Mi Cuenta</div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Perfil</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Configuración</span>
+        </button>
+      </mat-menu>
+
+      <!-- Botón Salir -->
+      <button 
+        mat-flat-button 
+        color="primary"
+        class="logout-button"
+        (click)="logout()">
+        Salir
+      </button>
+    </mat-toolbar>
+
+    <!-- Área de Contenido -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

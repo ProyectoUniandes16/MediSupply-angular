@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ProveedorHttpService } from '../../../../core/services/proveedor-http.service';
 
 interface Documento {
   nombre: string;
@@ -26,7 +29,9 @@ interface Documento {
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   templateUrl: './registrar-proveedor.component.html',
   styleUrl: './registrar-proveedor.component.scss'
@@ -34,6 +39,8 @@ interface Documento {
 export class RegistrarProveedorComponent implements OnInit {
   proveedorForm!: FormGroup;
   documentosAdjuntos: Documento[] = [];
+  isLoading = false;
+  errorMessage = '';
   
   paises = [
     { value: 'co', label: 'Colombia' },
@@ -50,8 +57,10 @@ export class RegistrarProveedorComponent implements OnInit {
   ];
 
   constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<RegistrarProveedorComponent>
+    private readonly fb: FormBuilder,
+    private readonly dialogRef: MatDialogRef<RegistrarProveedorComponent>,
+    private readonly proveedorHttpService: ProveedorHttpService,
+    private readonly snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -145,18 +154,86 @@ export class RegistrarProveedorComponent implements OnInit {
    * H-1: Visibilidad del estado del sistema
    */
   onSubmit(): void {
-    if (this.proveedorForm.valid) {
-      const formData = {
-        ...this.proveedorForm.value,
-        documentos: this.documentosAdjuntos
-      };
-      
-      this.dialogRef.close(formData);
+    if (this.proveedorForm.valid && this.documentosAdjuntos.length > 0) {
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      // Extraer solo los archivos del array de documentos
+      const certificaciones = this.documentosAdjuntos.map(doc => doc.archivo);
+
+      // Mapear los datos del formulario a la estructura del API
+      const request = this.proveedorHttpService.mapearFormularioARequest(
+        this.proveedorForm.value,
+        certificaciones
+      );
+
+      // Validar datos antes de enviar
+      const validacion = this.proveedorHttpService.validarDatosProveedor(request);
+      if (!validacion.valid) {
+        this.isLoading = false;
+        this.errorMessage = validacion.errors.join(', ');
+        this.snackBar.open(this.errorMessage, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+        return;
+      }
+
+      // Enviar al backend
+      this.proveedorHttpService.registrarProveedor(request).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          
+          // Mensaje de éxito del backend (respuesta 201)
+          const mensaje = response.mensaje || 'Proveedor registrado exitosamente';
+          
+          this.snackBar.open(mensaje, 'Cerrar', {
+            duration: 5000,
+            panelClass: ['success-snackbar']
+          });
+          
+          this.dialogRef.close(response.proveedor || response);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          
+          // Manejo específico de errores del backend
+          let mensajeError = 'Error al registrar el proveedor';
+          
+          if (error.status === 409) {
+            // NIT duplicado u otro conflicto
+            mensajeError = error.error?.error || error.error?.message || 'Ya existe un proveedor con este NIT';
+          } else if (error.status === 400) {
+            // Datos inválidos
+            mensajeError = error.error?.error || error.error?.message || 'Los datos proporcionados no son válidos';
+          } else if (error.error?.error) {
+            mensajeError = error.error.error;
+          } else if (error.error?.message) {
+            mensajeError = error.error.message;
+          }
+          
+          this.errorMessage = mensajeError;
+          
+          this.snackBar.open(mensajeError, 'Cerrar', {
+            duration: 6000,
+            panelClass: ['error-snackbar']
+          });
+          
+          console.error('Error al registrar proveedor:', error);
+        }
+      });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
       Object.keys(this.proveedorForm.controls).forEach(key => {
         this.proveedorForm.get(key)?.markAsTouched();
       });
+      
+      if (this.documentosAdjuntos.length === 0) {
+        this.snackBar.open('Debe adjuntar al menos una certificación', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
     }
   }
 

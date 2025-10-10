@@ -46,3 +46,40 @@ body {
 .spacer {
   flex: 1 1 auto;
 }
+
+// Estilos para Snackbars
+.success-snackbar {
+  --mdc-snackbar-container-color: #4CAF50 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: #ffffff !important;
+  }
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #F44336 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: #ffffff !important;
+  }
+}
+
+.warning-snackbar {
+  --mdc-snackbar-container-color: #FF9800 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: #ffffff !important;
+  }
+}
+
+.info-snackbar {
+  --mdc-snackbar-container-color: #2196F3 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: #ffffff !important;
+  }
+}

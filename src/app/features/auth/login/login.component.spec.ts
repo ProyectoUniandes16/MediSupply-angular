@@ -4,12 +4,23 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { User } from '../../../core/models/auth.models';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let router: jasmine.SpyObj<Router>;
+
+  const mockUser: User = {
+    id: 1,
+    nombre: 'Test',
+    apellido: 'User',
+    email: 'test@example.com',
+    is_active: true,
+    created_at: '2025-10-10T01:27:40.334026',
+    updated_at: '2025-10-10T01:27:40.334028'
+  };
 
   beforeEach(async () => {
     const authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
@@ -71,7 +82,6 @@ describe('LoginComponent', () => {
   });
 
   it('should call authService.login on submit', () => {
-    const mockUser = { email: 'test@example.com', name: 'Test User' };
     authService.login.and.returnValue(of(mockUser));
 
     component.loginForm.patchValue({
@@ -85,7 +95,6 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to dashboard on successful login', () => {
-    const mockUser = { email: 'test@example.com', name: 'Test User' };
     authService.login.and.returnValue(of(mockUser));
 
     component.loginForm.patchValue({
@@ -139,7 +148,7 @@ describe('LoginComponent', () => {
   });
 
   it('should set isLoading to true during login', () => {
-    authService.login.and.returnValue(of({ email: 'test@example.com', name: 'Test' }));
+    authService.login.and.returnValue(of(mockUser));
 
     component.loginForm.patchValue({
       email: 'test@example.com',

@@ -1,12 +1,41 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
+import { AuthHttpService } from './auth-http.service';
+import { of, throwError } from 'rxjs';
+import { LoginResponse, User } from '../models/auth.models';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let authHttpServiceSpy: jasmine.SpyObj<AuthHttpService>;
+
+  const mockUser: User = {
+    id: 1,
+    nombre: 'Juan',
+    apellido: 'Pérez',
+    email: 'test@example.com',
+    is_active: true,
+    created_at: '2025-10-10T01:27:40.334026',
+    updated_at: '2025-10-10T01:27:40.334028'
+  };
+
+  const mockLoginResponse: LoginResponse = {
+    access_token: 'test-token',
+    message: 'Login exitoso',
+    user: mockUser
+  };
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    const spy = jasmine.createSpyObj('AuthHttpService', ['login', 'logout', 'validateToken']);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        { provide: AuthHttpService, useValue: spy }
+      ]
+    });
     service = TestBed.inject(AuthService);
+    authHttpServiceSpy = TestBed.inject(AuthHttpService) as jasmine.SpyObj<AuthHttpService>;
+    
     localStorage.clear();
   });
 
@@ -23,6 +52,8 @@ describe('AuthService', () => {
   });
 
   it('should authenticate user on login', (done) => {
+    authHttpServiceSpy.login.and.returnValue(of(mockLoginResponse));
+
     const credentials = {
       email: 'test@example.com',
       password: 'password123',
@@ -33,11 +64,14 @@ describe('AuthService', () => {
       expect(user).toBeTruthy();
       expect(user.email).toBe('test@example.com');
       expect(service.isAuthenticated()).toBeTruthy();
+      expect(service.getToken()).toBe('test-token');
       done();
     });
   });
 
   it('should store user in localStorage when rememberMe is true', (done) => {
+    authHttpServiceSpy.login.and.returnValue(of(mockLoginResponse));
+
     const credentials = {
       email: 'test@example.com',
       password: 'password123',
@@ -52,6 +86,9 @@ describe('AuthService', () => {
   });
 
   it('should logout user', (done) => {
+    authHttpServiceSpy.login.and.returnValue(of(mockLoginResponse));
+    authHttpServiceSpy.logout.and.returnValue(of({}));
+
     const credentials = {
       email: 'test@example.com',
       password: 'password123',
@@ -63,13 +100,19 @@ describe('AuthService', () => {
       
       service.logout();
       
-      expect(service.isAuthenticated()).toBeFalsy();
-      expect(localStorage.getItem('currentUser')).toBeNull();
-      done();
+      // Wait for async logout
+      setTimeout(() => {
+        expect(service.isAuthenticated()).toBeFalsy();
+        expect(localStorage.getItem('currentUser')).toBeNull();
+        expect(localStorage.getItem('access_token')).toBeNull();
+        done();
+      }, 100);
     });
   });
 
   it('should return current user', (done) => {
+    authHttpServiceSpy.login.and.returnValue(of(mockLoginResponse));
+
     const credentials = {
       email: 'test@example.com',
       password: 'password123',
@@ -80,6 +123,31 @@ describe('AuthService', () => {
       const currentUser = service.getCurrentUser();
       expect(currentUser).toBeTruthy();
       expect(currentUser?.email).toBe('test@example.com');
+      done();
+    });
+  });
+
+  it('should handle login error', (done) => {
+    const error = { status: 401, message: 'Invalid credentials' };
+    authHttpServiceSpy.login.and.returnValue(throwError(() => error));
+
+    service.login({ email: 'test@test.com', password: 'wrong', rememberMe: false })
+      .subscribe({
+        next: () => fail('should have failed'),
+        error: (err) => {
+          expect(err).toEqual(error);
+          expect(service.isAuthenticated()).toBe(false);
+          done();
+        }
+      });
+  });
+
+  it('should validate token successfully', (done) => {
+    localStorage.setItem('access_token', 'test-token');
+    authHttpServiceSpy.validateToken.and.returnValue(of({ valid: true }));
+
+    service.validateToken().subscribe(isValid => {
+      expect(isValid).toBe(true);
       done();
     });
   });

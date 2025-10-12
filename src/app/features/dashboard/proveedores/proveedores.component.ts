@@ -36,32 +36,7 @@ export interface Proveedor {
 })
 export class ProveedoresComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'nit', 'contacto', 'email', 'acciones'];
-  proveedores: Proveedor[] = [
-    {
-      nombre: 'Farmacorp S.A',
-      nit: '900123456',
-      contacto: 'María González - contacto@farmacorp.com',
-      email: 'contacto@farmacorp.com'
-    },
-    {
-      nombre: 'MediDistribuidora',
-      nit: '800987654',
-      contacto: 'Carlos Ruiz - ventas@medidist.com',
-      email: 'ventas@medidist.com'
-    },
-    {
-      nombre: 'Laboratorios ABC',
-      nit: '700456789',
-      contacto: 'Ana Mendoza - info@laboratorios.co',
-      email: 'info@laboratorios.co'
-    },
-    {
-      nombre: 'Farmaland',
-      nit: '700456789',
-      contacto: 'Ana Ruiz - info@farmaland.mx',
-      email: 'info@farmaland.mx'
-    }
-  ];
+  proveedores: Proveedor[] = [];
 
   selectedEstado = '';
   searchTerm = '';

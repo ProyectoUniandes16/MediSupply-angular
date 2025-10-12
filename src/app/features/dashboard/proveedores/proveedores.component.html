@@ -16,7 +16,7 @@
   </div>
 
   <!-- Barra de Filtros -->
-  <div class="filters-bar">
+  <div class="filters-bar" *ngIf="proveedores.length > 0">
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Buscar por nombre</mat-label>
       <input 
@@ -48,7 +48,7 @@
 
   <!-- Tabla de Proveedores -->
   <div class="table-container">
-    <table mat-table [dataSource]="proveedores" class="proveedores-table">
+    <table mat-table [dataSource]="proveedores" class="proveedores-table" *ngIf="proveedores.length > 0">
       
       <!-- Columna Nombre -->
       <ng-container matColumnDef="nombre">

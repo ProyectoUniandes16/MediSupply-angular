@@ -1,0 +1,262 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>Registrar Proveedor</h2>
+      <p class="dialog-subtitle">Complete la información del proveedor y adjunte las certificaciones sanitarias requeridas</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onCancel()"
+      [attr.aria-label]="'Cerrar'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <form [formGroup]="proveedorForm">
+      
+      <!-- Fila 1: Nombre del Proveedor y NIT -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Nombre del proveedor</mat-label>
+          <input 
+            matInput 
+            placeholder="Nombre del proveedor"
+            formControlName="nombreProveedor">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('nombreProveedor')?.value"
+            (click)="clearField('nombreProveedor')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('nombreProveedor')?.invalid && proveedorForm.get('nombreProveedor')?.touched">
+            {{ getErrorMessage('nombreProveedor') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>NIT</mat-label>
+          <input 
+            matInput 
+            placeholder="NIT"
+            formControlName="nit">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('nit')?.value"
+            (click)="clearField('nit')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('nit')?.invalid && proveedorForm.get('nit')?.touched">
+            {{ getErrorMessage('nit') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 2: País y Estado -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione País</mat-label>
+          <mat-select formControlName="pais">
+            <mat-option *ngFor="let pais of paises" [value]="pais.value">
+              {{ pais.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('pais')?.value"
+            (click)="clearField('pais')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('pais')?.invalid && proveedorForm.get('pais')?.touched">
+            {{ getErrorMessage('pais') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Estado</mat-label>
+          <mat-select formControlName="estado">
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('estado')?.value"
+            (click)="clearField('estado')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('estado')?.invalid && proveedorForm.get('estado')?.touched">
+            {{ getErrorMessage('estado') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 3: Dirección -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field full-width">
+          <mat-label>Dirección</mat-label>
+          <input 
+            matInput 
+            placeholder="Introducir dirección"
+            formControlName="direccion">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('direccion')?.value"
+            (click)="clearField('direccion')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('direccion')?.invalid && proveedorForm.get('direccion')?.touched">
+            {{ getErrorMessage('direccion') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Sección Contacto -->
+      <div class="section-header">
+        <h3>Contacto</h3>
+      </div>
+
+      <!-- Fila 4: Nombre Contacto y Email -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Nombre Contacto</mat-label>
+          <input 
+            matInput 
+            placeholder="Ingrese Nombre Contacto"
+            formControlName="nombreContacto">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('nombreContacto')?.value"
+            (click)="clearField('nombreContacto')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('nombreContacto')?.invalid && proveedorForm.get('nombreContacto')?.touched">
+            {{ getErrorMessage('nombreContacto') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email"
+            placeholder="Introducir correo electrónico"
+            formControlName="email">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('email')?.value"
+            (click)="clearField('email')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('email')?.invalid && proveedorForm.get('email')?.touched">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 5: Teléfono -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Teléfono</mat-label>
+          <input 
+            matInput 
+            placeholder="Ingrese Teléfono"
+            formControlName="telefono">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="proveedorForm.get('telefono')?.value"
+            (click)="clearField('telefono')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="proveedorForm.get('telefono')?.invalid && proveedorForm.get('telefono')?.touched">
+            {{ getErrorMessage('telefono') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Sección Certificaciones -->
+      <div class="section-header">
+        <h3>Certificaciones</h3>
+      </div>
+
+      <!-- Área de carga de archivos -->
+      <div class="upload-area" (click)="triggerFileInput()">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p class="upload-text">Haz clic para subir archivos</p>
+        <input 
+          type="file" 
+          id="fileInput" 
+          hidden 
+          multiple
+          (change)="onFileSelected($event)"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+      </div>
+
+      <!-- Lista de documentos adjuntos -->
+      <div class="documentos-section" *ngIf="documentosAdjuntos.length > 0">
+        <div class="documentos-header">
+          <span>Documentos Adjuntados</span>
+          <span>Acciones</span>
+        </div>
+        <mat-list>
+          <mat-list-item *ngFor="let doc of documentosAdjuntos; let i = index">
+            <span matListItemTitle>{{ doc.nombre }}</span>
+            <div matListItemMeta class="documento-actions">
+              <button 
+                mat-icon-button
+                (click)="verDocumento(doc)"
+                [attr.aria-label]="'Ver documento'">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                (click)="eliminarDocumento(i)"
+                [attr.aria-label]="'Eliminar documento'">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                [attr.aria-label]="'Más opciones'">
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </form>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!proveedorForm.valid">
+      Registrar Proveedor
+    </button>
+    <button 
+      mat-stroked-button
+      (click)="onCancel()">
+      Cancelar
+    </button>
+  </div>
+</div>

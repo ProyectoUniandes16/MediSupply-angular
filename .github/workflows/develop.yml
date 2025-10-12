@@ -34,6 +34,11 @@ jobs:
             ${{ runner.os }}-node-${{ matrix.node-version }}-
             ${{ runner.os }}-node-
 
+      - name: Replace API URL placeholder
+        run: |
+            echo "Using Production API URL"
+            sed -i "s|__API_URL__|${{ secrets.PRODUCTION_API_URL }}|g" src/environments/environment.prod.ts
+
       - name: Install dependencies
         run: npm install
 

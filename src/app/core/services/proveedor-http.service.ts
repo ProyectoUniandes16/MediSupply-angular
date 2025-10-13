@@ -69,7 +69,7 @@ export class ProveedorHttpService {
     // No establecer Content-Type manualmente para multipart/form-data
     // El navegador lo establece automáticamente con el boundary correcto
     return this.http.post<RegistrarProveedorResponse>(
-      `${this.apiUrl}/proveedores/`,
+      `${this.apiUrl}/proveedor`,
       formData
     ).pipe(
       catchError(error => {
@@ -85,7 +85,7 @@ export class ProveedorHttpService {
    * @returns Observable con el array de proveedores
    */
   obtenerProveedores(): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(`${this.apiUrl}/proveedores/`).pipe(
+    return this.http.get<Proveedor[]>(`${this.apiUrl}/proveedor/`).pipe(
       catchError(error => {
         console.error('Error al obtener proveedores:', error);
         return throwError(() => error);
@@ -100,7 +100,7 @@ export class ProveedorHttpService {
    * @returns Observable con los datos del proveedor
    */
   obtenerProveedorPorId(id: number): Observable<Proveedor> {
-    return this.http.get<Proveedor>(`${this.apiUrl}/proveedores/${id}`).pipe(
+    return this.http.get<Proveedor>(`${this.apiUrl}/proveedor/${id}`).pipe(
       catchError(error => {
         console.error(`Error al obtener proveedor ${id}:`, error);
         return throwError(() => error);
@@ -135,7 +135,7 @@ export class ProveedorHttpService {
     }
 
     return this.http.put<RegistrarProveedorResponse>(
-      `${this.apiUrl}/proveedores/${id}`,
+      `${this.apiUrl}/proveedor/${id}`,
       formData
     ).pipe(
       catchError(error => {
@@ -152,7 +152,7 @@ export class ProveedorHttpService {
    * @returns Observable con la respuesta del servidor
    */
   eliminarProveedor(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/proveedores/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/proveedor/${id}`).pipe(
       catchError(error => {
         console.error(`Error al eliminar proveedor ${id}:`, error);
         return throwError(() => error);

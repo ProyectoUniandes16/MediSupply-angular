@@ -1,12 +1,6 @@
 {
-  "/api/proveedores": {
-    "target": "http://localhost:5002",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  },
   "/api": {
-    "target": "http://localhost:5003",
+    "target": "http://localhost:5001",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,

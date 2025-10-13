@@ -37,8 +37,9 @@ describe('ProveedoresComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have initial proveedores data', () => {
-    expect(component.proveedores.length).toBeGreaterThan(0);
+  it('should have empty proveedores array initially', () => {
+    expect(component.proveedores).toEqual([]);
+    expect(component.proveedores.length).toBe(0);
   });
 
   it('should have correct table columns', () => {

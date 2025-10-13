@@ -64,7 +64,7 @@ describe('ProveedorHttpService', () => {
         expect(response.nombre).toBe('Proveedor Test');
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body instanceof FormData).toBeTruthy();
       req.flush(mockResponse);
@@ -90,7 +90,7 @@ describe('ProveedorHttpService', () => {
         }
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor`);
       req.flush('Error al registrar', { status: 400, statusText: 'Bad Request' });
     });
   });
@@ -117,7 +117,7 @@ describe('ProveedorHttpService', () => {
         expect(proveedores.length).toBe(1);
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor/`);
       expect(req.request.method).toBe('GET');
       req.flush(mockProveedores);
     });
@@ -143,7 +143,7 @@ describe('ProveedorHttpService', () => {
         expect(proveedor.id).toBe(1);
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/1`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor/1`);
       expect(req.request.method).toBe('GET');
       req.flush(mockProveedor);
     });
@@ -174,7 +174,7 @@ describe('ProveedorHttpService', () => {
         expect(response.nombre).toBe('Proveedor Actualizado');
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/1`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor/1`);
       expect(req.request.method).toBe('PUT');
       req.flush(mockResponse);
     });
@@ -186,7 +186,7 @@ describe('ProveedorHttpService', () => {
         expect(response).toBeNull();
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedores/1`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor/1`);
       expect(req.request.method).toBe('DELETE');
       req.flush(null);
     });

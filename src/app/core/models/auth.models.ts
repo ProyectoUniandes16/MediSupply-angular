@@ -19,11 +19,15 @@ export interface User {
   updated_at: string;
 }
 
+export interface DataLogin {
+  access_token: string;
+  user: User;
+}
+
 /**
  * Modelo para la respuesta de login
  */
 export interface LoginResponse {
-  access_token: string;
+  data: DataLogin;
   message: string;
-  user: User;
 }

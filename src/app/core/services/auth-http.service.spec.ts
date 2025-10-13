@@ -13,17 +13,19 @@ describe('AuthHttpService', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-    message: 'Login exitoso',
-    user: {
-      id: 1,
-      nombre: 'Juan',
-      apellido: 'Pérez',
-      email: 'usuario@ejemplo.com',
-      is_active: true,
-      created_at: '2025-10-10T01:27:40.334026',
-      updated_at: '2025-10-10T01:27:40.334028'
-    }
+    data: {
+      access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+      user: {
+        id: 1,
+        nombre: 'Juan',
+        apellido: 'Pérez',
+        email: 'usuario@ejemplo.com',
+        is_active: true,
+        created_at: '2025-10-10T01:27:40.334026',
+        updated_at: '2025-10-10T01:27:40.334028'
+      }
+    },
+    message: 'Login exitoso'
   };
 
   beforeEach(() => {
@@ -46,8 +48,8 @@ describe('AuthHttpService', () => {
   it('should login user successfully', () => {
     service.login(mockLoginRequest).subscribe(response => {
       expect(response).toEqual(mockLoginResponse);
-      expect(response.access_token).toBeTruthy();
-      expect(response.user.email).toBe(mockLoginRequest.email);
+      expect(response.data.access_token).toBeTruthy();
+      expect(response.data.user.email).toBe(mockLoginRequest.email);
     });
 
     const req = httpMock.expectOne(request => 

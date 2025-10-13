@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProveedoresComponent } from './proveedores.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 describe('ProveedoresComponent', () => {
@@ -23,7 +24,8 @@ describe('ProveedoresComponent', () => {
       imports: [ProveedoresComponent],
       providers: [
         { provide: MatDialog, useValue: matDialogSpy },
-        provideAnimations()
+        provideAnimations(),
+        provideHttpClient()
       ]
     }).compileComponents();
 
@@ -46,40 +48,33 @@ describe('ProveedoresComponent', () => {
     expect(component.displayedColumns).toEqual(['nombre', 'nit', 'contacto', 'email', 'acciones']);
   });
 
-  // Note: MatDialog integration tests require more complex mocking
-  // These should be tested in E2E tests or with shallow component testing
-  xit('should open dialog when registering proveedor', () => {
-    component.openRegistrarProveedorDialog();
-    expect(dialogSpy.open).toHaveBeenCalled();
-  });
-
-  xit('should add new proveedor when dialog returns data', (done: DoneFn) => {
-    const newProveedor = {
-      nombre: 'Nuevo Proveedor',
-      nit: '123456789',
-      contacto: 'Contacto Test',
-      email: 'test@test.com'
-    };
-
-    // Update the dialog spy to return the new proveedor
-    dialogRefSpyObj.afterClosed.and.returnValue(of(newProveedor));
-
-    const initialLength = component.proveedores.length;
-    component.openRegistrarProveedorDialog();
-
-    // Wait for afterClosed subscription to complete
-    setTimeout(() => {
-      expect(component.proveedores.length).toBe(initialLength + 1);
-      expect(component.proveedores).toContain(newProveedor);
-      done();
-    }, 100);
-  });
-
   it('should clear search term', () => {
     component.searchTerm = 'test';
     
     component.limpiarBusqueda();
     
+    expect(component.searchTerm).toBe('');
+  });
+
+  it('should call editarProveedor with correct proveedor', () => {
+    spyOn(console, 'log');
+    const testProveedor = {
+      nombre: 'Test Proveedor',
+      nit: '123456789',
+      contacto: 'Test Contacto',
+      email: 'test@test.com'
+    };
+
+    component.editarProveedor(testProveedor);
+
+    expect(console.log).toHaveBeenCalledWith('Editar proveedor:', testProveedor);
+  });
+
+  it('should initialize with empty selectedEstado', () => {
+    expect(component.selectedEstado).toBe('');
+  });
+
+  it('should initialize with empty searchTerm', () => {
     expect(component.searchTerm).toBe('');
   });
 });

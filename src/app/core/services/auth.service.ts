@@ -48,13 +48,13 @@ export class AuthService {
       tap((response: LoginResponse) => {
         // Guardar token y usuario SIEMPRE en localStorage
         // El rememberMe se maneja a nivel de persistencia del navegador
-        localStorage.setItem(this.tokenKey, response.access_token);
-        localStorage.setItem(this.userKey, JSON.stringify(response.user));
+        localStorage.setItem(this.tokenKey, response.data.access_token);
+        localStorage.setItem(this.userKey, JSON.stringify(response.data.user));
         
         // Actualizar el subject con el usuario actual
-        this.currentUserSubject.next(response.user);
+        this.currentUserSubject.next(response.data.user);
       }),
-      map((response: LoginResponse) => response.user),
+      map((response: LoginResponse) => response.data.user),
       catchError(error => {
         console.error('Login error:', error);
         return throwError(() => error);

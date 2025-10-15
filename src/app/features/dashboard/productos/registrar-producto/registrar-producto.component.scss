@@ -1,0 +1,181 @@
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+// H-8: Estética y diseño minimalista
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #E0E0E0;
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 500;
+    color: #424242;
+  }
+}
+
+.dialog-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #757575;
+  max-width: 600px;
+}
+
+.dialog-content {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+// H-6: Reconocimiento antes que recuerdo - Campos organizados y etiquetados
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-field {
+  flex: 1;
+
+  &.full-width {
+    width: 100%;
+  }
+}
+
+.section-header {
+  margin: 24px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E0E0E0;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #424242;
+  }
+}
+
+// Área de carga de archivos
+.upload-area {
+  border: 2px dashed #BDBDBD;
+  border-radius: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: #FAFAFA;
+
+  &:hover {
+    border-color: #673AB7;
+    background-color: #F3E5F5;
+  }
+}
+
+.upload-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #BDBDBD;
+  margin-bottom: 12px;
+}
+
+.upload-text {
+  margin: 0;
+  font-size: 14px;
+  color: #757575;
+}
+
+// H-3: Control y libertad para el usuario - Lista de documentos con acciones
+.documentos-section {
+  margin-top: 24px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.documentos-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #FAFAFA;
+  font-weight: 500;
+  font-size: 14px;
+  color: #424242;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+mat-list {
+  padding: 0;
+
+  mat-list-item {
+    border-bottom: 1px solid #F5F5F5;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.documento-actions {
+  display: flex;
+  gap: 4px;
+
+  button {
+    color: #757575;
+
+    &:hover {
+      color: #673AB7;
+    }
+  }
+}
+
+// H-3: Control y libertad - Botones de acción claros
+.dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #E0E0E0;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+
+  button {
+    min-width: 140px;
+    height: 40px;
+  }
+}
+
+// H-4: Consistencia y estándares - Diseño responsive
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .dialog-header {
+    padding: 16px;
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+    padding: 16px;
+
+    button {
+      width: 100%;
+    }
+  }
+}

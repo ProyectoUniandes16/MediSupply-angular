@@ -41,7 +41,8 @@ export class DashboardLayoutComponent implements OnInit {
   currentRoute = '';
 
   navigationItems: NavigationItem[] = [
-    { icon: 'business', label: 'Proveedores', route: '/dashboard/proveedores' }
+    { icon: 'business', label: 'Proveedores', route: '/dashboard/proveedores' },
+    { icon: 'inventory_2', label: 'Productos', route: '/dashboard/productos' }
   ];
 
   constructor(

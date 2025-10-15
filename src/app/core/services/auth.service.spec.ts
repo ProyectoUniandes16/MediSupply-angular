@@ -19,9 +19,11 @@ describe('AuthService', () => {
   };
 
   const mockLoginResponse: LoginResponse = {
-    access_token: 'test-token',
-    message: 'Login exitoso',
-    user: mockUser
+    data: {
+      access_token: 'test-token',
+      user: mockUser
+    },
+    message: 'Login exitoso'
   };
 
   beforeEach(() => {

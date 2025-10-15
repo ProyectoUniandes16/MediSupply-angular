@@ -160,4 +160,65 @@ describe('LoginComponent', () => {
     // isLoading should be false after subscription completes
     expect(component.isLoading).toBe(false);
   });
+
+  it('should mark all fields as touched when form is invalid on submit', () => {
+    component.loginForm.patchValue({
+      email: '',
+      password: ''
+    });
+
+    component.onSubmit();
+
+    expect(component.loginForm.get('email')?.touched).toBe(true);
+    expect(component.loginForm.get('password')?.touched).toBe(true);
+  });
+
+  it('should not call authService.login when form is invalid', () => {
+    component.loginForm.patchValue({
+      email: 'invalid-email',
+      password: ''
+    });
+
+    component.onSubmit();
+
+    expect(authService.login).not.toHaveBeenCalled();
+  });
+
+  it('should return correct password error message', () => {
+    const passwordControl = component.loginForm.get('password');
+    
+    passwordControl?.setValue('');
+    passwordControl?.markAsTouched();
+    expect(component.getPasswordErrorMessage()).toBe('La contraseña es obligatoria');
+  });
+
+  it('should call onForgotPassword', () => {
+    spyOn(console, 'log');
+    
+    component.onForgotPassword();
+    
+    expect(console.log).toHaveBeenCalledWith('Recuperar contraseña');
+  });
+
+  it('should call onCreateAccount', () => {
+    spyOn(console, 'log');
+    
+    component.onCreateAccount();
+    
+    expect(console.log).toHaveBeenCalledWith('Crear cuenta');
+  });
+
+  it('should clear error message on new submit attempt', () => {
+    component.errorMessage = 'Previous error';
+    authService.login.and.returnValue(of(mockUser));
+
+    component.loginForm.patchValue({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+
+    component.onSubmit();
+
+    expect(component.errorMessage).toBe('');
+  });
 });

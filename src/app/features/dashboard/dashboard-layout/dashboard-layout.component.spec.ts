@@ -83,4 +83,62 @@ describe('DashboardLayoutComponent', () => {
 
     expect(isActive).toBe(true);
   });
+
+  it('should toggle sidenav on mobile', () => {
+    component.isMobile = true;
+    spyOn(component.sidenav, 'toggle');
+
+    component.toggleSidenav();
+
+    expect(component.sidenav.toggle).toHaveBeenCalled();
+  });
+
+  it('should toggle isCollapsed on desktop', () => {
+    component.isMobile = false;
+    component.isCollapsed = false;
+
+    component.toggleSidenav();
+
+    expect(component.isCollapsed).toBe(true);
+
+    component.toggleSidenav();
+
+    expect(component.isCollapsed).toBe(false);
+  });
+
+  it('should close sidenav after navigation on mobile', () => {
+    component.isMobile = true;
+    spyOn(component.sidenav, 'close');
+
+    component.navigate('/dashboard/proveedores');
+
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
+    expect(component.sidenav.close).toHaveBeenCalled();
+  });
+
+  it('should not close sidenav after navigation on desktop', () => {
+    component.isMobile = false;
+    spyOn(component.sidenav, 'close');
+
+    component.navigate('/dashboard/proveedores');
+
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
+    expect(component.sidenav.close).not.toHaveBeenCalled();
+  });
+
+  it('should update current route on navigation', () => {
+    (router as any).url = '/dashboard/proveedores';
+
+    component.updateCurrentRoute();
+
+    expect(component.currentRoute).toBe('Proveedores');
+  });
+
+  it('should set current route to Proveedores for proveedores URL', () => {
+    (router as any).url = '/dashboard/proveedores';
+
+    component.updateCurrentRoute();
+
+    expect(component.currentRoute).toBe('Proveedores');
+  });
 });

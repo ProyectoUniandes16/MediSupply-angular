@@ -1,14 +1,21 @@
 .proveedores-container {
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
   gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .header-info {
@@ -47,16 +54,16 @@
 }
 
 .register-button {
-  height: 48px;
-  background-color: #673AB7;
-  white-space: nowrap;
-  
-  &:hover {
-    background-color: #5e35b1;
-  }
+  height: 40px;
+  min-width: 180px;
+  font-weight: 500;
 
   mat-icon {
     margin-right: 8px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
   }
 }
 

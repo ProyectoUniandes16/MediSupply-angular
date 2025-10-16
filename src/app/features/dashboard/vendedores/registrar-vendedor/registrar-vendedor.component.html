@@ -1,0 +1,172 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>Agregar Vendedor</h2>
+      <p class="dialog-subtitle">Complete la información del proveedor</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onCancel()"
+      [attr.aria-label]="'Cerrar'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <form [formGroup]="vendedorForm">
+      
+      <!-- Fila 1: Nombres y Apellidos -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Nombres del proveedor</mat-label>
+          <input 
+            matInput 
+            placeholder="Nombres del proveedor"
+            formControlName="nombres">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('nombres')?.value"
+            (click)="clearField('nombres')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('nombres')?.invalid && vendedorForm.get('nombres')?.touched">
+            {{ getErrorMessage('nombres') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Apellidos del proveedor</mat-label>
+          <input 
+            matInput 
+            placeholder="Apellidos del proveedor"
+            formControlName="apellidos">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('apellidos')?.value"
+            (click)="clearField('apellidos')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('apellidos')?.invalid && vendedorForm.get('apellidos')?.touched">
+            {{ getErrorMessage('apellidos') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 2: Zona y Estado -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Zona</mat-label>
+          <mat-select formControlName="zona">
+            <mat-option *ngFor="let zona of zonas" [value]="zona.value">
+              {{ zona.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('zona')?.value"
+            (click)="clearField('zona')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('zona')?.invalid && vendedorForm.get('zona')?.touched">
+            {{ getErrorMessage('zona') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Estado</mat-label>
+          <mat-select formControlName="estado">
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('estado')?.value"
+            (click)="clearField('estado')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('estado')?.invalid && vendedorForm.get('estado')?.touched">
+            {{ getErrorMessage('estado') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Sección Contacto -->
+      <div class="section-header">
+        <h3>Contacto</h3>
+      </div>
+
+      <!-- Fila 3: Teléfono y Email -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Teléfono</mat-label>
+          <input 
+            matInput 
+            placeholder="Ingrese Teléfono"
+            formControlName="telefono">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('telefono')?.value"
+            (click)="clearField('telefono')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('telefono')?.invalid && vendedorForm.get('telefono')?.touched">
+            {{ getErrorMessage('telefono') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Email</mat-label>
+          <input 
+            matInput 
+            type="email"
+            placeholder="Introducir correo electrónico"
+            formControlName="email">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="vendedorForm.get('email')?.value"
+            (click)="clearField('email')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="vendedorForm.get('email')?.invalid && vendedorForm.get('email')?.touched">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!vendedorForm.valid || isLoading">
+      <mat-icon *ngIf="isLoading">
+        <mat-spinner diameter="20"></mat-spinner>
+      </mat-icon>
+      {{ isLoading ? 'Registrando...' : 'Registrar Vendedor' }}
+    </button>
+    <button 
+      mat-stroked-button
+      (click)="onCancel()"
+      [disabled]="isLoading">
+      Cancelar
+    </button>
+  </div>
+</div>

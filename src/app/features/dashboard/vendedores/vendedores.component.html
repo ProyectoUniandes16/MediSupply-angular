@@ -1,0 +1,22 @@
+<div class="vendedores-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="header-info">
+      <h1 class="title">Vendedores</h1>
+      <p class="subtitle">Gestiona vendedores que suministran productos a la compañía</p>
+    </div>
+    <button 
+      mat-raised-button 
+      color="primary"
+      class="register-button"
+      (click)="openRegistrarVendedorDialog()">
+      <mat-icon>add</mat-icon>
+      Registrar Vendedor
+    </button>
+  </div>
+
+  <!-- Mensaje inicial -->
+  <div class="empty-state">
+    <p>Haz clic en "Registrar Vendedor" para agregar un nuevo vendedor al sistema.</p>
+  </div>
+</div>

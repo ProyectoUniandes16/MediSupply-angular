@@ -1,0 +1,22 @@
+<div class="productos-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="header-info">
+      <h1 class="title">Productos</h1>
+      <p class="subtitle">Gestiona productos del inventario</p>
+    </div>
+    <button 
+      mat-raised-button 
+      color="primary"
+      class="register-button"
+      (click)="openRegistrarProductoDialog()">
+      <mat-icon>add</mat-icon>
+      Registrar Producto
+    </button>
+  </div>
+
+  <!-- Mensaje inicial -->
+  <div class="empty-state">
+    <p>Haz clic en "Registrar Producto" para agregar un nuevo producto al inventario.</p>
+  </div>
+</div>

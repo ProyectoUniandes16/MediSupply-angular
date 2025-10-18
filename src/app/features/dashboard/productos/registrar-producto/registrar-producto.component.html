@@ -1,0 +1,273 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>Registrar Producto</h2>
+      <p class="dialog-subtitle">Complete la información del producto y adjunte las certificaciones sanitarias requeridas</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onCancel()"
+      [attr.aria-label]="'Cerrar'">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <form [formGroup]="productoForm">
+      
+      <!-- Fila 1: Nombre del producto y Código SKU -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Nombre del producto</mat-label>
+          <input 
+            matInput 
+            placeholder="Nombre del producto"
+            formControlName="nombreProducto">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('nombreProducto')?.value"
+            (click)="clearField('nombreProducto')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('nombreProducto')?.invalid && productoForm.get('nombreProducto')?.touched">
+            {{ getErrorMessage('nombreProducto') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Código SKU</mat-label>
+          <input 
+            matInput 
+            placeholder="Código SKU"
+            formControlName="codigoSku">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('codigoSku')?.value"
+            (click)="clearField('codigoSku')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('codigoSku')?.invalid && productoForm.get('codigoSku')?.touched">
+            {{ getErrorMessage('codigoSku') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 2: Categoría y Precio Unitario -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Categoría</mat-label>
+          <mat-select formControlName="categoria">
+            <mat-option *ngFor="let cat of categorias" [value]="cat.value">
+              {{ cat.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('categoria')?.value"
+            (click)="clearField('categoria')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('categoria')?.invalid && productoForm.get('categoria')?.touched">
+            {{ getErrorMessage('categoria') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Precio Unitario</mat-label>
+          <input 
+            matInput 
+            type="number"
+            placeholder="Precio Unitario"
+            formControlName="precioUnitario">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('precioUnitario')?.value"
+            (click)="clearField('precioUnitario')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('precioUnitario')?.invalid && productoForm.get('precioUnitario')?.touched">
+            {{ getErrorMessage('precioUnitario') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 3: Condiciones de Almacenamiento y Fecha de Vencimiento -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Condiciones de almacenamiento</mat-label>
+          <input 
+            matInput 
+            placeholder="Introducir Condiciones"
+            formControlName="condicionesAlmacenamiento">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('condicionesAlmacenamiento')?.value"
+            (click)="clearField('condicionesAlmacenamiento')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('condicionesAlmacenamiento')?.invalid && productoForm.get('condicionesAlmacenamiento')?.touched">
+            {{ getErrorMessage('condicionesAlmacenamiento') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Fecha Vencimiento</mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="picker"
+            placeholder="DD/MM/YYYY"
+            formControlName="fechaVencimiento">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="productoForm.get('fechaVencimiento')?.invalid && productoForm.get('fechaVencimiento')?.touched">
+            {{ getErrorMessage('fechaVencimiento') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 4: Estado y Bodega -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Estado</mat-label>
+          <mat-select formControlName="estado">
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ estado.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('estado')?.value"
+            (click)="clearField('estado')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('estado')?.invalid && productoForm.get('estado')?.touched">
+            {{ getErrorMessage('estado') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Bodega</mat-label>
+          <mat-select formControlName="bodega">
+            <mat-option *ngFor="let bodega of bodegas" [value]="bodega.value">
+              {{ bodega.label }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('bodega')?.value"
+            (click)="clearField('bodega')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('bodega')?.invalid && productoForm.get('bodega')?.touched">
+            {{ getErrorMessage('bodega') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 5: Lote -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Lote</mat-label>
+          <input 
+            matInput 
+            placeholder="Introducir Lote"
+            formControlName="lote">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('lote')?.value"
+            (click)="clearField('lote')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('lote')?.invalid && productoForm.get('lote')?.touched">
+            {{ getErrorMessage('lote') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Sección Certificaciones -->
+      <div class="section-header">
+        <h3>Certificaciones</h3>
+      </div>
+
+      <!-- Área de carga de archivos -->
+      <div class="upload-area" (click)="triggerFileInput()">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p class="upload-text">Haz clic para subir archivos</p>
+        <input 
+          type="file" 
+          id="fileInput" 
+          hidden 
+          multiple
+          (change)="onFileSelected($event)"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+      </div>
+
+      <!-- Lista de documentos adjuntos -->
+      <div class="documentos-section" *ngIf="documentosAdjuntos.length > 0">
+        <div class="documentos-header">
+          <span>Documentos Adjuntados</span>
+          <span>Acciones</span>
+        </div>
+        <mat-list>
+          <mat-list-item *ngFor="let doc of documentosAdjuntos; let i = index">
+            <span matListItemTitle>{{ doc.nombre }}</span>
+            <div matListItemMeta class="documento-actions">
+              <button 
+                mat-icon-button
+                (click)="verDocumento(doc)"
+                [attr.aria-label]="'Ver documento'">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                (click)="eliminarDocumento(i)"
+                [attr.aria-label]="'Eliminar documento'">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                [attr.aria-label]="'Más opciones'">
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </form>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!productoForm.valid || isLoading">
+      {{ isLoading ? 'Registrando...' : 'Registrar Producto' }}
+    </button>
+    <button 
+      mat-stroked-button
+      (click)="onCancel()"
+      [disabled]="isLoading">
+      Cancelar
+    </button>
+  </div>
+</div>

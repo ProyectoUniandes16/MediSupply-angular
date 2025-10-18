@@ -1,0 +1,70 @@
+.productos-container {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// H-4: Consistencia y estándares - Diseño coherente con proveedores
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.header-info {
+  flex: 1;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #424242;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// H-7: Flexibilidad y eficiencia de uso - Botón principal destacado
+.register-button {
+  height: 40px;
+  min-width: 180px;
+  font-weight: 500;
+
+  mat-icon {
+    margin-right: 8px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+
+  p {
+    font-size: 16px;
+    color: #757575;
+    max-width: 400px;
+    margin: 0;
+  }
+}

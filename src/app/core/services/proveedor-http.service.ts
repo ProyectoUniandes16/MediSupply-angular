@@ -6,7 +6,8 @@ import { environment } from '../../../environments/environment';
 import {
   RegistrarProveedorRequest,
   RegistrarProveedorResponse,
-  Proveedor
+  Proveedor,
+  ConsultarProveedoresResponse
 } from '../models/proveedor.models';
 
 /**
@@ -80,12 +81,39 @@ export class ProveedorHttpService {
   }
 
   /**
-   * Obtiene la lista de todos los proveedores
+   * Obtiene la lista de proveedores con paginación y filtros
    * 
-   * @returns Observable con el array de proveedores
+   * @param params - Parámetros de consulta
+   * @returns Observable con la respuesta paginada de proveedores
    */
-  obtenerProveedores(): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(`${this.apiUrl}/proveedor/`).pipe(
+  obtenerProveedores(params: {
+    pagina?: number;
+    por_pagina?: number;
+    nombre?: string;
+    pais?: string;
+    estado?: string;
+  } = {}): Observable<ConsultarProveedoresResponse> {
+    const { 
+      pagina = 1, 
+      por_pagina = 20,
+      nombre,
+      pais,
+      estado
+    } = params;
+
+    let url = `${this.apiUrl}/proveedor?pagina=${pagina}&por_pagina=${por_pagina}`;
+    
+    if (nombre) {
+      url += `&nombre=${encodeURIComponent(nombre)}`;
+    }
+    if (pais) {
+      url += `&pais=${encodeURIComponent(pais)}`;
+    }
+    if (estado) {
+      url += `&estado=${encodeURIComponent(estado)}`;
+    }
+
+    return this.http.get<ConsultarProveedoresResponse>(url).pipe(
       catchError(error => {
         console.error('Error al obtener proveedores:', error);
         return throwError(() => error);

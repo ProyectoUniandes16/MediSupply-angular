@@ -32,21 +32,27 @@ export class ProductoHttpService {
   registrarProducto(data: RegistrarProductoRequest): Observable<RegistrarProductoResponse> {
     const formData = new FormData();
 
+    // Formatear fecha de vencimiento a DD/MM/AAAA
+    const fechaFormateada = this.formatearFecha(data.fecha_vencimiento);
+
     // Agregar campos de texto al FormData
     formData.append('nombre', data.nombre);
     formData.append('codigo_sku', data.codigo_sku);
     formData.append('categoria', data.categoria);
     formData.append('precio_unitario', data.precio_unitario.toString());
     formData.append('condiciones_almacenamiento', data.condiciones_almacenamiento);
-    formData.append('fecha_vencimiento', data.fecha_vencimiento);
+    formData.append('fecha_vencimiento', fechaFormateada);
     formData.append('bodega', data.bodega);
+    formData.append('proveedor_id', '1234');
     formData.append('lote', data.lote);
+    formData.append('fecha_vencimiento_cert', fechaFormateada);
+    formData.append('tipo_certificacion', 'INVIMA');
 
     // Agregar archivos de certificaciones al FormData
     if (data.certificaciones && data.certificaciones.length > 0) {
-      data.certificaciones.forEach((file) => {
-        formData.append('certificaciones', file, file.name);
-      });
+      for (const file of data.certificaciones) {
+        formData.append('certificacion', file, file.name);
+      }
     }
 
     return this.http.post<RegistrarProductoResponse>(
@@ -96,9 +102,7 @@ export class ProductoHttpService {
     }
 
     // Validar fecha de vencimiento
-    if (!data.fecha_vencimiento) {
-      errors.push('La fecha de vencimiento es obligatoria');
-    } else {
+    if (data.fecha_vencimiento) {
       const fechaVencimiento = new Date(data.fecha_vencimiento);
       const hoy = new Date();
       hoy.setHours(0, 0, 0, 0);
@@ -106,6 +110,8 @@ export class ProductoHttpService {
       if (fechaVencimiento < hoy) {
         errors.push('La fecha de vencimiento debe ser futura');
       }
+    } else {
+      errors.push('La fecha de vencimiento es obligatoria');
     }
 
     // Validar bodega
@@ -124,16 +130,16 @@ export class ProductoHttpService {
     } else {
       // Validar tamaño y tipo de archivos
       const maxSize = 5 * 1024 * 1024; // 5MB
-      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+      const allowedTypes = new Set(['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']);
 
-      data.certificaciones.forEach((file) => {
+      for (const file of data.certificaciones) {
         if (file.size > maxSize) {
           errors.push(`El archivo "${file.name}" excede el tamaño máximo de 5MB`);
         }
-        if (!allowedTypes.includes(file.type)) {
+        if (!allowedTypes.has(file.type)) {
           errors.push(`El archivo "${file.name}" no es un formato válido (PDF, JPG, PNG)`);
         }
-      });
+      }
     }
 
     return {
@@ -154,12 +160,36 @@ export class ProductoHttpService {
       nombre: formValue.nombreProducto,
       codigo_sku: formValue.codigoSku,
       categoria: formValue.categoria,
-      precio_unitario: parseFloat(formValue.precioUnitario),
+      precio_unitario: Number.parseFloat(formValue.precioUnitario),
       condiciones_almacenamiento: formValue.condicionesAlmacenamiento,
       fecha_vencimiento: formValue.fechaVencimiento,
       bodega: formValue.bodega,
       lote: formValue.lote,
       certificaciones: certificaciones
     };
+  }
+
+  /**
+   * Formatea una fecha al formato DD/MM/AAAA
+   * 
+   * @param fecha - Fecha en formato string (YYYY-MM-DD) o Date
+   * @returns Fecha formateada como DD/MM/AAAA
+   */
+  private formatearFecha(fecha: string | Date): string {
+    let fechaObj: Date;
+    
+    if (typeof fecha === 'string') {
+      // Para fechas en formato YYYY-MM-DD, parsear directamente sin zona horaria
+      const [year, month, day] = fecha.split('-').map(num => Number.parseInt(num, 10));
+      fechaObj = new Date(year, month - 1, day);
+    } else {
+      fechaObj = fecha;
+    }
+    
+    const dia = String(fechaObj.getDate()).padStart(2, '0');
+    const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
+    const anio = fechaObj.getFullYear();
+    
+    return `${dia}/${mes}/${anio}`;
   }
 }

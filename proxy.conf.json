@@ -1,6 +1,15 @@
 {
+  "/api/producto": {
+    "target": "http://localhost:5003",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/producto": "/producto"
+    }
+  },
   "/api": {
-    "target": "http://localhost:5001",
+    "target": "http://localhost:5002",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,

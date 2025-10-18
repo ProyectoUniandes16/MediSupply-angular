@@ -117,4 +117,39 @@ describe('ProductoHttpService', () => {
     expect(result.precio_unitario).toBe(100.50);
     expect(result.certificaciones.length).toBe(1);
   });
+
+  it('should format fecha_vencimiento to DD/MM/AAAA when registering producto', () => {
+    const mockFile = new File(['content'], 'cert.pdf', { type: 'application/pdf' });
+    const mockRequest: RegistrarProductoRequest = {
+      nombre: 'Producto Test',
+      codigo_sku: 'SKU-001',
+      categoria: 'medicamento',
+      precio_unitario: 100.50,
+      condiciones_almacenamiento: 'Temperatura ambiente',
+      fecha_vencimiento: '2026-12-31',
+      bodega: 'bodega_principal',
+      lote: 'LOTE-001',
+      certificaciones: [mockFile]
+    };
+
+    const mockResponse = {
+      id: 1,
+      ...mockRequest,
+      certificaciones_urls: ['http://example.com/cert.pdf'],
+      created_at: '2025-01-01',
+      updated_at: '2025-01-01'
+    };
+
+    service.registrarProducto(mockRequest).subscribe();
+
+    const req = httpMock.expectOne('/api/producto');
+    expect(req.request.method).toBe('POST');
+    
+    // Verificar que el FormData contiene la fecha formateada
+    const formData = req.request.body as FormData;
+    expect(formData.get('fecha_vencimiento')).toBe('31/12/2026');
+    expect(formData.get('fecha_vencimiento_cert')).toBe('31/12/2026');
+    
+    req.flush(mockResponse);
+  });
 });

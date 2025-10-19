@@ -131,7 +131,7 @@ export class VendedorHttpService {
     const errors: string[] = [];
 
     // Validar nombres
-    if (!data.nombres || data.nombres.trim().length === 0) {
+    if (!data.nombre || data.nombre.trim().length === 0) {
       errors.push('Los nombres del vendedor son obligatorios');
     }
 
@@ -150,9 +150,9 @@ export class VendedorHttpService {
       errors.push('El estado es obligatorio');
     }
 
-    // Validar email
+    // Validar correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!data.email || !emailRegex.test(data.email)) {
+    if (!data.correo || !emailRegex.test(data.correo)) {
       errors.push('El email no es válido');
     }
 
@@ -176,12 +176,12 @@ export class VendedorHttpService {
    */
   mapearFormularioARequest(formValue: any): RegistrarVendedorRequest {
     return {
-      nombres: formValue.nombres,
+      nombre: formValue.nombres,
       apellidos: formValue.apellidos,
       zona: formValue.zona,
       estado: formValue.estado,
       telefono: formValue.telefono,
-      email: formValue.email
+      correo: formValue.email
     };
   }
 }

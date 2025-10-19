@@ -64,9 +64,18 @@ export class FakeTranslateLoader implements TranslateLoader {
           'NEW': 'Registrar Vendedor',
           'LIST_EMPTY': 'Haz clic en "Registrar Vendedor" para agregar un nuevo vendedor al sistema.',
           'REGISTER': {
-            'TITLE': 'Registrar Vendedor'
+            'TITLE': 'Registrar Vendedor',
+            'SUBTITLE': 'Complete la información del vendedor',
+            'BASIC_INFO': 'Información Básica'
           },
-          'FIELDS': {}
+          'FIELDS': {
+            'NOMBRE': 'Nombres',
+            'APELLIDOS': 'Apellidos',
+            'EMAIL': 'Correo Electrónico',
+            'TELEFONO': 'Teléfono',
+            'ZONA': 'Zona Asignada',
+            'ESTADO': 'Estado'
+          }
         }
       }
     };

@@ -156,12 +156,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     const mockResponse = {
@@ -198,12 +198,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     vendedorServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);
@@ -229,12 +229,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     vendedorServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);
@@ -263,12 +263,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     vendedorServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);
@@ -297,12 +297,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     vendedorServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);
@@ -331,12 +331,12 @@ describe('RegistrarVendedorComponent', () => {
     });
 
     const mockRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     vendedorServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);

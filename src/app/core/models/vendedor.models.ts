@@ -7,12 +7,12 @@
  * Los nombres coinciden con la API del backend
  */
 export interface RegistrarVendedorRequest {
-  nombres: string;
+  nombre: string;
   apellidos: string;
   zona: string;
   estado: string;
   telefono: string;
-  email: string;
+  correo: string;
 }
 
 /**

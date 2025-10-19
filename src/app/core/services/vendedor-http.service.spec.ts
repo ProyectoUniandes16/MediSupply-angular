@@ -30,17 +30,22 @@ describe('VendedorHttpService', () => {
 
   it('should register a new vendedor', () => {
     const mockRequest: RegistrarVendedorRequest = {
+      nombre: 'Juan',
+      apellidos: 'Pérez',
+      zona: 'Colombia',
+      estado: 'Activo',
+      telefono: '3001234567',
+      correo: 'juan.perez@example.com'
+    };
+
+    const mockResponse = {
+      id: 1,
       nombres: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
-    };
-
-    const mockResponse = {
-      id: 1,
-      ...mockRequest,
+      email: 'juan.perez@example.com',
       created_at: '2025-01-01',
       updated_at: '2025-01-01'
     };
@@ -56,12 +61,12 @@ describe('VendedorHttpService', () => {
 
   it('should validate vendedor data correctly', () => {
     const validRequest: RegistrarVendedorRequest = {
-      nombres: 'Juan',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com'
+      correo: 'juan.perez@example.com'
     };
 
     const result = service.validarDatosVendedor(validRequest);
@@ -71,12 +76,12 @@ describe('VendedorHttpService', () => {
 
   it('should return validation errors for invalid data', () => {
     const invalidRequest: RegistrarVendedorRequest = {
-      nombres: '',
+      nombre: '',
       apellidos: '',
       zona: '',
       estado: '',
       telefono: '123',
-      email: 'invalid-email'
+      correo: 'invalid-email'
     };
 
     const result = service.validarDatosVendedor(invalidRequest);

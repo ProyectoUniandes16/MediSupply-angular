@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { RegistrarVendedorComponent } from './registrar-vendedor/registrar-vendedor.component';
 
 @Component({
@@ -12,7 +13,8 @@ import { RegistrarVendedorComponent } from './registrar-vendedor/registrar-vende
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule
   ],
   templateUrl: './vendedores.component.html',
   styleUrl: './vendedores.component.scss'

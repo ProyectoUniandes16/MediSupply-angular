@@ -1,12 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideRouter } from '@angular/router';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { FakeTranslateLoader } from './testing/i18n-testing.helper';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideRouter([])]
+      imports: [
+        AppComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        TranslateService
+      ]
     }).compileComponents();
   });
 

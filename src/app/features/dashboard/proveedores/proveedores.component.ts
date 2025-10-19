@@ -13,6 +13,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { RegistrarProveedorComponent } from './registrar-proveedor/registrar-proveedor.component';
 import { ProveedorHttpService } from '../../../core/services/proveedor-http.service';
 import { Proveedor, Paginacion } from '../../../core/models/proveedor.models';
@@ -34,7 +35,8 @@ import { Proveedor, Paginacion } from '../../../core/models/proveedor.models';
     MatProgressSpinnerModule,
     MatChipsModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './proveedores.component.html',
   styleUrl: './proveedores.component.scss'

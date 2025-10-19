@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -23,7 +24,8 @@ import { AuthService } from '../../../core/services/auth.service';
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -34,9 +36,10 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
 
   constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -54,10 +57,10 @@ export class LoginComponent implements OnInit {
   getEmailErrorMessage(): string {
     const emailControl = this.loginForm.get('email');
     if (emailControl?.hasError('required')) {
-      return 'El correo electrónico es obligatorio';
+      return this.translate.instant('AUTH.LOGIN.ERRORS.EMAIL_REQUIRED');
     }
     if (emailControl?.hasError('email')) {
-      return 'El correo electrónico no es válido';
+      return this.translate.instant('AUTH.LOGIN.ERRORS.EMAIL_INVALID');
     }
     return '';
   }
@@ -68,7 +71,10 @@ export class LoginComponent implements OnInit {
   getPasswordErrorMessage(): string {
     const passwordControl = this.loginForm.get('password');
     if (passwordControl?.hasError('required')) {
-      return 'La contraseña es obligatoria';
+      return this.translate.instant('AUTH.LOGIN.ERRORS.PASSWORD_REQUIRED');
+    }
+    if (passwordControl?.hasError('minlength')) {
+      return this.translate.instant('AUTH.LOGIN.ERRORS.PASSWORD_MIN');
     }
     return '';
   }
@@ -105,7 +111,7 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = 'Error al iniciar sesión. Verifica tus credenciales.';
+          this.errorMessage = this.translate.instant('AUTH.LOGIN.ERRORS.LOGIN_FAILED');
           console.error('Login error:', error);
         }
       });

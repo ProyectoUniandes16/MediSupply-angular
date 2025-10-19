@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { User } from '../../../core/models/auth.models';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -27,16 +29,26 @@ describe('LoginComponent', () => {
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [
+        LoginComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
-        provideAnimations()
+        provideAnimations(),
+        TranslateService
       ]
     }).compileComponents();
 
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('es');
+    translateService.use('es');
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;

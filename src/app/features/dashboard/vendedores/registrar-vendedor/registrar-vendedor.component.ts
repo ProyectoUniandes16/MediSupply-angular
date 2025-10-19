@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { VendedorHttpService } from '../../../../core/services/vendedor-http.service';
 
 @Component({
@@ -24,7 +25,8 @@ import { VendedorHttpService } from '../../../../core/services/vendedor-http.ser
     MatIconModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslateModule
   ],
   templateUrl: './registrar-vendedor.component.html',
   styleUrl: './registrar-vendedor.component.scss'

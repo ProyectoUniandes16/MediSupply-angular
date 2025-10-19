@@ -1,0 +1,218 @@
+{
+  "COMMON": {
+    "ACTIONS": "Acciones",
+    "CANCEL": "Cancelar",
+    "SAVE": "Guardar",
+    "EDIT": "Editar",
+    "DELETE": "Eliminar",
+    "SEARCH": "Buscar",
+    "EXPORT": "Exportar",
+    "CLOSE": "Cerrar",
+    "BACK": "Volver",
+    "DOWNLOAD": "Descargar",
+    "UPLOAD": "Cargar",
+    "VIEW": "Ver",
+    "SUCCESS": "Éxito",
+    "ERROR": "Error",
+    "WARNING": "Advertencia",
+    "INFO": "Información",
+    "LOADING": "Cargando...",
+    "NO_DATA": "No hay datos disponibles",
+    "DOCUMENTS": "Documentos Adjuntados"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "TITLE": "Iniciar Sesión",
+      "WELCOME": "Bienvenido a MediSupply",
+      "SUBTITLE": "Sistema de Gestión de Suministros Médicos",
+      "EMAIL": "Correo Electrónico",
+      "PASSWORD": "Contraseña",
+      "REMEMBER_ME": "Recordarme",
+      "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+      "LOGIN_BUTTON": "Iniciar Sesión",
+      "CREATE_ACCOUNT": "Crear una cuenta",
+      "NO_ACCOUNT": "¿No tienes cuenta?",
+      "ERRORS": {
+        "EMAIL_REQUIRED": "El correo electrónico es requerido",
+        "EMAIL_INVALID": "Ingresa un correo electrónico válido",
+        "PASSWORD_REQUIRED": "La contraseña es requerida",
+        "PASSWORD_MIN": "La contraseña debe tener al menos 6 caracteres",
+        "LOGIN_FAILED": "Credenciales inválidas. Por favor verifica tu correo y contraseña."
+      }
+    }
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "WELCOME": "Bienvenido",
+    "LOGOUT": "Cerrar Sesión",
+    "MENU": {
+      "PROVEEDORES": "Proveedores",
+      "VENDEDORES": "Vendedores",
+      "PRODUCTOS": "Productos",
+      "PROFILE": "Perfil",
+      "SETTINGS": "Configuración"
+    }
+  },
+  "PROVEEDORES": {
+    "TITLE": "Proveedores",
+    "SUBTITLE": "Gestiona proveedores que suministran productos a la compañía",
+    "NEW": "Registrar Proveedor",
+    "LIST_EMPTY": "Haz clic en \"Registrar Proveedor\" para agregar un nuevo proveedor",
+    "REGISTER": {
+      "TITLE": "Registrar Proveedor",
+      "EDIT_TITLE": "Editar Proveedor",
+      "SUBTITLE": "Complete la información del proveedor y adjunte las certificaciones requeridas",
+      "BASIC_INFO": "Información Básica",
+      "CONTACT_INFO": "Información de Contacto",
+      "CERTIFICATIONS": "Certificaciones",
+      "UPLOAD_HINT": "Arrastra archivos PDF, JPG o PNG aquí o haz clic para seleccionar",
+      "ALLOWED_FORMATS": "Formatos permitidos: PDF, JPG, PNG",
+      "MAX_SIZE": "Tamaño máximo: 5MB por archivo",
+      "NO_FILES": "No hay certificaciones adjuntas",
+      "SUCCESS_MESSAGE": "Proveedor registrado exitosamente",
+      "ERROR_MESSAGE": "Error al registrar el proveedor"
+    },
+    "FIELDS": {
+      "NIT": "NIT",
+      "RAZON_SOCIAL": "Razón Social",
+      "NOMBRE_CONTACTO": "Nombre de Contacto",
+      "EMAIL": "Correo Electrónico",
+      "TELEFONO": "Teléfono",
+      "DIRECCION": "Dirección",
+      "PAIS": "País",
+      "CIUDAD": "Ciudad",
+      "CERTIFICACIONES": "Certificaciones",
+      "ESTADO": "Estado"
+    },
+    "COUNTRIES": {
+      "COLOMBIA": "Colombia",
+      "MEXICO": "México",
+      "ARGENTINA": "Argentina",
+      "CHILE": "Chile",
+      "PERU": "Perú"
+    }
+  },
+  "VENDEDORES": {
+    "TITLE": "Vendedores",
+    "SUBTITLE": "Gestiona vendedores que suministran productos a la compañía",
+    "NEW": "Registrar Vendedor",
+    "LIST_EMPTY": "Haz clic en \"Registrar Vendedor\" para agregar un nuevo vendedor al sistema.",
+    "REGISTER": {
+      "TITLE": "Registrar Vendedor",
+      "EDIT_TITLE": "Editar Vendedor",
+      "SUBTITLE": "Complete la información del vendedor",
+      "BASIC_INFO": "Información Básica",
+      "SUCCESS_MESSAGE": "Vendedor registrado exitosamente",
+      "ERROR_MESSAGE": "Error al registrar el vendedor"
+    },
+    "FIELDS": {
+      "NOMBRE": "Nombre Completo",
+      "EMAIL": "Correo Electrónico",
+      "TELEFONO": "Teléfono",
+      "ZONA": "Zona Asignada",
+      "COMISION": "Comisión (%)",
+      "ESTADO": "Estado"
+    }
+  },
+  "PRODUCTOS": {
+    "TITLE": "Productos",
+    "SUBTITLE": "Gestiona productos del inventario",
+    "NEW": "Registrar Producto",
+    "BULK_UPLOAD": "Carga Masiva",
+    "LIST_EMPTY": "Haz clic en \"Registrar Producto\" para agregar un nuevo producto al inventario.",
+    "REGISTER": {
+      "TITLE": "Registrar Producto",
+      "EDIT_TITLE": "Editar Producto",
+      "SUBTITLE": "Complete la información del producto y adjunte las certificaciones sanitarias requeridas",
+      "BASIC_INFO": "Información Básica",
+      "ADDITIONAL_INFO": "Información Adicional",
+      "CERTIFICATIONS": "Certificaciones",
+      "UPLOAD_HINT": "Arrastra archivos PDF aquí o haz clic para seleccionar",
+      "ALLOWED_FORMATS": "Formatos permitidos: PDF",
+      "MAX_SIZE": "Tamaño máximo: 5MB por archivo",
+      "NO_FILES": "No hay archivos adjuntos",
+      "SUCCESS_MESSAGE": "Producto registrado exitosamente",
+      "ERROR_MESSAGE": "Error al registrar el producto"
+    },
+    "FIELDS": {
+      "SKU": "SKU",
+      "CODIGO": "Código",
+      "NOMBRE": "Nombre del Producto",
+      "DESCRIPCION": "Descripción",
+      "PRECIO": "Precio Unitario",
+      "CANTIDAD": "Cantidad en Stock",
+      "CATEGORIA": "Categoría",
+      "PROVEEDOR": "Proveedor",
+      "CERTIFICACION": "Tiene Certificación",
+      "ARCHIVO_CERTIFICACION": "Archivo de Certificación",
+      "ESTADO": "Estado",
+      "FECHA_VENCIMIENTO": "Fecha de Vencimiento",
+      "CONDICIONES_ALMACENAMIENTO": "Condiciones de Almacenamiento",
+      "BODEGA": "Bodega",
+      "LOTE": "Lote"
+    },
+    "CATEGORIES": {
+      "MEDICAMENTO": "Medicamento",
+      "INSUMO": "Insumo",
+      "EQUIPO": "Equipo",
+      "REACTIVO": "Reactivo"
+    },
+    "BULK": {
+      "TITLE": "Carga Masiva de Productos",
+      "UPLOAD_SECTION": "Carga de Productos",
+      "TEMPLATE": {
+        "TITLE": "Plantilla CSV",
+        "DESCRIPTION": "Descarga la plantilla y completa los datos de los productos",
+        "BUTTON": "Descargar Plantilla"
+      },
+      "FILE": {
+        "TITLE": "Archivo CSV",
+        "DROP_ZONE": "Arrastra el archivo CSV aquí o haz clic para seleccionar",
+        "SELECTED": "Archivo seleccionado:",
+        "CHANGE": "Cambiar archivo",
+        "FORMATS": "Formatos permitidos: CSV",
+        "SIZE": "Tamaño máximo: 10MB"
+      },
+      "PROCESS": {
+        "BUTTON": "Iniciar Proceso de Carga",
+        "PROCESSING": "Procesando..."
+      },
+      "HISTORY": {
+        "TITLE": "Historial de Cargas",
+        "EMPTY": "No hay historial de cargas",
+        "COLUMNS": {
+          "DATE": "Fecha",
+          "FILE": "Archivo",
+          "SUCCESS": "Exitosos",
+          "FAILED": "Fallidos",
+          "STATUS": "Estado"
+        },
+        "STATUS": {
+          "SUCCESS": "Completado",
+          "WITH_ERRORS": "Con errores",
+          "FAILED": "Fallido"
+        },
+        "CLICK_ERRORS": "Haz clic para ver detalles de errores"
+      },
+      "ERRORS": {
+        "TITLE": "Detalles de Errores",
+        "SUMMARY": "Se encontraron {{count}} errores durante la importación",
+        "TABLE": {
+          "ROW": "Fila",
+          "SKU": "SKU",
+          "CODE": "Código",
+          "ERROR": "Error"
+        },
+        "EXPORT": "Exportar Errores CSV"
+      },
+      "MESSAGES": {
+        "SUCCESS": "¡Carga completada exitosamente! Se importaron {{count}} productos.",
+        "ERROR": "Error al procesar el archivo. Por favor revisa los detalles.",
+        "PARTIAL": "Carga completada con {{errors}} errores de {{total}} filas.",
+        "NO_FILE": "Por favor selecciona un archivo CSV",
+        "INVALID_FORMAT": "El archivo debe ser formato CSV",
+        "FILE_TOO_LARGE": "El archivo es demasiado grande (máx. 10MB)"
+      }
+    }
+  }
+}

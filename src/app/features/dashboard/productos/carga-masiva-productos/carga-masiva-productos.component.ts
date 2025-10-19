@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
 import { CargaMasivaResponseOk, DetalleError, DetalleExitoso } from '../../../../core/models/producto.models';
 
@@ -30,7 +31,8 @@ interface CargaHistorial {
     MatIconModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslateModule
   ],
   templateUrl: './carga-masiva-productos.component.html',
   styleUrl: './carga-masiva-productos.component.scss'

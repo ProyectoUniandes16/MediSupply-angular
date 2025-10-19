@@ -1,12 +1,12 @@
 <div class="carga-masiva-dialog">
-  <h2 mat-dialog-title *ngIf="!mostrarDetalles">Carga Masiva Productos</h2>
+  <h2 mat-dialog-title *ngIf="!mostrarDetalles">{{ 'PRODUCTOS.BULK.TITLE' | translate }}</h2>
   <h2 mat-dialog-title *ngIf="mostrarDetalles">
     <button mat-icon-button (click)="volverAlHistorial()" class="back-button">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    Detalles de Errores - {{ cargaSeleccionada?.documento }}
+    {{ 'PRODUCTOS.BULK.ERRORS.TITLE' | translate }} - {{ cargaSeleccionada?.documento }}
   </h2>
-  <p class="subtitle" *ngIf="!mostrarDetalles">Complete la información del producto y adjunte las certificaciones sanitarias requeridas</p>
+  <p class="subtitle" *ngIf="!mostrarDetalles">{{ 'PRODUCTOS.BULK.UPLOAD_SECTION' | translate }}</p>
 
   <mat-dialog-content>
     <!-- Vista principal: Carga y historial -->
@@ -15,23 +15,23 @@
     <div class="upload-grid">
       <!-- Columna izquierda: Plantilla de carga -->
       <div class="plantilla-section">
-        <h3>Plantilla de carga</h3>
+        <h3>{{ 'PRODUCTOS.BULK.TEMPLATE.TITLE' | translate }}</h3>
         <button 
           mat-raised-button 
           color="primary"
           class="download-button"
           (click)="descargarPlantilla()">
           <mat-icon>download</mat-icon>
-          Descargar Plantilla CSV
+          {{ 'PRODUCTOS.BULK.TEMPLATE.BUTTON' | translate }}
         </button>
         <p class="plantilla-info">
-          Incluye columnas: <strong>Nombre, SKU, Categoria, Precio, Fecha Vencimiento, Condiciones Almacenamiento, Bodega, Lote</strong>
+          {{ 'PRODUCTOS.BULK.TEMPLATE.DESCRIPTION' | translate }}
         </p>
       </div>
 
       <!-- Columna derecha: Selección de archivo -->
       <div class="file-section">
-        <h3>Seleccionar archivo</h3>
+        <h3>{{ 'PRODUCTOS.BULK.FILE.TITLE' | translate }}</h3>
         <div 
           class="file-upload-area"
           role="button"
@@ -52,8 +52,8 @@
           </div>
           
           <div class="upload-text" *ngIf="!selectedFile">
-            <p class="primary-text">Haz clic para subir archivos</p>
-            <p class="secondary-text">o arrastra y suelta archivos CSV</p>
+            <p class="primary-text">{{ 'PRODUCTOS.BULK.FILE.DROP_ZONE' | translate }}</p>
+            <p class="secondary-text">{{ 'PRODUCTOS.BULK.FILE.FORMATS' | translate }}</p>
           </div>
 
           <div class="selected-file" *ngIf="selectedFile && !isUploading">
@@ -69,7 +69,7 @@
 
           <div class="uploading" *ngIf="isUploading">
             <mat-spinner diameter="40"></mat-spinner>
-            <p>Procesando archivo...</p>
+            <p>{{ 'PRODUCTOS.BULK.PROCESS.PROCESSING' | translate }}</p>
           </div>
         </div>
       </div>
@@ -77,42 +77,42 @@
 
     <!-- Sección de historial (ancho completo) -->
     <div class="historial-section">
-      <h3>Historial de cargas</h3>
+      <h3>{{ 'PRODUCTOS.BULK.HISTORY.TITLE' | translate }}</h3>
       
       <table mat-table [dataSource]="historialCargas" class="historial-table" *ngIf="historialCargas.length > 0">
         <!-- Columna Documento -->
         <ng-container matColumnDef="documento">
-          <th mat-header-cell *matHeaderCellDef>Documento</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.FILE' | translate }}</th>
           <td mat-cell *matCellDef="let carga">{{ carga.documento }}</td>
         </ng-container>
 
         <!-- Columna Fecha de cargue -->
         <ng-container matColumnDef="fechaCargue">
-          <th mat-header-cell *matHeaderCellDef>Fecha de cargue</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.DATE' | translate }}</th>
           <td mat-cell *matCellDef="let carga">{{ carga.fechaCargue }}</td>
         </ng-container>
 
         <!-- Columna Total filas -->
         <ng-container matColumnDef="totalFilas">
-          <th mat-header-cell *matHeaderCellDef>Total filas</th>
+          <th mat-header-cell *matHeaderCellDef>Total</th>
           <td mat-cell *matCellDef="let carga">{{ carga.totalFilas }}</td>
         </ng-container>
 
         <!-- Columna Productos procesados -->
         <ng-container matColumnDef="productsProcesados">
-          <th mat-header-cell *matHeaderCellDef>Productos procesados</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.SUCCESS' | translate }}</th>
           <td mat-cell *matCellDef="let carga">{{ carga.productsProcesados }}</td>
         </ng-container>
 
         <!-- Columna Errores -->
         <ng-container matColumnDef="errores">
-          <th mat-header-cell *matHeaderCellDef>Errores</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.FAILED' | translate }}</th>
           <td mat-cell *matCellDef="let carga">{{ carga.errores }}</td>
         </ng-container>
 
         <!-- Columna Estado -->
         <ng-container matColumnDef="estado">
-          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.STATUS' | translate }}</th>
           <td mat-cell *matCellDef="let carga">
             <span class="estado-badge" [ngClass]="'estado-' + carga.estado.toLowerCase()">
               {{ carga.estado }}
@@ -122,7 +122,7 @@
 
         <!-- Columna Acciones -->
         <ng-container matColumnDef="acciones">
-          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
           <td mat-cell *matCellDef="let carga">
             <button mat-icon-button (click)="descargarArchivo(carga)">
               <mat-icon>download</mat-icon>
@@ -141,13 +141,13 @@
           mat-row 
           *matRowDef="let row; columns: displayedColumns;"
           [class.clickable-row]="tieneErrores(row)"
-          [attr.title]="tieneErrores(row) ? 'Click para ver detalles de errores' : ''"
+          [attr.title]="tieneErrores(row) ? ('PRODUCTOS.BULK.HISTORY.CLICK_ERRORS' | translate) : ''"
           (click)="tieneErrores(row) && verDetallesErrores(row)">
         </tr>
       </table>
 
       <div class="empty-historial" *ngIf="historialCargas.length === 0">
-        <p>No hay cargas registradas aún</p>
+        <p>{{ 'PRODUCTOS.BULK.HISTORY.EMPTY' | translate }}</p>
       </div>
     </div>
     </div>
@@ -170,19 +170,19 @@
         <table mat-table [dataSource]="cargaSeleccionada.detallesErrores || []" class="errores-table">
           <!-- Columna Fila -->
           <ng-container matColumnDef="fila">
-            <th mat-header-cell *matHeaderCellDef>Fila</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.ERRORS.TABLE.ROW' | translate }}</th>
             <td mat-cell *matCellDef="let error">{{ error.fila }}</td>
           </ng-container>
 
           <!-- Columna SKU -->
           <ng-container matColumnDef="sku">
-            <th mat-header-cell *matHeaderCellDef>SKU</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.ERRORS.TABLE.SKU' | translate }}</th>
             <td mat-cell *matCellDef="let error">{{ error.sku }}</td>
           </ng-container>
 
           <!-- Columna Código de Error -->
           <ng-container matColumnDef="codigo">
-            <th mat-header-cell *matHeaderCellDef>Código</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.ERRORS.TABLE.CODE' | translate }}</th>
             <td mat-cell *matCellDef="let error">
               <span class="codigo-error">{{ error.codigo }}</span>
             </td>
@@ -190,7 +190,7 @@
 
           <!-- Columna Descripción del Error -->
           <ng-container matColumnDef="error">
-            <th mat-header-cell *matHeaderCellDef>Descripción del Error</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.ERRORS.TABLE.ERROR' | translate }}</th>
             <td mat-cell *matCellDef="let error" class="error-description">
               {{ error.error }}
             </td>
@@ -209,14 +209,14 @@
       <button 
         mat-button 
         (click)="volverAlHistorial()">
-        Volver
+        {{ 'COMMON.BACK' | translate }}
       </button>
       <button 
         mat-raised-button 
         color="primary"
         (click)="exportarErrores()">
         <mat-icon>download</mat-icon>
-        Exportar errores
+        {{ 'PRODUCTOS.BULK.ERRORS.EXPORT' | translate }}
       </button>
     </ng-container>
 
@@ -226,7 +226,7 @@
       mat-button 
       class="cancel-button"
       (click)="cancelar()">
-      Cancelar
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
     <button 
       mat-raised-button 
@@ -234,7 +234,7 @@
       class="process-button"
       [disabled]="!selectedFile || isUploading"
       (click)="iniciarProceso()">
-      Iniciar proceso
+      {{ 'PRODUCTOS.BULK.PROCESS.BUTTON' | translate }}
     </button>
     </ng-container>
   </mat-dialog-actions>

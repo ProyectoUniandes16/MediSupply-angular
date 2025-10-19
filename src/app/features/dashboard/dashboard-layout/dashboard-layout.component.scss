@@ -1,6 +1,18 @@
 .sidenav-container {
   height: 100vh;
   width: 100%;
+  
+  // Asegurar que el contenido se ajuste al ancho del sidenav
+  ::ng-deep .mat-drawer-content {
+    margin-left: 260px !important;
+    transition: margin-left 0.3s ease;
+  }
+  
+  &:has(.sidenav.collapsed) {
+    ::ng-deep .mat-drawer-content {
+      margin-left: 64px !important;
+    }
+  }
 }
 
 // H-8: Estética y diseño minimalista - Navegación lateral limpia

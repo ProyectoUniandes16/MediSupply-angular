@@ -6,6 +6,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { ProveedorHttpService } from '../../../core/services/proveedor-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 
 describe('ProveedoresComponent', () => {
   let component: ProveedoresComponent;
@@ -38,13 +40,19 @@ describe('ProveedoresComponent', () => {
     const matSnackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [ProveedoresComponent],
+      imports: [
+        ProveedoresComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: MatDialog, useValue: matDialogSpy },
         { provide: ProveedorHttpService, useValue: proveedorHttpServiceSpy },
         { provide: MatSnackBar, useValue: matSnackBarSpy },
         provideAnimations(),
-        provideHttpClient()
+        provideHttpClient(),
+        TranslateService
       ]
     }).compileComponents();
 

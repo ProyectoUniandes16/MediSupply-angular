@@ -1,0 +1,222 @@
+{
+  "COMMON": {
+    "ACTIONS": "Actions",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "SEARCH": "Search",
+    "EXPORT": "Export",
+    "CLOSE": "Close",
+    "BACK": "Back",
+    "DOWNLOAD": "Download",
+    "UPLOAD": "Upload",
+    "VIEW": "View",
+    "SUCCESS": "Success",
+    "ERROR": "Error",
+    "WARNING": "Warning",
+    "INFO": "Information",
+    "LOADING": "Loading...",
+    "NO_DATA": "No data available",
+    "DOCUMENTS": "Attached Documents"
+  },
+  "AUTH": {
+    "LOGIN": {
+      "TITLE": "Login",
+      "WELCOME": "Welcome to MediSupply",
+      "SUBTITLE": "Medical Supply Management System",
+      "EMAIL": "Email",
+      "PASSWORD": "Password",
+      "REMEMBER_ME": "Remember me",
+      "FORGOT_PASSWORD": "Forgot your password?",
+      "LOGIN_BUTTON": "Sign In",
+      "CREATE_ACCOUNT": "Create an account",
+      "NO_ACCOUNT": "Don't have an account?",
+      "ERRORS": {
+        "EMAIL_REQUIRED": "Email is required",
+        "EMAIL_INVALID": "Please enter a valid email",
+        "PASSWORD_REQUIRED": "Password is required",
+        "PASSWORD_MIN": "Password must be at least 6 characters",
+        "LOGIN_FAILED": "Invalid credentials. Please check your email and password."
+      }
+    }
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "WELCOME": "Welcome",
+    "LOGOUT": "Logout",
+    "MENU": {
+      "PROVEEDORES": "Suppliers",
+      "VENDEDORES": "Sellers",
+      "PRODUCTOS": "Products",
+      "PROFILE": "Profile",
+      "SETTINGS": "Settings"
+    }
+  },
+  "PROVEEDORES": {
+    "TITLE": "Suppliers",
+    "SUBTITLE": "Manage suppliers who provide products to the company",
+    "NEW": "Register Supplier",
+    "LIST_EMPTY": "Click on \"Register Supplier\" to add a new supplier",
+    "REGISTER": {
+      "TITLE": "Register Supplier",
+      "EDIT_TITLE": "Edit Supplier",
+      "SUBTITLE": "Complete the supplier information and attach the required certifications",
+      "BASIC_INFO": "Basic Information",
+      "CONTACT_INFO": "Contact Information",
+      "CERTIFICATIONS": "Certifications",
+      "UPLOAD_HINT": "Drag and drop PDF, JPG or PNG files here or click to select",
+      "ALLOWED_FORMATS": "Allowed formats: PDF, JPG, PNG",
+      "MAX_SIZE": "Maximum size: 5MB per file",
+      "NO_FILES": "No certifications attached",
+      "SUCCESS_MESSAGE": "Supplier registered successfully",
+      "ERROR_MESSAGE": "Error registering supplier"
+    },
+    "FIELDS": {
+      "NIT": "Tax ID",
+      "RAZON_SOCIAL": "Company Name",
+      "NOMBRE_CONTACTO": "Contact Name",
+      "EMAIL": "Email",
+      "TELEFONO": "Phone",
+      "DIRECCION": "Address",
+      "PAIS": "Country",
+      "CIUDAD": "City",
+      "CERTIFICACIONES": "Certifications",
+      "ESTADO": "Status"
+    },
+    "COUNTRIES": {
+      "COLOMBIA": "Colombia",
+      "MEXICO": "Mexico",
+      "ARGENTINA": "Argentina",
+      "CHILE": "Chile",
+      "PERU": "Peru"
+    }
+  },
+  "VENDEDORES": {
+    "TITLE": "Sellers",
+    "SUBTITLE": "Manage sellers who supply products to the company",
+    "NEW": "Register Seller",
+    "LIST_EMPTY": "Click on \"Register Seller\" to add a new seller to the system.",
+    "REGISTER": {
+      "TITLE": "Register Seller",
+      "EDIT_TITLE": "Edit Seller",
+      "SUBTITLE": "Complete the seller information",
+      "BASIC_INFO": "Basic Information",
+      "SUCCESS_MESSAGE": "Seller registered successfully",
+      "ERROR_MESSAGE": "Error registering seller"
+    },
+    "FIELDS": {
+      "NOMBRE": "Full Name",
+      "EMAIL": "Email",
+      "TELEFONO": "Phone",
+      "ZONA": "Assigned Zone",
+      "COMISION": "Commission (%)",
+      "ESTADO": "Status"
+    }
+  },
+  "PRODUCTOS": {
+    "TITLE": "Products",
+    "SUBTITLE": "Manage inventory products",
+    "NEW": "Register Product",
+    "BULK_UPLOAD": "Bulk Upload",
+    "LIST_EMPTY": "Click on \"Register Product\" to add a new product to the inventory.",
+    "REGISTER": {
+      "TITLE": "Register Product",
+      "EDIT_TITLE": "Edit Product",
+      "SUBTITLE": "Complete the product information",
+      "BASIC_INFO": "Basic Information",
+      "ADDITIONAL_INFO": "Additional Information",
+      "CERTIFICATIONS": "Documents and Certifications",
+      "UPLOAD_HINT": "Click to select files or drag and drop here",
+      "ALLOWED_FORMATS": "Allowed formats: PDF, JPG, PNG",
+      "MAX_SIZE": "Maximum size: 5MB per file",
+      "NO_FILES": "No files uploaded yet",
+      "SUCCESS_MESSAGE": "Product registered successfully",
+      "ERROR_MESSAGE": "Error registering product"
+    },
+    "FIELDS": {
+      "SKU": "SKU",
+      "CODIGO": "Product Code",
+      "NOMBRE": "Product Name",
+      "DESCRIPCION": "Description",
+      "PRECIO": "Unit Price",
+      "CANTIDAD": "Stock Quantity",
+      "CATEGORIA": "Category",
+      "PROVEEDOR": "Supplier",
+      "CERTIFICACION": "Has Certification",
+      "ARCHIVO_CERTIFICACION": "Certification File",
+      "ESTADO": "Status",
+      "PRECIO_VENTA": "Sale Price",
+      "PRECIO_COMPRA": "Purchase Price",
+      "IVA": "VAT",
+      "STOCK_ACTUAL": "Current Stock",
+      "FECHA_VENCIMIENTO": "Expiration Date",
+      "CONDICIONES_ALMACENAMIENTO": "Storage Conditions",
+      "BODEGA": "Warehouse",
+      "LOTE": "Batch/Lot"
+    },
+    "CATEGORIES": {
+      "MEDICAMENTO": "Medicine",
+      "INSUMO": "Supply",
+      "EQUIPO": "Equipment",
+      "REACTIVO": "Reagent"
+    },
+    "BULK": {
+      "TITLE": "Bulk Product Upload",
+      "UPLOAD_SECTION": "Product Upload",
+      "TEMPLATE": {
+        "TITLE": "CSV Template",
+        "DESCRIPTION": "Download the template and fill in the product data",
+        "BUTTON": "Download Template"
+      },
+      "FILE": {
+        "TITLE": "CSV File",
+        "DROP_ZONE": "Drag and drop the CSV file here or click to select",
+        "SELECTED": "Selected file:",
+        "CHANGE": "Change file",
+        "FORMATS": "Allowed formats: CSV",
+        "SIZE": "Maximum size: 10MB"
+      },
+      "PROCESS": {
+        "BUTTON": "Start Upload Process",
+        "PROCESSING": "Processing..."
+      },
+      "HISTORY": {
+        "TITLE": "Upload History",
+        "EMPTY": "No upload history",
+        "COLUMNS": {
+          "DATE": "Date",
+          "FILE": "File",
+          "SUCCESS": "Successful",
+          "FAILED": "Failed",
+          "STATUS": "Status"
+        },
+        "STATUS": {
+          "SUCCESS": "Completed",
+          "WITH_ERRORS": "With errors",
+          "FAILED": "Failed"
+        },
+        "CLICK_ERRORS": "Click to view error details"
+      },
+      "ERRORS": {
+        "TITLE": "Error Details",
+        "SUMMARY": "{{count}} errors were found during import",
+        "TABLE": {
+          "ROW": "Row",
+          "SKU": "SKU",
+          "CODE": "Code",
+          "ERROR": "Error"
+        },
+        "EXPORT": "Export Errors CSV"
+      },
+      "MESSAGES": {
+        "SUCCESS": "Upload completed successfully! {{count}} products imported.",
+        "ERROR": "Error processing file. Please check the details.",
+        "PARTIAL": "Upload completed with {{errors}} errors out of {{total}} rows.",
+        "NO_FILE": "Please select a CSV file",
+        "INVALID_FORMAT": "File must be CSV format",
+        "FILE_TOO_LARGE": "File is too large (max. 10MB)"
+      }
+    }
+  }
+}

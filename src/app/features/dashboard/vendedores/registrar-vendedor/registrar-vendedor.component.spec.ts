@@ -6,6 +6,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { RegistrarVendedorComponent } from './registrar-vendedor.component';
 import { VendedorHttpService } from '../../../../core/services/vendedor-http.service';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
 describe('RegistrarVendedorComponent', () => {
   let component: RegistrarVendedorComponent;
@@ -24,12 +26,19 @@ describe('RegistrarVendedorComponent', () => {
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [RegistrarVendedorComponent, ReactiveFormsModule],
+      imports: [
+        RegistrarVendedorComponent, 
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: VendedorHttpService, useValue: vendedorServiceSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
-        provideAnimations()
+        provideAnimations(),
+        TranslateService
       ]
     }).compileComponents();
 

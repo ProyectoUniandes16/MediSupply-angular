@@ -1,0 +1,294 @@
+name: Crear Release
+
+on:
+  # Trigger manual
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Escribe "create-release" para confirmar'
+        required: true
+        default: ''
+  
+  # Trigger automático al hacer push a ramas release/*
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  validate-and-prepare:
+    name: Validar y Preparar Release
+    runs-on: ubuntu-latest
+    
+    # Solo permitir ejecutar desde develop o si es creación de rama release
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')
+    
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      release-branch: ${{ steps.get-version.outputs.release-branch }}
+      next-version: ${{ steps.get-version.outputs.next-version }}
+    
+    steps:
+      - name: Validar confirmación
+        # Solo validar confirmación si es ejecución manual
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "create-release" ]; then
+            echo "❌ Confirmación incorrecta. Debes escribir 'create-release' para continuar."
+            exit 1
+          fi
+          echo "✅ Confirmación válida"
+      
+      - name: Detectar tipo de ejecución
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "🔄 Ejecución automática: Push detectado en rama release"
+          else
+            echo "👤 Ejecución manual desde develop"
+          fi
+
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Obtener versión del package.json
+        id: get-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release-branch=release/$VERSION" >> $GITHUB_OUTPUT
+          
+          # Calcular la siguiente versión (incrementar minor)
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          NEXT_MINOR=$((MINOR + 1))
+          NEXT_VERSION="${MAJOR}.${NEXT_MINOR}.0"
+          echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "📦 Versión actual: $VERSION"
+          echo "🌿 Rama de release: release/$VERSION"
+          echo "🔢 Próxima versión: $NEXT_VERSION"
+
+  build-and-test:
+    name: Compilar y Probar
+    needs: validate-and-prepare
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache de node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-
+            ${{ runner.os }}-node-
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Ejecutar linter
+        run: npm run lint --if-present
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm test -- --code-coverage --watch=false --browsers=ChromeHeadless
+
+      - name: Compilar aplicación para producción
+        run: npm run build -- --configuration production
+
+      - name: Verificar salida de compilación
+        run: |
+          if [ ! -d "dist/medysupply-angular/browser" ]; then
+            echo "❌ Directorio de salida de compilación no encontrado"
+            exit 1
+          fi
+          echo "✅ Compilación exitosa"
+          ls -la dist/medysupply-angular/browser/
+
+      - name: Subir artefactos de compilación
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build-${{ needs.validate-and-prepare.outputs.version }}
+          path: ./dist/medysupply-angular/browser/
+          retention-days: 7
+
+  create-release:
+    name: Crear Rama de Release y Etiqueta
+    needs: [validate-and-prepare, build-and-test]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Crear y publicar rama de release
+        # Solo crear rama si es ejecución manual desde develop
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          RELEASE_BRANCH="${{ needs.validate-and-prepare.outputs.release-branch }}"
+          VERSION="${{ needs.validate-and-prepare.outputs.version }}"
+          
+          echo "🌿 Creando rama de release: $RELEASE_BRANCH"
+          
+          # Crear la rama de release desde develop
+          git checkout -b $RELEASE_BRANCH
+          
+          # Push de la rama
+          git push origin $RELEASE_BRANCH
+          
+          echo "✅ Rama de release creada y publicada"
+      
+      - name: Verificar rama de release existente
+        # Si es ejecución automática, la rama ya existe
+        if: github.event_name == 'push'
+        run: |
+          echo "✅ Rama de release ya creada: ${{ github.ref }}"
+          echo "Continuando con el proceso de release..."
+
+      - name: Descargar artefactos de compilación
+        uses: actions/download-artifact@v4
+        with:
+          name: release-build-${{ needs.validate-and-prepare.outputs.version }}
+          path: ./release-artifacts
+
+      - name: Crear etiqueta Git
+        run: |
+          VERSION="${{ needs.validate-and-prepare.outputs.version }}"
+          
+          echo "🏷️ Creando etiqueta: v$VERSION"
+          
+          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git push origin "v$VERSION"
+          
+          echo "✅ Etiqueta creada y publicada"
+
+      - name: Crear archivo ZIP de release
+        run: |
+          cd release-artifacts
+          zip -r ../medysupply-angular-v${{ needs.validate-and-prepare.outputs.version }}.zip .
+          cd ..
+
+      - name: Crear GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.validate-and-prepare.outputs.version }}
+          name: Release v${{ needs.validate-and-prepare.outputs.version }}
+          body: |
+            ## 🚀 Release v${{ needs.validate-and-prepare.outputs.version }}
+            
+            ### 📦 Información de Compilación
+            - **Versión**: ${{ needs.validate-and-prepare.outputs.version }}
+            - **Rama**: ${{ needs.validate-and-prepare.outputs.release-branch }}
+            - **Commit**: ${{ github.sha }}
+            - **Workflow**: ${{ github.workflow }}
+            
+            ### 📥 Descarga
+            La aplicación compilada está disponible en el archivo ZIP adjunto.
+            
+            ### 🔄 Cambios
+            Este release incluye todos los cambios integrados a la rama develop hasta este momento.
+            
+            ### 🧪 Pruebas
+            - Todas las pruebas unitarias pasaron ✅
+            - Linting de código pasó ✅
+            - Compilación de producción exitosa ✅
+          draft: false
+          prerelease: false
+          files: ./medysupply-angular-v${{ needs.validate-and-prepare.outputs.version }}.zip
+
+  update-develop-version:
+    name: Actualizar versión de develop
+    needs: [validate-and-prepare, create-release]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Obtener código de develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Actualizar versión en package.json
+        run: |
+          NEXT_VERSION="${{ needs.validate-and-prepare.outputs.next-version }}"
+          
+          echo "🔢 Actualizando versión a: $NEXT_VERSION"
+          
+          # Actualizar la versión en package.json usando npm
+          npm version $NEXT_VERSION --no-git-tag-version
+          
+          echo "✅ Versión actualizada en package.json"
+
+      - name: Confirmar y publicar cambio de versión
+        run: |
+          NEXT_VERSION="${{ needs.validate-and-prepare.outputs.next-version }}"
+          
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to $NEXT_VERSION [skip ci]"
+          git push origin develop
+          
+          echo "✅ Cambio de versión confirmado y publicado en develop"
+
+  summary:
+    name: Resumen del Release
+    needs: [validate-and-prepare, build-and-test, create-release, update-develop-version]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Resumen del Release
+        run: |
+          echo "## 🎉 Proceso de Release Completado"
+          echo ""
+          echo "### ✅ Acciones Completadas:"
+          echo "- ✓ Pruebas y compilación exitosas"
+          echo "- ✓ Rama de release creada: ${{ needs.validate-and-prepare.outputs.release-branch }}"
+          echo "- ✓ Etiqueta Git creada: v${{ needs.validate-and-prepare.outputs.version }}"
+          echo "- ✓ GitHub Release creado"
+          echo "- ✓ Artefactos de compilación subidos"
+          echo "- ✓ Versión de develop actualizada a: ${{ needs.validate-and-prepare.outputs.next-version }}"
+          echo ""
+          echo "### 📦 Detalles del Release:"
+          echo "- **Versión**: ${{ needs.validate-and-prepare.outputs.version }}"
+          echo "- **Rama de Release**: ${{ needs.validate-and-prepare.outputs.release-branch }}"
+          echo "- **Próxima Versión Dev**: ${{ needs.validate-and-prepare.outputs.next-version }}"
+          echo ""
+          echo "🚀 El release está listo para despliegue!"

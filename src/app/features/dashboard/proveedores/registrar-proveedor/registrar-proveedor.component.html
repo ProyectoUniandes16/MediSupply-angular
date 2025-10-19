@@ -2,13 +2,13 @@
   <!-- Encabezado -->
   <div class="dialog-header">
     <div>
-      <h2 mat-dialog-title>Registrar Proveedor</h2>
-      <p class="dialog-subtitle">Complete la información del proveedor y adjunte las certificaciones sanitarias requeridas</p>
+      <h2 mat-dialog-title>{{ 'PROVEEDORES.REGISTER.TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'PROVEEDORES.REGISTER.SUBTITLE' | translate }}</p>
     </div>
     <button 
       mat-icon-button 
       (click)="onCancel()"
-      [attr.aria-label]="'Cerrar'">
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -20,10 +20,10 @@
       <!-- Fila 1: Nombre del Proveedor y NIT -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Nombre del proveedor</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.RAZON_SOCIAL' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Nombre del proveedor"
+            [placeholder]="'PROVEEDORES.FIELDS.RAZON_SOCIAL' | translate"
             formControlName="nombreProveedor">
           <button 
             mat-icon-button 
@@ -39,10 +39,10 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>NIT</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.NIT' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="NIT"
+            [placeholder]="'PROVEEDORES.FIELDS.NIT' | translate"
             formControlName="nit">
           <button 
             mat-icon-button 
@@ -61,7 +61,7 @@
       <!-- Fila 2: País y Estado -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione País</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.PAIS' | translate }}</mat-label>
           <mat-select formControlName="pais">
             <mat-option *ngFor="let pais of paises" [value]="pais.label">
               {{ pais.label }}
@@ -81,7 +81,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Estado</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.ESTADO' | translate }}</mat-label>
           <mat-select formControlName="estado">
             <mat-option *ngFor="let estado of estados" [value]="estado.value">
               {{ estado.label }}
@@ -104,10 +104,10 @@
       <!-- Fila 3: Dirección -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field full-width">
-          <mat-label>Dirección</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.DIRECCION' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Introducir dirección"
+            [placeholder]="'PROVEEDORES.FIELDS.DIRECCION' | translate"
             formControlName="direccion">
           <button 
             mat-icon-button 
@@ -125,16 +125,16 @@
 
       <!-- Sección Contacto -->
       <div class="section-header">
-        <h3>Contacto</h3>
+        <h3>{{ 'PROVEEDORES.REGISTER.CONTACT_INFO' | translate }}</h3>
       </div>
 
       <!-- Fila 4: Nombre Contacto y Email -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Nombre Contacto</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.NOMBRE_CONTACTO' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Ingrese Nombre Contacto"
+            [placeholder]="'PROVEEDORES.FIELDS.NOMBRE_CONTACTO' | translate"
             formControlName="nombreContacto">
           <button 
             mat-icon-button 
@@ -150,11 +150,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.EMAIL' | translate }}</mat-label>
           <input 
             matInput 
             type="email"
-            placeholder="Introducir correo electrónico"
+            [placeholder]="'PROVEEDORES.FIELDS.EMAIL' | translate"
             formControlName="email">
           <button 
             mat-icon-button 
@@ -173,10 +173,10 @@
       <!-- Fila 5: Teléfono -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Teléfono</mat-label>
+          <mat-label>{{ 'PROVEEDORES.FIELDS.TELEFONO' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Ingrese Teléfono"
+            [placeholder]="'PROVEEDORES.FIELDS.TELEFONO' | translate"
             formControlName="telefono">
           <button 
             mat-icon-button 
@@ -194,13 +194,13 @@
 
       <!-- Sección Certificaciones -->
       <div class="section-header">
-        <h3>Certificaciones</h3>
+        <h3>{{ 'PROVEEDORES.REGISTER.CERTIFICATIONS' | translate }}</h3>
       </div>
 
       <!-- Área de carga de archivos -->
       <div class="upload-area" (click)="triggerFileInput()">
         <mat-icon class="upload-icon">cloud_upload</mat-icon>
-        <p class="upload-text">Haz clic para subir archivos</p>
+        <p class="upload-text">{{ 'PROVEEDORES.REGISTER.UPLOAD_HINT' | translate }}</p>
         <input 
           type="file" 
           id="fileInput" 
@@ -213,8 +213,8 @@
       <!-- Lista de documentos adjuntos -->
       <div class="documentos-section" *ngIf="documentosAdjuntos.length > 0">
         <div class="documentos-header">
-          <span>Documentos Adjuntados</span>
-          <span>Acciones</span>
+          <span>{{ 'COMMON.DOCUMENTS' | translate }}</span>
+          <span>{{ 'COMMON.ACTIONS' | translate }}</span>
         </div>
         <mat-list>
           <mat-list-item *ngFor="let doc of documentosAdjuntos; let i = index">
@@ -251,12 +251,12 @@
       color="primary"
       (click)="onSubmit()"
       [disabled]="!proveedorForm.valid">
-      Registrar Proveedor
+      {{ 'PROVEEDORES.REGISTER.TITLE' | translate }}
     </button>
     <button 
       mat-stroked-button
       (click)="onCancel()">
-      Cancelar
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
   </div>
 </div>

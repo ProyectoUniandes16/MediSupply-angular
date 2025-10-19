@@ -2,13 +2,13 @@
   <!-- Encabezado -->
   <div class="dialog-header">
     <div>
-      <h2 mat-dialog-title>Agregar Vendedor</h2>
-      <p class="dialog-subtitle">Complete la información del proveedor</p>
+      <h2 mat-dialog-title>{{ 'VENDEDORES.REGISTER.TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'VENDEDORES.REGISTER.SUBTITLE' | translate }}</p>
     </div>
     <button 
       mat-icon-button 
       (click)="onCancel()"
-      [attr.aria-label]="'Cerrar'">
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -20,10 +20,10 @@
       <!-- Fila 1: Nombres y Apellidos -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Nombres del proveedor</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.NOMBRE' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Nombres del proveedor"
+            [placeholder]="'VENDEDORES.FIELDS.NOMBRE' | translate"
             formControlName="nombres">
           <button 
             mat-icon-button 
@@ -39,10 +39,10 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Apellidos del proveedor</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.NOMBRE' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Apellidos del proveedor"
+            [placeholder]="'VENDEDORES.FIELDS.NOMBRE' | translate"
             formControlName="apellidos">
           <button 
             mat-icon-button 
@@ -61,7 +61,7 @@
       <!-- Fila 2: Zona y Estado -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Zona</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.ZONA' | translate }}</mat-label>
           <mat-select formControlName="zona">
             <mat-option *ngFor="let zona of zonas" [value]="zona.value">
               {{ zona.label }}
@@ -81,7 +81,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Estado</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.ESTADO' | translate }}</mat-label>
           <mat-select formControlName="estado">
             <mat-option *ngFor="let estado of estados" [value]="estado.value">
               {{ estado.label }}
@@ -103,16 +103,16 @@
 
       <!-- Sección Contacto -->
       <div class="section-header">
-        <h3>Contacto</h3>
+        <h3>{{ 'VENDEDORES.REGISTER.BASIC_INFO' | translate }}</h3>
       </div>
 
       <!-- Fila 3: Teléfono y Email -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Teléfono</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.TELEFONO' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Ingrese Teléfono"
+            [placeholder]="'VENDEDORES.FIELDS.TELEFONO' | translate"
             formControlName="telefono">
           <button 
             mat-icon-button 
@@ -128,11 +128,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'VENDEDORES.FIELDS.EMAIL' | translate }}</mat-label>
           <input 
             matInput 
             type="email"
-            placeholder="Introducir correo electrónico"
+            [placeholder]="'VENDEDORES.FIELDS.EMAIL' | translate"
             formControlName="email">
           <button 
             mat-icon-button 
@@ -160,13 +160,13 @@
       <mat-icon *ngIf="isLoading">
         <mat-spinner diameter="20"></mat-spinner>
       </mat-icon>
-      {{ isLoading ? 'Registrando...' : 'Registrar Vendedor' }}
+      {{ isLoading ? ('COMMON.LOADING' | translate) : ('VENDEDORES.REGISTER.TITLE' | translate) }}
     </button>
     <button 
       mat-stroked-button
       (click)="onCancel()"
       [disabled]="isLoading">
-      Cancelar
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { RegistrarProductoComponent } from './registrar-producto/registrar-producto.component';
 import { CargaMasivaProductosComponent } from './carga-masiva-productos/carga-masiva-productos.component';
 
@@ -13,7 +14,8 @@ import { CargaMasivaProductosComponent } from './carga-masiva-productos/carga-ma
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule
   ],
   templateUrl: './productos.component.html',
   styleUrl: './productos.component.scss'

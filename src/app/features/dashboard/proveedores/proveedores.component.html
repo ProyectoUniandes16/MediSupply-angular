@@ -2,8 +2,8 @@
   <!-- Encabezado -->
   <div class="header">
     <div class="header-info">
-      <h1 class="title">Proveedores</h1>
-      <p class="subtitle">Gestiona proveedores que suministran productos a la compañía</p>
+      <h1 class="title">{{ 'PROVEEDORES.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'PROVEEDORES.SUBTITLE' | translate }}</p>
     </div>
     <button 
       mat-raised-button 
@@ -11,14 +11,14 @@
       class="register-button"
       (click)="openRegistrarProveedorDialog()">
       <mat-icon>add</mat-icon>
-      Registrar Proveedor
+      {{ 'PROVEEDORES.NEW' | translate }}
     </button>
   </div>
 
   <!-- Loading Spinner -->
   <div class="loading-container" *ngIf="isLoading">
     <mat-spinner diameter="50"></mat-spinner>
-    <p>Cargando proveedores...</p>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
   </div>
 
   <!-- Mensaje de error -->
@@ -33,7 +33,7 @@
   <!-- Estado vacío -->
   <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tieneProveedores">
     <mat-icon class="empty-icon">business</mat-icon>
-    <p class="empty-message">Haz clic en "Registrar Proveedor" para agregar un nuevo proveedor</p>
+    <p class="empty-message">{{ 'PROVEEDORES.LIST_EMPTY' | translate }}</p>
   </div>
 
   <!-- Contenido principal cuando hay proveedores -->

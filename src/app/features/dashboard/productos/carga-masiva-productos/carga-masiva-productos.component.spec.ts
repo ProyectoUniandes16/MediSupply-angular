@@ -7,6 +7,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { CargaMasivaResponseOk } from '../../../../core/models/producto.models';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
 describe('CargaMasivaProductosComponent', () => {
   let component: CargaMasivaProductosComponent;
@@ -22,12 +24,19 @@ describe('CargaMasivaProductosComponent', () => {
     } as any);
 
     await TestBed.configureTestingModule({
-      imports: [CargaMasivaProductosComponent, NoopAnimationsModule],
+      imports: [
+        CargaMasivaProductosComponent, 
+        NoopAnimationsModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MatSnackBar, useValue: mockSnackBar },
         ProductoHttpService,
-        provideHttpClient()
+        provideHttpClient(),
+        TranslateService
       ]
     }).compileComponents();
 

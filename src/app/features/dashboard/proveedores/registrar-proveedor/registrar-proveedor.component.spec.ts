@@ -6,6 +6,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { RegistrarProveedorComponent } from './registrar-proveedor.component';
 import { ProveedorHttpService } from '../../../../core/services/proveedor-http.service';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
 describe('RegistrarProveedorComponent', () => {
   let component: RegistrarProveedorComponent;
@@ -24,14 +26,24 @@ describe('RegistrarProveedorComponent', () => {
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [RegistrarProveedorComponent, ReactiveFormsModule],
+      imports: [
+        RegistrarProveedorComponent, 
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: ProveedorHttpService, useValue: proveedorServiceSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
-        provideAnimations()
+        provideAnimations(),
+        TranslateService
       ]
     }).compileComponents();
+
+    const translateService = TestBed.inject(TranslateService);
+    translateService.use('es');
 
     fixture = TestBed.createComponent(RegistrarProveedorComponent);
     component = fixture.componentInstance;
@@ -132,13 +144,13 @@ describe('RegistrarProveedorComponent', () => {
   it('should open document in new window', () => {
     const mockFile = new File(['content'], 'test.pdf', { type: 'application/pdf' });
     const documento = { nombre: 'test.pdf', archivo: mockFile };
-    spyOn(window, 'open');
+    spyOn(globalThis, 'open');
     spyOn(URL, 'createObjectURL').and.returnValue('blob:test-url');
 
     component.verDocumento(documento);
 
     expect(URL.createObjectURL).toHaveBeenCalledWith(mockFile);
-    expect(window.open).toHaveBeenCalledWith('blob:test-url', '_blank');
+    expect(globalThis.open).toHaveBeenCalledWith('blob:test-url', '_blank');
   });
 
   it('should close dialog on cancel', () => {

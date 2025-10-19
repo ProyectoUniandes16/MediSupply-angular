@@ -7,6 +7,8 @@ import { of, throwError } from 'rxjs';
 import { RegistrarProductoComponent } from './registrar-producto.component';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
 describe('RegistrarProductoComponent', () => {
   let component: RegistrarProductoComponent;
@@ -25,13 +27,20 @@ describe('RegistrarProductoComponent', () => {
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [RegistrarProductoComponent, ReactiveFormsModule],
+      imports: [
+        RegistrarProductoComponent, 
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: ProductoHttpService, useValue: productoServiceSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
         provideAnimations(),
-        provideNativeDateAdapter()
+        provideNativeDateAdapter(),
+        TranslateService
       ]
     }).compileComponents();
 

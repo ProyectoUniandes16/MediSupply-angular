@@ -6,6 +6,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 
 describe('DashboardLayoutComponent', () => {
   let component: DashboardLayoutComponent;
@@ -24,13 +26,19 @@ describe('DashboardLayoutComponent', () => {
     breakpointObserverSpy.observe.and.returnValue(of({ matches: false, breakpoints: {} }));
 
     await TestBed.configureTestingModule({
-      imports: [DashboardLayoutComponent],
+      imports: [
+        DashboardLayoutComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: BreakpointObserver, useValue: breakpointObserverSpy },
         provideAnimations(),
-        provideRouter([])
+        provideRouter([]),
+        TranslateService
       ]
     }).compileComponents();
 
@@ -38,9 +46,33 @@ describe('DashboardLayoutComponent', () => {
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     breakpointObserver = TestBed.inject(BreakpointObserver) as jasmine.SpyObj<BreakpointObserver>;
 
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('es');
+    translateService.use('es');
+
     fixture = TestBed.createComponent(DashboardLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    
+    // Mock the _updateContentMargins method to avoid errors in tests
+    Object.defineProperty(component.sidenav, '_container', {
+      value: {
+        _updateContentMargins: jasmine.createSpy('_updateContentMargins')
+      },
+      writable: true
+    });
+  });
+
+  afterEach(() => {
+    // Cleanup to prevent errors in afterAll
+    if (component.sidenav) {
+      Object.defineProperty(component.sidenav, '_container', {
+        value: {
+          _updateContentMargins: () => {}
+        },
+        writable: true
+      });
+    }
   });
 
   it('should create', () => {
@@ -131,7 +163,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.updateCurrentRoute();
 
-    expect(component.currentRoute).toBe('Proveedores');
+    expect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
   });
 
   it('should set current route to Proveedores for proveedores URL', () => {
@@ -139,6 +171,6 @@ describe('DashboardLayoutComponent', () => {
 
     component.updateCurrentRoute();
 
-    expect(component.currentRoute).toBe('Proveedores');
+    expect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
   });
 });

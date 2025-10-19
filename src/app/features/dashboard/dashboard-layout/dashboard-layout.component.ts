@@ -7,13 +7,16 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { filter } from 'rxjs/operators';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 
 interface NavigationItem {
   icon: string;
   label: string;
+  translationKey: string;
   route: string;
 }
 
@@ -28,7 +31,9 @@ interface NavigationItem {
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDividerModule,
+    TranslateModule
   ],
   templateUrl: './dashboard-layout.component.html',
   styleUrl: './dashboard-layout.component.scss'
@@ -39,17 +44,19 @@ export class DashboardLayoutComponent implements OnInit {
   isMobile = false;
   isCollapsed = false;
   currentRoute = '';
+  currentLanguage = 'es';
 
   navigationItems: NavigationItem[] = [
-    { icon: 'business', label: 'Proveedores', route: '/dashboard/proveedores' },
-    { icon: 'people', label: 'Vendedores', route: '/dashboard/vendedores' },
-    { icon: 'inventory_2', label: 'Productos', route: '/dashboard/productos' }
+    { icon: 'business', label: 'Proveedores', translationKey: 'DASHBOARD.MENU.PROVEEDORES', route: '/dashboard/proveedores' },
+    { icon: 'people', label: 'Vendedores', translationKey: 'DASHBOARD.MENU.VENDEDORES', route: '/dashboard/vendedores' },
+    { icon: 'inventory_2', label: 'Productos', translationKey: 'DASHBOARD.MENU.PRODUCTOS', route: '/dashboard/productos' }
   ];
 
   constructor(
-    private router: Router,
-    private authService: AuthService,
-    private breakpointObserver: BreakpointObserver
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly breakpointObserver: BreakpointObserver,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -67,6 +74,9 @@ export class DashboardLayoutComponent implements OnInit {
     });
 
     this.updateCurrentRoute();
+
+    // Obtener el idioma actual
+    this.currentLanguage = this.translate.currentLang || localStorage.getItem('language') || 'es';
   }
 
   /**
@@ -75,7 +85,7 @@ export class DashboardLayoutComponent implements OnInit {
   updateCurrentRoute(): void {
     const currentUrl = this.router.url;
     const navItem = this.navigationItems.find(item => currentUrl.includes(item.route));
-    this.currentRoute = navItem?.label || 'Dashboard';
+    this.currentRoute = navItem ? this.translate.instant(navItem.translationKey) : this.translate.instant('DASHBOARD.TITLE');
   }
 
   /**
@@ -94,6 +104,10 @@ export class DashboardLayoutComponent implements OnInit {
       this.sidenav.toggle();
     } else {
       this.isCollapsed = !this.isCollapsed;
+      // Forzar actualización del layout después del cambio de ancho
+      setTimeout(() => {
+        (this.sidenav as any)._container?._updateContentMargins();
+      }, 0);
     }
   }
 
@@ -105,6 +119,17 @@ export class DashboardLayoutComponent implements OnInit {
     if (this.isMobile) {
       this.sidenav.close();
     }
+  }
+
+  /**
+   * Cambia el idioma de la aplicación
+   */
+  changeLanguage(language: string): void {
+    this.currentLanguage = language;
+    this.translate.use(language);
+    localStorage.setItem('language', language);
+    // Actualizar el breadcrumb con el nuevo idioma
+    this.updateCurrentRoute();
   }
 
   /**

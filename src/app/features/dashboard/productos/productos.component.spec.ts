@@ -6,6 +6,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 
 describe('ProductosComponent', () => {
   let component: ProductosComponent;
@@ -14,11 +16,21 @@ describe('ProductosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductosComponent, NoopAnimationsModule],
+      imports: [
+        ProductosComponent, 
+        NoopAnimationsModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
-        provideHttpClient()
+        provideHttpClient(),
+        TranslateService
       ]
     }).compileComponents();
+
+    const translateService = TestBed.inject(TranslateService);
+    translateService.use('es');
 
     dialog = TestBed.inject(MatDialog);
     fixture = TestBed.createComponent(ProductosComponent);

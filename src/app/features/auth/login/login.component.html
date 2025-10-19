@@ -2,7 +2,8 @@
   <mat-card class="login-card">
     <!-- Título -->
     <mat-card-header>
-      <mat-card-title class="login-title">MedySupply</mat-card-title>
+      <mat-card-title class="login-title">{{ 'AUTH.LOGIN.WELCOME' | translate }}</mat-card-title>
+      <mat-card-subtitle>{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -11,13 +12,13 @@
         
         <!-- Campo Email -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'AUTH.LOGIN.EMAIL' | translate }}</mat-label>
           <input 
             matInput 
             type="email"
-            placeholder="Introducir correo electrónico"
+            [placeholder]="'AUTH.LOGIN.EMAIL' | translate"
             formControlName="email"
-            [attr.aria-label]="'Campo de correo electrónico'"
+            [attr.aria-label]="'AUTH.LOGIN.EMAIL' | translate"
           >
           <button 
             mat-icon-button 
@@ -35,13 +36,13 @@
 
         <!-- Campo Contraseña -->
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contraseña</mat-label>
+          <mat-label>{{ 'AUTH.LOGIN.PASSWORD' | translate }}</mat-label>
           <input 
             matInput 
             type="password"
-            placeholder="Contraseña"
+            [placeholder]="'AUTH.LOGIN.PASSWORD' | translate"
             formControlName="password"
-            [attr.aria-label]="'Campo de contraseña'"
+            [attr.aria-label]="'AUTH.LOGIN.PASSWORD' | translate"
           >
           <button 
             mat-icon-button 
@@ -60,7 +61,7 @@
         <!-- Checkbox Recordarme -->
         <div class="remember-me-container">
           <mat-checkbox formControlName="rememberMe" color="primary">
-            Recordarme
+            {{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}
           </mat-checkbox>
         </div>
 
@@ -77,7 +78,7 @@
           type="submit"
           class="full-width login-button"
           [disabled]="isLoading">
-          <span *ngIf="!isLoading">Iniciar Sesión</span>
+          <span *ngIf="!isLoading">{{ 'AUTH.LOGIN.LOGIN_BUTTON' | translate }}</span>
           <mat-spinner 
             *ngIf="isLoading" 
             diameter="20" 
@@ -91,14 +92,14 @@
             href="javascript:void(0)" 
             (click)="onForgotPassword()"
             class="link">
-            ¿Recuperar contraseña?
+            {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
           </a>
-          <span class="link-separator">¿No tienes una cuenta?</span>
+          <span class="link-separator">{{ 'AUTH.LOGIN.NO_ACCOUNT' | translate }}</span>
           <a 
             href="javascript:void(0)" 
             (click)="onCreateAccount()"
             class="link primary-link">
-            Crear cuenta
+            {{ 'AUTH.LOGIN.CREATE_ACCOUNT' | translate }}
           </a>
         </div>
       </form>

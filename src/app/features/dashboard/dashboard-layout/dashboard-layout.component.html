@@ -5,6 +5,7 @@
     [mode]="isMobile ? 'over' : 'side'"
     [opened]="!isMobile"
     [class.collapsed]="isCollapsed && !isMobile"
+    [style.width]="!isMobile ? (isCollapsed ? '64px' : '260px') : '260px'"
     class="sidenav">
     
     <!-- Logo/Nombre -->
@@ -20,7 +21,7 @@
         [class.active]="isActiveRoute(item.route)"
         (click)="navigate(item.route)">
         <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-        <span matListItemTitle *ngIf="!isCollapsed || isMobile">{{ item.label }}</span>
+        <span matListItemTitle *ngIf="!isCollapsed || isMobile">{{ item.translationKey | translate }}</span>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>
@@ -43,11 +44,28 @@
       <span class="spacer"></span>
 
       <!-- Iconos de Acción -->
+      <!-- Selector de Idioma -->
       <button 
         mat-icon-button
-        [attr.aria-label]="'Localización'">
-        <mat-icon>location_on</mat-icon>
+        [matMenuTriggerFor]="languageMenu"
+        [attr.aria-label]="'Cambiar idioma'">
+        <mat-icon>language</mat-icon>
       </button>
+
+      <mat-menu #languageMenu="matMenu">
+        <button mat-menu-item (click)="changeLanguage('es')">
+          <mat-icon [color]="currentLanguage === 'es' ? 'primary' : ''">
+            {{ currentLanguage === 'es' ? 'check_circle' : 'radio_button_unchecked' }}
+          </mat-icon>
+          <span>Español</span>
+        </button>
+        <button mat-menu-item (click)="changeLanguage('en')">
+          <mat-icon [color]="currentLanguage === 'en' ? 'primary' : ''">
+            {{ currentLanguage === 'en' ? 'check_circle' : 'radio_button_unchecked' }}
+          </mat-icon>
+          <span>English</span>
+        </button>
+      </mat-menu>
       
       <button 
         mat-icon-button
@@ -57,15 +75,15 @@
       </button>
 
       <mat-menu #userMenu="matMenu">
-        <div class="menu-header">Mi Cuenta</div>
+        <div class="menu-header">{{ 'DASHBOARD.WELCOME' | translate }}</div>
         <mat-divider></mat-divider>
         <button mat-menu-item>
           <mat-icon>person</mat-icon>
-          <span>Perfil</span>
+          <span>{{ 'DASHBOARD.MENU.PROFILE' | translate }}</span>
         </button>
         <button mat-menu-item>
           <mat-icon>settings</mat-icon>
-          <span>Configuración</span>
+          <span>{{ 'DASHBOARD.MENU.SETTINGS' | translate }}</span>
         </button>
       </mat-menu>
 
@@ -75,7 +93,7 @@
         color="primary"
         class="logout-button"
         (click)="logout()">
-        Salir
+        {{ 'DASHBOARD.LOGOUT' | translate }}
       </button>
     </mat-toolbar>
 

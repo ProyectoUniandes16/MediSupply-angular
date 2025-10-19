@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProveedorHttpService } from '../../../../core/services/proveedor-http.service';
 
 interface Documento {
@@ -31,7 +32,8 @@ interface Documento {
     MatSelectModule,
     MatListModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslateModule
   ],
   templateUrl: './registrar-proveedor.component.html',
   styleUrl: './registrar-proveedor.component.scss'

@@ -2,13 +2,13 @@
   <!-- Encabezado -->
   <div class="dialog-header">
     <div>
-      <h2 mat-dialog-title>Registrar Producto</h2>
-      <p class="dialog-subtitle">Complete la información del producto y adjunte las certificaciones sanitarias requeridas</p>
+      <h2 mat-dialog-title>{{ 'PRODUCTOS.REGISTER.TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'PRODUCTOS.REGISTER.SUBTITLE' | translate }}</p>
     </div>
     <button 
       mat-icon-button 
       (click)="onCancel()"
-      [attr.aria-label]="'Cerrar'">
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -20,10 +20,10 @@
       <!-- Fila 1: Nombre del producto y Código SKU -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Nombre del producto</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.NOMBRE' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Nombre del producto"
+            [placeholder]="'PRODUCTOS.FIELDS.NOMBRE' | translate"
             formControlName="nombreProducto">
           <button 
             mat-icon-button 
@@ -39,10 +39,10 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Código SKU</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.CODIGO' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Código SKU"
+            [placeholder]="'PRODUCTOS.FIELDS.CODIGO' | translate"
             formControlName="codigoSku">
           <button 
             mat-icon-button 
@@ -61,7 +61,7 @@
       <!-- Fila 2: Categoría y Precio Unitario -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Categoría</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.CATEGORIA' | translate }}</mat-label>
           <mat-select formControlName="categoria">
             <mat-option *ngFor="let cat of categorias" [value]="cat.value">
               {{ cat.label }}
@@ -81,11 +81,11 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Precio Unitario</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.PRECIO' | translate }}</mat-label>
           <input 
             matInput 
             type="number"
-            placeholder="Precio Unitario"
+            [placeholder]="'PRODUCTOS.FIELDS.PRECIO' | translate"
             formControlName="precioUnitario">
           <button 
             mat-icon-button 
@@ -104,10 +104,10 @@
       <!-- Fila 3: Condiciones de Almacenamiento y Fecha de Vencimiento -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Condiciones de almacenamiento</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.CONDICIONES_ALMACENAMIENTO' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Introducir Condiciones"
+            [placeholder]="'PRODUCTOS.FIELDS.CONDICIONES_ALMACENAMIENTO' | translate"
             formControlName="condicionesAlmacenamiento">
           <button 
             mat-icon-button 
@@ -123,7 +123,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Fecha Vencimiento</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.FECHA_VENCIMIENTO' | translate }}</mat-label>
           <input 
             matInput 
             [matDatepicker]="picker"
@@ -140,7 +140,7 @@
       <!-- Fila 4: Estado y Bodega -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Estado</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.ESTADO' | translate }}</mat-label>
           <mat-select formControlName="estado">
             <mat-option *ngFor="let estado of estados" [value]="estado.value">
               {{ estado.label }}
@@ -160,7 +160,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Seleccione Bodega</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.BODEGA' | translate }}</mat-label>
           <mat-select formControlName="bodega">
             <mat-option *ngFor="let bodega of bodegas" [value]="bodega.value">
               {{ bodega.label }}
@@ -183,10 +183,10 @@
       <!-- Fila 5: Lote -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Lote</mat-label>
+          <mat-label>{{ 'PRODUCTOS.FIELDS.LOTE' | translate }}</mat-label>
           <input 
             matInput 
-            placeholder="Introducir Lote"
+            [placeholder]="'PRODUCTOS.FIELDS.LOTE' | translate"
             formControlName="lote">
           <button 
             mat-icon-button 
@@ -204,13 +204,13 @@
 
       <!-- Sección Certificaciones -->
       <div class="section-header">
-        <h3>Certificaciones</h3>
+        <h3>{{ 'PRODUCTOS.REGISTER.CERTIFICATIONS' | translate }}</h3>
       </div>
 
       <!-- Área de carga de archivos -->
       <div class="upload-area" (click)="triggerFileInput()">
         <mat-icon class="upload-icon">cloud_upload</mat-icon>
-        <p class="upload-text">Haz clic para subir archivos</p>
+        <p class="upload-text">{{ 'PRODUCTOS.REGISTER.UPLOAD_HINT' | translate }}</p>
         <input 
           type="file" 
           id="fileInput" 
@@ -223,8 +223,8 @@
       <!-- Lista de documentos adjuntos -->
       <div class="documentos-section" *ngIf="documentosAdjuntos.length > 0">
         <div class="documentos-header">
-          <span>Documentos Adjuntados</span>
-          <span>Acciones</span>
+          <span>{{ 'COMMON.DOCUMENTS' | translate }}</span>
+          <span>{{ 'COMMON.ACTIONS' | translate }}</span>
         </div>
         <mat-list>
           <mat-list-item *ngFor="let doc of documentosAdjuntos; let i = index">
@@ -261,13 +261,13 @@
       color="primary"
       (click)="onSubmit()"
       [disabled]="!productoForm.valid || isLoading">
-      {{ isLoading ? 'Registrando...' : 'Registrar Producto' }}
+      {{ isLoading ? ('COMMON.LOADING' | translate) : ('PRODUCTOS.REGISTER.TITLE' | translate) }}
     </button>
     <button 
       mat-stroked-button
       (click)="onCancel()"
       [disabled]="isLoading">
-      Cancelar
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
   </div>
 </div>

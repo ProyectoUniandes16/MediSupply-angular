@@ -2,8 +2,8 @@
   <!-- Encabezado -->
   <div class="header">
     <div class="header-info">
-      <h1 class="title">Productos</h1>
-      <p class="subtitle">Gestiona productos del inventario</p>
+      <h1 class="title">{{ 'PRODUCTOS.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'PRODUCTOS.SUBTITLE' | translate }}</p>
     </div>
     <div class="header-actions">
       <button 
@@ -12,7 +12,7 @@
         class="bulk-upload-button"
         (click)="openCargaMasivaDialog()">
         <mat-icon>upload</mat-icon>
-        Carga Masiva
+        {{ 'PRODUCTOS.BULK_UPLOAD' | translate }}
       </button>
       <button 
         mat-raised-button 
@@ -20,13 +20,13 @@
         class="register-button"
         (click)="openRegistrarProductoDialog()">
         <mat-icon>add</mat-icon>
-        Registrar Producto
+        {{ 'PRODUCTOS.NEW' | translate }}
       </button>
     </div>
   </div>
 
   <!-- Mensaje inicial -->
   <div class="empty-state">
-    <p>Haz clic en "Registrar Producto" para agregar un nuevo producto al inventario.</p>
+    <p>{{ 'PRODUCTOS.LIST_EMPTY' | translate }}</p>
   </div>
 </div>

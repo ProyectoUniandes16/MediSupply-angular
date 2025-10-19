@@ -96,30 +96,72 @@ describe('ProveedorHttpService', () => {
   });
 
   describe('obtenerProveedores', () => {
-    it('debería obtener la lista de proveedores', () => {
-      const mockProveedores: Proveedor[] = [
-        {
-          id: 1,
-          nombre: 'Proveedor 1',
-          nit: '900123456',
-          pais: 'Colombia',
-          direccion: 'Calle 123',
-          nombre_contacto: 'Juan',
-          email: 'juan@test.com',
-          telefono: '3001234567',
-          created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z'
+    it('debería obtener la lista de proveedores con paginación', () => {
+      const mockResponse = {
+        data: [
+          {
+            id: 1,
+            nombre: 'Proveedor 1',
+            nit: '900123456',
+            pais: 'Colombia',
+            direccion: 'Calle 123',
+            nombre_contacto: 'Juan',
+            email: 'juan@test.com',
+            telefono: '3001234567',
+            estado: 'Activo',
+            estado_certificacion: 'vigente',
+            fecha_registro: '2024-01-01T00:00:00Z',
+            total_certificaciones: 2
+          }
+        ],
+        mensaje: 'Proveedores obtenidos exitosamente',
+        paginacion: {
+          pagina: 1,
+          por_pagina: 20,
+          total: 1,
+          total_paginas: 1
         }
-      ];
+      };
 
-      service.obtenerProveedores().subscribe(proveedores => {
-        expect(proveedores).toEqual(mockProveedores);
-        expect(proveedores.length).toBe(1);
+      service.obtenerProveedores({ pagina: 1, por_pagina: 20 }).subscribe(response => {
+        expect(response).toEqual(mockResponse);
+        expect(response.data.length).toBe(1);
+        expect(response.paginacion.total).toBe(1);
       });
 
-      const req = httpMock.expectOne(`${apiUrl}/proveedor/`);
+      const req = httpMock.expectOne(`${apiUrl}/proveedor?pagina=1&por_pagina=20`);
       expect(req.request.method).toBe('GET');
-      req.flush(mockProveedores);
+      req.flush(mockResponse);
+    });
+
+    it('debería enviar filtros en la petición', () => {
+      const mockResponse = {
+        data: [],
+        mensaje: 'Proveedores obtenidos exitosamente',
+        paginacion: {
+          pagina: 1,
+          por_pagina: 20,
+          total: 0,
+          total_paginas: 0
+        }
+      };
+
+      service.obtenerProveedores({ 
+        pagina: 1, 
+        por_pagina: 20,
+        nombre: 'Farmacorp',
+        pais: 'Colombia',
+        estado: 'Activo'
+      }).subscribe();
+
+      const req = httpMock.expectOne((request) => {
+        return request.url.includes('/proveedor') && 
+               request.url.includes('nombre=Farmacorp') &&
+               request.url.includes('pais=Colombia') &&
+               request.url.includes('estado=Activo');
+      });
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
     });
   });
 
@@ -134,6 +176,10 @@ describe('ProveedorHttpService', () => {
         nombre_contacto: 'Juan',
         email: 'juan@test.com',
         telefono: '3001234567',
+        estado: 'Activo',
+        estado_certificacion: 'vigente',
+        fecha_registro: '2024-01-01T00:00:00Z',
+        total_certificaciones: 2,
         created_at: '2024-01-01T00:00:00Z',
         updated_at: '2024-01-01T00:00:00Z'
       };

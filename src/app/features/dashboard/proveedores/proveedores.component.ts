@@ -45,8 +45,8 @@ export class ProveedoresComponent implements OnInit {
   
   // Filtros
   searchTerm = '';
-  selectedPais = '';
-  selectedEstado = '';
+  selectedPais = 'Todos';
+  selectedEstado = 'Todos';
   
   // Paginación
   paginacion: Paginacion = {
@@ -180,9 +180,9 @@ export class ProveedoresComponent implements OnInit {
    */
   limpiarFiltros(): void {
     this.searchTerm = '';
-    this.selectedPais = '';
-    this.selectedEstado = '';
-    this.aplicarFiltros();
+    this.selectedPais = 'Todos';
+    this.selectedEstado = 'Todos';
+    this.cargarProveedores(true);
   }
 
   /**

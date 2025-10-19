@@ -38,8 +38,20 @@
   line-height: 1.5;
 }
 
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
 // H-7: Flexibilidad y eficiencia de uso - Botón principal destacado
-.register-button {
+.register-button,
+.bulk-upload-button {
   height: 40px;
   min-width: 180px;
   font-weight: 500;
@@ -51,6 +63,11 @@
   @media (max-width: 768px) {
     width: 100%;
   }
+}
+
+.bulk-upload-button {
+  background-color: #7b68ee !important;
+  color: white !important;
 }
 
 .empty-state {

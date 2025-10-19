@@ -192,4 +192,28 @@ export class ProductoHttpService {
     
     return `${dia}/${mes}/${anio}`;
   }
+
+  /**
+   * Carga masiva de productos desde un archivo CSV
+   * 
+   * @param file - Archivo CSV con los productos
+   * @returns Observable con la respuesta del servidor
+   * 
+   * Endpoint: POST /api/producto-batch
+   * Content-Type: multipart/form-data
+   */
+  cargarProductosMasivo(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    return this.http.post<any>(
+      `${this.apiUrl}/producto-batch`,
+      formData
+    ).pipe(
+      catchError(error => {
+        console.error('Error en carga masiva:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

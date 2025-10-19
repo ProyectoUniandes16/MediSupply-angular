@@ -1,0 +1,252 @@
+.carga-masiva-dialog {
+  padding: 0;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin: 0;
+    padding: 24px 24px 8px;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .back-button { margin-left: -8px; }
+  }
+
+  .subtitle {
+    margin: 0;
+    padding: 0 24px 16px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  mat-dialog-content {
+    padding: 0 24px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  mat-dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    margin: 0;
+  }
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
+}
+
+.plantilla-section, .file-section {
+  h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 16px;
+    color: #333;
+  }
+}
+
+.plantilla-section .download-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.plantilla-info {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  strong { color: #333; }
+}
+
+.file-upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: #fafafa;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: #7b68ee;
+    background-color: #f5f3ff;
+  }
+
+  .upload-icon mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #7b68ee;
+    margin-bottom: 16px;
+  }
+
+  .primary-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin: 0 0 8px;
+  }
+
+  .secondary-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+
+  .selected-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+
+    .file-icon {
+      color: #7b68ee;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .file-name {
+      flex: 1;
+      text-align: left;
+      font-size: 14px;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .uploading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    p { margin: 0; font-size: 14px; color: #666; }
+  }
+}
+
+.historial-section h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 16px;
+  color: #333;
+}
+
+.historial-table, .errores-table {
+  width: 100%;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+    padding: 16px 12px;
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  tr.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    &:hover { background: #f5f5f5; }
+  }
+}
+
+.estado-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.estado-procesando { background: #fff3e0; color: #f57c00; }
+  &.estado-completado { background: #e8f5e9; color: #2e7d32; }
+  &.estado-parcial { background: #fff9c4; color: #f57f17; }
+  &.estado-error, &.estado-fallido { background: #ffebee; color: #c62828; }
+}
+
+.empty-historial {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.vista-detalles {
+  .info-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    border-radius: 4px;
+    margin-bottom: 24px;
+
+    mat-icon {
+      color: #2196f3;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    strong { color: #1976d2; }
+  }
+
+  .errores-section {
+    overflow-x: auto;
+  }
+}
+
+.codigo-error {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #fff3e0;
+  color: #e65100;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.error-description {
+  color: #d32f2f;
+  max-width: 400px;
+}
+
+mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}

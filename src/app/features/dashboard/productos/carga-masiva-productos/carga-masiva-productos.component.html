@@ -1,0 +1,242 @@
+<div class="carga-masiva-dialog">
+  <h2 mat-dialog-title *ngIf="!mostrarDetalles">Carga Masiva Productos</h2>
+  <h2 mat-dialog-title *ngIf="mostrarDetalles">
+    <button mat-icon-button (click)="volverAlHistorial()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    Detalles de Errores - {{ cargaSeleccionada?.documento }}
+  </h2>
+  <p class="subtitle" *ngIf="!mostrarDetalles">Complete la información del producto y adjunte las certificaciones sanitarias requeridas</p>
+
+  <mat-dialog-content>
+    <!-- Vista principal: Carga y historial -->
+    <div *ngIf="!mostrarDetalles"  class="vista-principal">
+    <!-- Grid de dos columnas para plantilla y archivo -->
+    <div class="upload-grid">
+      <!-- Columna izquierda: Plantilla de carga -->
+      <div class="plantilla-section">
+        <h3>Plantilla de carga</h3>
+        <button 
+          mat-raised-button 
+          color="primary"
+          class="download-button"
+          (click)="descargarPlantilla()">
+          <mat-icon>download</mat-icon>
+          Descargar Plantilla CSV
+        </button>
+        <p class="plantilla-info">
+          Incluye columnas: <strong>Nombre, SKU, Categoria, Precio, Fecha Vencimiento, Condiciones Almacenamiento, Bodega, Lote</strong>
+        </p>
+      </div>
+
+      <!-- Columna derecha: Selección de archivo -->
+      <div class="file-section">
+        <h3>Seleccionar archivo</h3>
+        <div 
+          class="file-upload-area"
+          role="button"
+          tabindex="0"
+          (click)="onFileAreaClick()"
+          (keypress)="onFileAreaClick()"
+          (dragover)="onDragOver($event)"
+          (drop)="onDrop($event)">
+          <input 
+            type="file" 
+            id="fileInput"
+            accept=".csv"
+            (change)="onFileSelected($event)"
+            style="display: none;">
+          
+          <div class="upload-icon">
+            <mat-icon>upload_file</mat-icon>
+          </div>
+          
+          <div class="upload-text" *ngIf="!selectedFile">
+            <p class="primary-text">Haz clic para subir archivos</p>
+            <p class="secondary-text">o arrastra y suelta archivos CSV</p>
+          </div>
+
+          <div class="selected-file" *ngIf="selectedFile && !isUploading">
+            <mat-icon class="file-icon">description</mat-icon>
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <button 
+              mat-icon-button 
+              class="remove-button"
+              (click)="removeFile(); $event.stopPropagation()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div class="uploading" *ngIf="isUploading">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Procesando archivo...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de historial (ancho completo) -->
+    <div class="historial-section">
+      <h3>Historial de cargas</h3>
+      
+      <table mat-table [dataSource]="historialCargas" class="historial-table" *ngIf="historialCargas.length > 0">
+        <!-- Columna Documento -->
+        <ng-container matColumnDef="documento">
+          <th mat-header-cell *matHeaderCellDef>Documento</th>
+          <td mat-cell *matCellDef="let carga">{{ carga.documento }}</td>
+        </ng-container>
+
+        <!-- Columna Fecha de cargue -->
+        <ng-container matColumnDef="fechaCargue">
+          <th mat-header-cell *matHeaderCellDef>Fecha de cargue</th>
+          <td mat-cell *matCellDef="let carga">{{ carga.fechaCargue }}</td>
+        </ng-container>
+
+        <!-- Columna Total filas -->
+        <ng-container matColumnDef="totalFilas">
+          <th mat-header-cell *matHeaderCellDef>Total filas</th>
+          <td mat-cell *matCellDef="let carga">{{ carga.totalFilas }}</td>
+        </ng-container>
+
+        <!-- Columna Productos procesados -->
+        <ng-container matColumnDef="productsProcesados">
+          <th mat-header-cell *matHeaderCellDef>Productos procesados</th>
+          <td mat-cell *matCellDef="let carga">{{ carga.productsProcesados }}</td>
+        </ng-container>
+
+        <!-- Columna Errores -->
+        <ng-container matColumnDef="errores">
+          <th mat-header-cell *matHeaderCellDef>Errores</th>
+          <td mat-cell *matCellDef="let carga">{{ carga.errores }}</td>
+        </ng-container>
+
+        <!-- Columna Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let carga">
+            <span class="estado-badge" [ngClass]="'estado-' + carga.estado.toLowerCase()">
+              {{ carga.estado }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let carga">
+            <button mat-icon-button (click)="descargarArchivo(carga)">
+              <mat-icon>download</mat-icon>
+            </button>
+            <button mat-icon-button (click)="eliminarRegistro(carga)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="verMasAcciones(carga)">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr 
+          mat-row 
+          *matRowDef="let row; columns: displayedColumns;"
+          [class.clickable-row]="tieneErrores(row)"
+          [attr.title]="tieneErrores(row) ? 'Click para ver detalles de errores' : ''"
+          (click)="tieneErrores(row) && verDetallesErrores(row)">
+        </tr>
+      </table>
+
+      <div class="empty-historial" *ngIf="historialCargas.length === 0">
+        <p>No hay cargas registradas aún</p>
+      </div>
+    </div>
+    </div>
+
+    <!-- Vista de detalles de errores -->
+    <div *ngIf="mostrarDetalles && cargaSeleccionada" class="vista-detalles">
+      <!-- Resumen -->
+      <div class="resumen-section" *ngIf="cargaSeleccionada.detallesExitosos && cargaSeleccionada.detallesExitosos.length > 0">
+        <div class="info-message">
+          <mat-icon>info</mat-icon>
+          <span>
+            Se procesaron exitosamente <strong>{{ cargaSeleccionada.detallesExitosos.length }}</strong> productos.
+            A continuación se muestran los <strong>{{ cargaSeleccionada.detallesErrores?.length || 0 }}</strong> errores encontrados:
+          </span>
+        </div>
+      </div>
+
+      <!-- Tabla de errores -->
+      <div class="errores-section">
+        <table mat-table [dataSource]="cargaSeleccionada.detallesErrores || []" class="errores-table">
+          <!-- Columna Fila -->
+          <ng-container matColumnDef="fila">
+            <th mat-header-cell *matHeaderCellDef>Fila</th>
+            <td mat-cell *matCellDef="let error">{{ error.fila }}</td>
+          </ng-container>
+
+          <!-- Columna SKU -->
+          <ng-container matColumnDef="sku">
+            <th mat-header-cell *matHeaderCellDef>SKU</th>
+            <td mat-cell *matCellDef="let error">{{ error.sku }}</td>
+          </ng-container>
+
+          <!-- Columna Código de Error -->
+          <ng-container matColumnDef="codigo">
+            <th mat-header-cell *matHeaderCellDef>Código</th>
+            <td mat-cell *matCellDef="let error">
+              <span class="codigo-error">{{ error.codigo }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Columna Descripción del Error -->
+          <ng-container matColumnDef="error">
+            <th mat-header-cell *matHeaderCellDef>Descripción del Error</th>
+            <td mat-cell *matCellDef="let error" class="error-description">
+              {{ error.error }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsErrores"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsErrores;"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <!-- Acciones para vista de detalles -->
+    <ng-container *ngIf="mostrarDetalles">
+      <button 
+        mat-button 
+        (click)="volverAlHistorial()">
+        Volver
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="exportarErrores()">
+        <mat-icon>download</mat-icon>
+        Exportar errores
+      </button>
+    </ng-container>
+
+    <!-- Acciones para vista principal -->
+    <ng-container *ngIf="!mostrarDetalles">
+    <button 
+      mat-button 
+      class="cancel-button"
+      (click)="cancelar()">
+      Cancelar
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      class="process-button"
+      [disabled]="!selectedFile || isUploading"
+      (click)="iniciarProceso()">
+      Iniciar proceso
+    </button>
+    </ng-container>
+  </mat-dialog-actions>
+</div>
+

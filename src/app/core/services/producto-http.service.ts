@@ -16,7 +16,7 @@ import {
   providedIn: 'root'
 })
 export class ProductoHttpService {
-  private readonly apiUrl = environment.apiUrl || '/api';
+  private readonly apiUrl = environment.apiProductoUrl || '/api';
 
   constructor(private readonly http: HttpClient) {}
 

@@ -104,13 +104,14 @@ export class ProveedoresComponent implements OnInit {
       por_pagina: this.paginacion.por_pagina
     };
 
-    if (this.searchTerm) {
-      params.nombre = this.searchTerm;
+    // Solo agregar filtros si tienen valores válidos
+    if (this.searchTerm?.trim()) {
+      params.nombre = this.searchTerm.trim();
     }
-    if (this.selectedPais) {
+    if (this.selectedPais && this.selectedPais !== 'Todos' && this.selectedPais !== '') {
       params.pais = this.selectedPais;
     }
-    if (this.selectedEstado) {
+    if (this.selectedEstado && this.selectedEstado !== 'Todos' && this.selectedEstado !== '') {
       params.estado = this.selectedEstado;
     }
 

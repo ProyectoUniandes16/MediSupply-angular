@@ -35,22 +35,100 @@
   margin: 0;
 }
 
-// H-6: Reconocimiento antes que recuerdo - Filtros claros y visibles
+// Estados de carga y error
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 16px;
+  color: #757575;
+}
+
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 16px;
+  color: #D32F2F;
+  text-align: center;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 72px;
+    width: 72px;
+    height: 72px;
+    color: #BDBDBD;
+    margin-bottom: 16px;
+  }
+
+  .empty-message {
+    font-size: 16px;
+    color: #757575;
+    max-width: 500px;
+  }
+}
+
+// Barra de Filtros
 .filters-bar {
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
 .search-field {
   flex: 1;
-  min-width: 250px;
+  min-width: 300px;
 }
 
-.estado-field {
+.filter-field {
   width: 200px;
+}
+
+.clear-button {
+  height: 56px;
+  min-width: 120px;
+  border-radius: 4px;
+  border-color: #E0E0E0;
+  color: #757575;
+  font-size: 14px;
+  margin-top: 0;
+  
+  mat-icon {
+    margin-right: 8px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: #FAFAFA;
+    border-color: #BDBDBD;
+  }
+
+  &[disabled] {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
 }
 
 .register-button {
@@ -67,12 +145,13 @@
   }
 }
 
-// H-8: Estética y diseño minimalista - Tabla limpia y ordenada
+// Tabla de Proveedores
 .table-container {
   background: white;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
 }
 
 .proveedores-table {
@@ -83,16 +162,19 @@
     font-weight: 500;
     color: #424242;
     padding: 16px;
+    font-size: 14px;
   }
 
   td {
     padding: 16px;
     color: #616161;
+    font-size: 14px;
   }
 
-  tr {
+  .table-row {
     &:hover {
       background-color: #F5F5F5;
+      cursor: pointer;
     }
   }
 
@@ -102,6 +184,83 @@
     &:hover {
       color: #673AB7;
     }
+  }
+}
+
+.proveedor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .nombre {
+    font-weight: 500;
+    color: #424242;
+  }
+
+  .nit-secondary {
+    font-size: 12px;
+    color: #9E9E9E;
+  }
+}
+
+.contacto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .nombre-contacto {
+    font-weight: 500;
+    color: #424242;
+  }
+
+  .email-contacto {
+    font-size: 12px;
+    color: #9E9E9E;
+  }
+}
+
+// Chips de estado
+mat-chip {
+  font-size: 12px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+
+  &.estado-activo {
+    background-color: #C8E6C9;
+    color: #2E7D32;
+  }
+
+  &.estado-inactivo {
+    background-color: #FFCDD2;
+    color: #C62828;
+  }
+
+  &.certificacion-vigente {
+    background-color: #BBDEFB;
+    color: #1565C0;
+  }
+
+  &.certificacion-vencida {
+    background-color: #FFE0B2;
+    color: #E65100;
+  }
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 16px;
+  color: #757575;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #BDBDBD;
   }
 }
 

@@ -46,8 +46,31 @@ export interface Proveedor {
   nombre_contacto: string;
   email: string;
   telefono: string;
+  estado: string;
+  estado_certificacion: string;
+  fecha_registro: string;
+  total_certificaciones: number;
   certificaciones_urls?: string[];
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   is_active?: boolean;
+}
+
+/**
+ * Interfaz para la paginación
+ */
+export interface Paginacion {
+  pagina: number;
+  por_pagina: number;
+  total: number;
+  total_paginas: number;
+}
+
+/**
+ * Interfaz para la respuesta de consulta de proveedores
+ */
+export interface ConsultarProveedoresResponse {
+  data: Proveedor[];
+  mensaje: string;
+  paginacion: Paginacion;
 }

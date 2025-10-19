@@ -39,6 +39,11 @@ jobs:
             echo "Using Production API URL"
             sed -i "s|__API_URL__|${{ secrets.PRODUCTION_API_URL }}|g" src/environments/environment.prod.ts
 
+      - name: Replace API Producto URL placeholder
+        run: |
+            echo "Using Production API Producto URL"
+            sed -i "s|__API_PRODUCTO_URL__|${{ secrets.PRODUCTION_API_PRODUCTO_URL }}|g" src/environments/environment.prod.ts
+
       - name: Install dependencies
         run: npm install
 

@@ -106,7 +106,8 @@
       "ERROR_MESSAGE": "Error registering seller"
     },
     "FIELDS": {
-      "NOMBRE": "Full Name",
+      "NOMBRE": "First Name",
+      "APELLIDOS": "Last Name",
       "EMAIL": "Email",
       "TELEFONO": "Phone",
       "ZONA": "Assigned Zone",

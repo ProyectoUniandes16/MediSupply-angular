@@ -5,14 +5,24 @@
       <h1 class="title">Productos</h1>
       <p class="subtitle">Gestiona productos del inventario</p>
     </div>
-    <button 
-      mat-raised-button 
-      color="primary"
-      class="register-button"
-      (click)="openRegistrarProductoDialog()">
-      <mat-icon>add</mat-icon>
-      Registrar Producto
-    </button>
+    <div class="header-actions">
+      <button 
+        mat-raised-button 
+        color="accent"
+        class="bulk-upload-button"
+        (click)="openCargaMasivaDialog()">
+        <mat-icon>upload</mat-icon>
+        Carga Masiva
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary"
+        class="register-button"
+        (click)="openRegistrarProductoDialog()">
+        <mat-icon>add</mat-icon>
+        Registrar Producto
+      </button>
+    </div>
   </div>
 
   <!-- Mensaje inicial -->

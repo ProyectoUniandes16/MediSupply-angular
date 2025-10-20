@@ -14,6 +14,10 @@ on:
     branches:
       - 'release/**'
 
+# Otorgar permisos de escritura globales al GITHUB_TOKEN para permitir push/tag
+permissions:
+  contents: write
+
 jobs:
   validate-and-prepare:
     name: Validar y Preparar Release
@@ -132,6 +136,8 @@ jobs:
     name: Crear Rama de Release y Etiqueta
     needs: [validate-and-prepare, build-and-test]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Obtener código
@@ -139,6 +145,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Configurar Git
         run: |
@@ -154,11 +161,15 @@ jobs:
           
           echo "🌿 Creando rama de release: $RELEASE_BRANCH"
           
+          # Asegurarnos de estar en develop antes de crear la rama de release
+          git fetch origin develop
+          git checkout develop
+          
           # Crear la rama de release desde develop
           git checkout -b $RELEASE_BRANCH
           
           # Push de la rama
-          git push origin $RELEASE_BRANCH
+          git push --set-upstream origin $RELEASE_BRANCH
           
           echo "✅ Rama de release creada y publicada"
       
@@ -227,6 +238,8 @@ jobs:
     name: Actualizar versión de develop
     needs: [validate-and-prepare, create-release]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Obtener código de develop
@@ -235,6 +248,7 @@ jobs:
           ref: develop
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4

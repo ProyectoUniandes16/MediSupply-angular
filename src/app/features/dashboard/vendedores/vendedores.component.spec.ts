@@ -187,5 +187,50 @@ describe('VendedoresComponent', () => {
     expect(button).toBeTruthy();
     expect(button.onclick).toBeDefined();
   });
+
+  // Nuevas pruebas que ejecutan el método real para cubrir ramas del componente
+  it('should open registrar vendedor dialog and handle result', (done) => {
+    spyOn(console, 'log');
+    const mockResult = { nombre: 'Nuevo', email: 'nuevo@test.com' };
+    const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(mockResult) });
+    const openSpy = spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+
+    component.openRegistrarVendedorDialog();
+
+    const args = openSpy.calls.mostRecent().args;
+    const componentType = args[0];
+    const config = args[1] as any;
+    expect(componentType).toBeDefined();
+    expect((componentType as any).name).toContain('RegistrarVendedorComponent');
+    expect(config?.width).toBe('800px');
+    expect(config?.maxWidth).toBe('95vw');
+    expect(config?.autoFocus).toBeTrue();
+    expect(config?.disableClose).toBeFalse();
+
+    setTimeout(() => {
+      expect(console.log).toHaveBeenCalledWith('Nuevo vendedor:', mockResult);
+      done();
+    }, 0);
+  });
+
+  it('should open registrar vendedor dialog and handle null result (no log)', (done) => {
+    spyOn(console, 'log');
+    const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(null) });
+    spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+
+    component.openRegistrarVendedorDialog();
+
+    setTimeout(() => {
+      expect(console.log).not.toHaveBeenCalled();
+      done();
+    }, 0);
+  });
+
+  it('should trigger openRegistrarVendedorDialog on button click', () => {
+    const spyMethod = spyOn(component, 'openRegistrarVendedorDialog');
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.register-button');
+    button.click();
+    expect(spyMethod).toHaveBeenCalled();
+  });
 });
 

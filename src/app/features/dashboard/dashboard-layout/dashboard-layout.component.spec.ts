@@ -173,4 +173,77 @@ describe('DashboardLayoutComponent', () => {
 
     expect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
   });
+
+  it('should change language and update localStorage', () => {
+    const translateService = TestBed.inject(TranslateService);
+    spyOn(translateService, 'use');
+    spyOn(localStorage, 'setItem');
+
+    component.changeLanguage('en');
+
+    expect(component.currentLanguage).toBe('en');
+    expect(translateService.use).toHaveBeenCalledWith('en');
+    expect(localStorage.setItem).toHaveBeenCalledWith('language', 'en');
+  });
+
+  it('should update route after language change', () => {
+    spyOn(component, 'updateCurrentRoute');
+
+    component.changeLanguage('en');
+
+    expect(component.updateCurrentRoute).toHaveBeenCalled();
+  });
+
+  it('should initialize with Spanish language from localStorage', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('es');
+
+    component.ngOnInit();
+
+    expect(component.currentLanguage).toBe('es');
+  });
+
+  it('should initialize with default Spanish when no language in localStorage', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+
+    component.ngOnInit();
+
+    expect(component.currentLanguage).toBe('es');
+  });
+
+  it('should return false for inactive routes', () => {
+    (router as any).url = '/dashboard/proveedores';
+    
+    const isActive = component.isActiveRoute('/dashboard/vendedores');
+
+    expect(isActive).toBe(false);
+  });
+
+  it('should have correct navigation items with translation keys', () => {
+    const proveedoresItem = component.navigationItems.find(item => item.route === '/dashboard/proveedores');
+    
+    expect(proveedoresItem).toBeDefined();
+    expect(proveedoresItem?.translationKey).toBe('DASHBOARD.MENU.PROVEEDORES');
+    expect(proveedoresItem?.icon).toBe('business');
+  });
+
+  it('should have all three main navigation items', () => {
+    expect(component.navigationItems.length).toBe(3);
+    
+    const routes = component.navigationItems.map(item => item.route);
+    expect(routes).toContain('/dashboard/proveedores');
+    expect(routes).toContain('/dashboard/vendedores');
+    expect(routes).toContain('/dashboard/productos');
+  });
+
+  it('should call _updateContentMargins after toggle on desktop', (done) => {
+    component.isMobile = false;
+    const updateSpy = (component.sidenav as any)._container._updateContentMargins;
+
+    component.toggleSidenav();
+
+    setTimeout(() => {
+      expect(updateSpy).toHaveBeenCalled();
+      done();
+    }, 10);
+  });
 });

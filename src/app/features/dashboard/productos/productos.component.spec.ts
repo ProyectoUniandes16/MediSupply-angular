@@ -192,5 +192,62 @@ describe('ProductosComponent', () => {
     expect(button).toBeTruthy();
     expect(button.onclick).toBeDefined();
   });
+
+  // New tests that invoke component methods to improve coverage
+  it('should open registrar producto dialog and handle result', (done) => {
+    spyOn(console, 'log');
+    const mockResult = { nombre: 'Nuevo', sku: 'SKU-123' };
+  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(mockResult) });
+  const openSpy = spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+
+    component.openRegistrarProductoDialog();
+
+    // Verify dialog was opened with the expected config
+  const args = openSpy.calls.mostRecent().args;
+  const componentType = args[0];
+  const config = args[1] as any;
+  expect(componentType).toBeDefined();
+  expect((componentType as any).name).toContain('RegistrarProductoComponent');
+  expect(config?.width).toBe('800px');
+  expect(config?.maxWidth).toBe('95vw');
+
+    setTimeout(() => {
+      expect(console.log).toHaveBeenCalledWith('Nuevo producto:', mockResult);
+      done();
+    }, 0);
+  });
+
+  it('should open registrar producto dialog and handle null result (no log)', (done) => {
+    spyOn(console, 'log');
+  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(null) });
+  spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+
+    component.openRegistrarProductoDialog();
+
+    setTimeout(() => {
+      expect(console.log).not.toHaveBeenCalled();
+      done();
+    }, 0);
+  });
+
+  it('should open carga masiva dialog and handle reload flag', (done) => {
+    spyOn(console, 'log');
+  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of({ reload: true }) });
+  const openSpy = spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+
+    component.openCargaMasivaDialog();
+
+  const args2 = openSpy.calls.mostRecent().args;
+  const componentType2 = args2[0];
+  const config2 = args2[1] as any;
+  expect((componentType2 as any).name).toContain('CargaMasivaProductosComponent');
+  expect(config2?.width).toBe('900px');
+  expect(config2?.maxHeight).toBe('90vh');
+
+    setTimeout(() => {
+      expect(console.log).toHaveBeenCalledWith('Recargando lista de productos...');
+      done();
+    }, 0);
+  });
 });
 

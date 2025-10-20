@@ -9,7 +9,7 @@ Aplicación web SPA (Single Page Application) desarrollada con Angular 19 y Angu
 - **TypeScript Estricto**: Código robusto y mantenible con tipos fuertes
 - **Autenticación JWT**: Sistema de login con guardia de rutas y manejo de tokens
 - **Internacionalización (i18n)**: Soporte para múltiples idiomas (Español e Inglés)
-- **Pruebas Unitarias**: Cobertura de código ~79% con Jasmine y Karma
+- **Pruebas Unitarias**: Cobertura de código ~87% con Jasmine y Karma
 - **Responsive Design**: Adaptable a dispositivos móviles, tablets y escritorio
 - **Carga Masiva**: Funcionalidad de importación de productos mediante archivos CSV
 - **Heurísticas de Nielsen**: Implementación de 8 principios fundamentales de UX/UI
@@ -277,10 +277,10 @@ npm run lint                     # Ejecuta el linter
 El proyecto cuenta con pruebas unitarias exhaustivas utilizando Jasmine y Karma:
 
 **Cobertura actual:**
-- Statements: ~77%
-- Branches: ~69%
-- Functions: ~69%
-- Lines: ~79%
+- Statements: 86.92%
+- Branches: 74.72%
+- Functions: 83.78%
+- Lines: 88.31%
 
 **Componentes con pruebas:**
 - ✅ LoginComponent (100% cobertura)

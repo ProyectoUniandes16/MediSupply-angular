@@ -275,11 +275,21 @@ jobs:
         run: |
           NEXT_VERSION="${{ needs.validate-and-prepare.outputs.next-version }}"
           
-          git add package.json package-lock.json
-          git commit -m "chore: bump version to $NEXT_VERSION [skip ci]"
-          git push origin develop
-          
-          echo "✅ Cambio de versión confirmado y publicado en develop"
+          # Agregar archivos existentes (package-lock.json puede no existir)
+          if [ -f package-lock.json ]; then
+            git add package.json package-lock.json
+          else
+            git add package.json
+          fi
+
+          # Confirmar sólo si hay cambios staged
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to $NEXT_VERSION [skip ci]"
+            git push origin develop
+            echo "✅ Cambio de versión confirmado y publicado en develop"
+          else
+            echo "ℹ️ No hay cambios de versión para confirmar"
+          fi
 
   summary:
     name: Resumen del Release

@@ -60,7 +60,7 @@ export class FakeTranslateLoader implements TranslateLoader {
         },
         'VENDEDORES': {
           'TITLE': 'Vendedores',
-          'SUBTITLE': 'Gestiona vendedores que suministran productos a la compañía',
+          'SUBTITLE': 'Gestiona vendedores que suministran productos',
           'NEW': 'Registrar Vendedor',
           'LIST_EMPTY': 'Haz clic en "Registrar Vendedor" para agregar un nuevo vendedor al sistema.',
           'REGISTER': {

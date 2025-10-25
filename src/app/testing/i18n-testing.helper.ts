@@ -9,72 +9,101 @@ export class FakeTranslateLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<any> {
     const translations: Record<string, any> = {
       es: {
-        'COMMON': {
-          'ACTIONS': 'Acciones',
-          'CANCEL': 'Cancelar',
-          'SAVE': 'Guardar',
-          'EDIT': 'Editar',
-          'DELETE': 'Eliminar',
-          'CLOSE': 'Cerrar',
-          'LOADING': 'Cargando...',
-          'DOCUMENTS': 'Documentos Adjuntados'
+        COMMON: {
+          ACTIONS: 'Acciones',
+          CANCEL: 'Cancelar',
+          SAVE: 'Guardar',
+          EDIT: 'Editar',
+          DELETE: 'Eliminar',
+          CLOSE: 'Cerrar',
+          LOADING: 'Cargando...',
+          DOCUMENTS: 'Documentos Adjuntados',
+          PAGINATOR: {
+            ITEMS_PER_PAGE: 'Elementos por página:',
+            NEXT_PAGE: 'Página siguiente',
+            PREVIOUS_PAGE: 'Página anterior',
+            FIRST_PAGE: 'Primera página',
+            LAST_PAGE: 'Última página',
+            RANGE_PAGE_LABEL_1: '0 de {{length}}',
+            RANGE_PAGE_LABEL_2: '{{startIndex}} - {{endIndex}} de {{length}}'
+          }
         },
-        'AUTH': {
-          'LOGIN': {
-            'ERRORS': {
-              'EMAIL_REQUIRED': 'El correo electrónico es obligatorio',
-              'EMAIL_INVALID': 'El correo electrónico no es válido',
-              'PASSWORD_REQUIRED': 'La contraseña es obligatoria',
-              'LOGIN_FAILED': 'Error al iniciar sesión. Verifica tus credenciales.'
+        AUTH: {
+          LOGIN: {
+            ERRORS: {
+              EMAIL_REQUIRED: 'El correo electrónico es obligatorio',
+              EMAIL_INVALID: 'El correo electrónico no es válido',
+              PASSWORD_REQUIRED: 'La contraseña es obligatoria',
+              LOGIN_FAILED: 'Error al iniciar sesión. Verifica tus credenciales.'
             }
           }
         },
-        'DASHBOARD': {
-          'TITLE': 'Dashboard',
-          'MENU': {
-            'PROVEEDORES': 'DASHBOARD.MENU.PROVEEDORES',
-            'PRODUCTOS': 'DASHBOARD.MENU.PRODUCTOS',
-            'VENDEDORES': 'DASHBOARD.MENU.VENDEDORES'
+        DASHBOARD: {
+          TITLE: 'Dashboard',
+          MENU: {
+            PROVEEDORES: 'DASHBOARD.MENU.PROVEEDORES',
+            PRODUCTOS: 'DASHBOARD.MENU.PRODUCTOS',
+            VENDEDORES: 'DASHBOARD.MENU.VENDEDORES'
           }
         },
-        'PROVEEDORES': {
-          'TITLE': 'Proveedores',
-          'SUBTITLE': 'Gestiona proveedores de suministros',
-          'NEW': 'Registrar Proveedor',
-          'LIST_EMPTY': 'Haz clic en "Registrar Proveedor" para agregar un nuevo proveedor',
-          'REGISTER': {
-            'TITLE': 'Registrar Proveedor'
+        PROVEEDORES: {
+          TITLE: 'Proveedores',
+          SUBTITLE: 'Gestiona proveedores de suministros',
+          NEW: 'Registrar Proveedor',
+          LIST_EMPTY: 'Haz clic en "Registrar Proveedor" para agregar un nuevo proveedor',
+          REGISTER: {
+            TITLE: 'Registrar Proveedor'
           },
-          'FIELDS': {}
+          FIELDS: {},
+          FILTERS: {
+            ALL_COUNTRIES: 'Todos',
+            ALL_STATUSES: 'Todos'
+          },
+          STATUS: {
+            ACTIVE: 'Activo',
+            INACTIVE: 'Inactivo'
+          }
         },
-        'PRODUCTOS': {
-          'TITLE': 'Productos',
-          'SUBTITLE': 'Gestiona productos del inventario',
-          'NEW': 'Registrar Producto',
-          'BULK_UPLOAD': 'Carga Masiva',
-          'LIST_EMPTY': 'Haz clic en "Registrar Producto" para agregar un nuevo producto al inventario.',
-          'REGISTER': {
-            'TITLE': 'Registrar Producto'
+        PRODUCTOS: {
+          TITLE: 'Productos',
+          SUBTITLE: 'Gestiona productos del inventario',
+          NEW: 'Registrar Producto',
+          LIST_EMPTY: 'Haz clic en "Registrar Producto" para agregar un nuevo producto al inventario.',
+          REGISTER: {
+            TITLE: 'Registrar Producto'
           },
-          'FIELDS': {}
+          FIELDS: {}
         },
-        'VENDEDORES': {
-          'TITLE': 'Vendedores',
-          'SUBTITLE': 'Gestiona vendedores que suministran productos a la compañía',
-          'NEW': 'Registrar Vendedor',
-          'LIST_EMPTY': 'Haz clic en "Registrar Vendedor" para agregar un nuevo vendedor al sistema.',
-          'REGISTER': {
-            'TITLE': 'Registrar Vendedor',
-            'SUBTITLE': 'Complete la información del vendedor',
-            'BASIC_INFO': 'Información Básica'
+        VENDEDORES: {
+          TITLE: 'Vendedores',
+          SUBTITLE: 'Gestiona vendedores que suministran productos a la compañía',
+          NEW: 'Registrar Vendedor',
+          LIST_EMPTY: 'Haz clic en "Registrar Vendedor" para agregar un nuevo vendedor al sistema.',
+          REGISTER: {
+            TITLE: 'Registrar Vendedor',
+            SUBTITLE: 'Complete la información del vendedor',
+            BASIC_INFO: 'Información Básica'
           },
-          'FIELDS': {
-            'NOMBRE': 'Nombres',
-            'APELLIDOS': 'Apellidos',
-            'EMAIL': 'Correo Electrónico',
-            'TELEFONO': 'Teléfono',
-            'ZONA': 'Zona Asignada',
-            'ESTADO': 'Estado'
+          FIELDS: {
+            NOMBRE: 'Nombres',
+            APELLIDOS: 'Apellidos',
+            EMAIL: 'Correo Electrónico',
+            TELEFONO: 'Teléfono',
+            ZONA: 'Zona Asignada',
+            ESTADO: 'Estado'
+          }
+        }
+      },
+      en: {
+        COMMON: {
+          PAGINATOR: {
+            ITEMS_PER_PAGE: 'Items per page:',
+            NEXT_PAGE: 'Next page',
+            PREVIOUS_PAGE: 'Previous page',
+            FIRST_PAGE: 'First page',
+            LAST_PAGE: 'Last page',
+            RANGE_PAGE_LABEL_1: '0 of {{length}}',
+            RANGE_PAGE_LABEL_2: '{{startIndex}} – {{endIndex}} of {{length}}'
           }
         }
       }

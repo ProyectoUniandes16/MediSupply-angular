@@ -8,7 +8,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { ObtenerVendedoresResponse, Vendedor } from '../../../core/models/vendedor.models';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 
 describe('VendedoresComponent', () => {
   let component: VendedoresComponent;
@@ -478,4 +478,63 @@ describe('VendedoresComponent', () => {
     expect(component.page).toBe(2);
     expect(component.total).toBe(50);
   }));
+
+  it('should return true from hasFiltrosActivos when searchTerm is set', () => {
+    component.searchTerm = 'test';
+    component.selectedZona = '';
+    component.selectedEstado = '';
+    expect(component.hasFiltrosActivos).toBe(true);
+  });
+
+  it('should return true from hasFiltrosActivos when selectedZona is set', () => {
+    component.searchTerm = '';
+    component.selectedZona = 'Colombia';
+    component.selectedEstado = '';
+    expect(component.hasFiltrosActivos).toBe(true);
+  });
+
+  it('should return true from hasFiltrosActivos when selectedEstado is set', () => {
+    component.searchTerm = '';
+    component.selectedZona = '';
+    component.selectedEstado = 'Activo';
+    expect(component.hasFiltrosActivos).toBe(true);
+  });
+
+  it('should return false from hasFiltrosActivos when no filters are set', () => {
+    component.searchTerm = '';
+    component.selectedZona = '';
+    component.selectedEstado = '';
+    expect(component.hasFiltrosActivos).toBe(false);
+  });
+
+  it('should configure paginator on init', () => {
+    const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
+    expect(paginatorIntl.itemsPerPageLabel).toBe('Elementos por página:');
+    expect(paginatorIntl.nextPageLabel).toBe('Página siguiente');
+    expect(paginatorIntl.previousPageLabel).toBe('Página anterior');
+    expect(paginatorIntl.firstPageLabel).toBe('Primera página');
+    expect(paginatorIntl.lastPageLabel).toBe('Última página');
+  });
+
+  it('should update paginator labels on language change', fakeAsync(() => {
+    const translateService = TestBed.inject(TranslateService);
+    const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
+    
+    translateService.use('en');
+    tick();
+    
+    expect(paginatorIntl.itemsPerPageLabel).toBe('Items per page:');
+  }));
+
+  it('should return correct range label for paginator', () => {
+    const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
+    const rangeLabel = paginatorIntl.getRangeLabel(0, 10, 100);
+    expect(rangeLabel).toBe('1 - 10 de 100');
+  });
+
+  it('should return correct range label when no items', () => {
+    const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
+    const rangeLabel = paginatorIntl.getRangeLabel(0, 10, 0);
+    expect(rangeLabel).toBe('0 de 0');
+  });
 });

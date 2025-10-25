@@ -18,7 +18,16 @@
     "INFO": "Information",
     "LOADING": "Loading...",
     "NO_DATA": "No data available",
-    "DOCUMENTS": "Attached Documents"
+    "DOCUMENTS": "Attached Documents",
+    "PAGINATOR": {
+      "ITEMS_PER_PAGE": "Items per page:",
+      "NEXT_PAGE": "Next page",
+      "PREVIOUS_PAGE": "Previous page",
+      "FIRST_PAGE": "First page",
+      "LAST_PAGE": "Last page",
+      "RANGE_PAGE_LABEL_1": "0 of {{length}}",
+      "RANGE_PAGE_LABEL_2": "{{startIndex}} - {{endIndex}} of {{length}}"
+    }
   },
   "AUTH": {
     "LOGIN": {
@@ -90,6 +99,14 @@
       "ARGENTINA": "Argentina",
       "CHILE": "Chile",
       "PERU": "Peru"
+    },
+    "FILTERS": {
+      "ALL_COUNTRIES": "All",
+      "ALL_STATUSES": "All"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
     }
   },
   "VENDEDORES": {

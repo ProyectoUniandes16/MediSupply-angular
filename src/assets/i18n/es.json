@@ -18,7 +18,16 @@
     "INFO": "Información",
     "LOADING": "Cargando...",
     "NO_DATA": "No hay datos disponibles",
-    "DOCUMENTS": "Documentos Adjuntados"
+    "DOCUMENTS": "Documentos Adjuntados",
+    "PAGINATOR": {
+      "ITEMS_PER_PAGE": "Elementos por página:",
+      "NEXT_PAGE": "Página siguiente",
+      "PREVIOUS_PAGE": "Página anterior",
+      "FIRST_PAGE": "Primera página",
+      "LAST_PAGE": "Última página",
+      "RANGE_PAGE_LABEL_1": "0 de {{length}}",
+      "RANGE_PAGE_LABEL_2": "{{startIndex}} - {{endIndex}} de {{length}}"
+    }
   },
   "AUTH": {
     "LOGIN": {
@@ -90,6 +99,14 @@
       "ARGENTINA": "Argentina",
       "CHILE": "Chile",
       "PERU": "Perú"
+    },
+    "FILTERS": {
+      "ALL_COUNTRIES": "Todos",
+      "ALL_STATUSES": "Todos"
+    },
+    "STATUS": {
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo"
     }
   },
   "VENDEDORES": {

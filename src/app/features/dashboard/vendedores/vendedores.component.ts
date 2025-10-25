@@ -7,7 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,6 +17,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarVendedorComponent } from './registrar-vendedor/registrar-vendedor.component';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { Vendedor } from '../../../core/models/vendedor.models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-vendedores',
@@ -38,6 +39,7 @@ import { Vendedor } from '../../../core/models/vendedor.models';
     MatTooltipModule,
     TranslateModule
   ],
+  providers: [MatPaginatorIntl],
   templateUrl: './vendedores.component.html',
   styleUrl: './vendedores.component.scss'
 })
@@ -79,12 +81,50 @@ export class VendedoresComponent implements OnInit {
     private readonly dialog: MatDialog,
     private readonly vendedorService: VendedorHttpService,
     private readonly snackBar: MatSnackBar,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly paginatorIntl: MatPaginatorIntl
   ) {}
 
   ngOnInit(): void {
     this.cargarVendedores();
     this.inicializarFiltros();
+    this.configurarPaginador();
+  }
+
+  /**
+   * Configura las traducciones del paginador
+   */
+  private configurarPaginador(): void {
+    this.actualizarEtiquetasPaginador();
+    // Suscribirse a cambios de idioma solo una vez
+    this._paginatorLangSub ??= this.translate.onLangChange.subscribe(() => {
+      this.actualizarEtiquetasPaginador();
+    });
+  }
+
+  private _paginatorLangSub?: Subscription;
+
+  private actualizarEtiquetasPaginador(): void {
+    this.paginatorIntl.itemsPerPageLabel = this.translate.instant('COMMON.PAGINATOR.ITEMS_PER_PAGE');
+    this.paginatorIntl.nextPageLabel = this.translate.instant('COMMON.PAGINATOR.NEXT_PAGE');
+    this.paginatorIntl.previousPageLabel = this.translate.instant('COMMON.PAGINATOR.PREVIOUS_PAGE');
+    this.paginatorIntl.firstPageLabel = this.translate.instant('COMMON.PAGINATOR.FIRST_PAGE');
+    this.paginatorIntl.lastPageLabel = this.translate.instant('COMMON.PAGINATOR.LAST_PAGE');
+
+    this.paginatorIntl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return this.translate.instant('COMMON.PAGINATOR.RANGE_PAGE_LABEL_1', { length });
+      }
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return this.translate.instant('COMMON.PAGINATOR.RANGE_PAGE_LABEL_2', {
+        startIndex: startIndex + 1,
+        endIndex,
+        length
+      });
+    };
+    // Notificar cambios
+    this.paginatorIntl.changes.next();
   }
 
   /**
@@ -209,6 +249,13 @@ export class VendedoresComponent implements OnInit {
    */
   get tieneVendedores(): boolean {
     return this.vendedores.length > 0;
+  }
+
+  /**
+   * Retorna true si hay filtros activos
+   */
+  get hasFiltrosActivos(): boolean {
+    return !!(this.searchTerm || this.selectedZona || this.selectedEstado);
   }
 
   /**

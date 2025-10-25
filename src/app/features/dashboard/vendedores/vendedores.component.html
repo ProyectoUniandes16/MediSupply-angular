@@ -30,15 +30,14 @@
     </button>
   </div>
 
-  <!-- Estado vacío -->
-  <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tieneVendedores">
+  <!-- Estado vacío (sin filtros y sin datos) -->
+  <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tieneVendedores && !hasFiltrosActivos">
     <mat-icon class="empty-icon">people</mat-icon>
     <p class="empty-message">{{ 'VENDEDORES.LIST_EMPTY' | translate }}</p>
   </div>
 
-  <!-- Contenido principal cuando hay vendedores -->
-  <div *ngIf="!isLoading && !errorMessage && tieneVendedores">
-    <!-- Barra de Filtros -->
+  <!-- Barra de Filtros (siempre visible cuando no hay error ni loading) -->
+  <div *ngIf="!isLoading && !errorMessage && (tieneVendedores || hasFiltrosActivos)">
     <div class="filters-bar">
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>{{ 'VENDEDORES.FILTERS.SEARCH_PLACEHOLDER' | translate }}</mat-label>
@@ -90,8 +89,8 @@
       
     </div>
 
-    <!-- Tabla de Vendedores -->
-    <div class="table-container">
+    <!-- Tabla de Vendedores (solo visible cuando hay datos) -->
+    <div class="table-container" *ngIf="tieneVendedores">
       <table mat-table [dataSource]="vendedores" class="vendedores-table">
         
         <!-- Columna Nombre Vendedor -->
@@ -150,19 +149,20 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
       </table>
-
-      <!-- Mensaje cuando no hay resultados después de filtrar -->
-      <div class="no-results" *ngIf="vendedores.length === 0 && (searchTerm || selectedZona || selectedEstado)">
-        <mat-icon>search_off</mat-icon>
-        <p>{{ 'VENDEDORES.NO_RESULTS' | translate }}</p>
-        <button mat-button color="primary" (click)="limpiarFiltros()">
-          {{ 'VENDEDORES.FILTERS.CLEAR_FILTERS' | translate }}
-        </button>
-      </div>
     </div>
 
-    <!-- Paginador -->
+    <!-- Mensaje cuando no hay resultados después de filtrar -->
+    <div class="no-results" *ngIf="!tieneVendedores && hasFiltrosActivos">
+      <mat-icon>search_off</mat-icon>
+      <p>{{ 'VENDEDORES.NO_RESULTS' | translate }}</p>
+      <button mat-button color="primary" (click)="limpiarFiltros()">
+        {{ 'VENDEDORES.FILTERS.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <!-- Paginador (solo visible cuando hay datos) -->
     <mat-paginator
+      *ngIf="tieneVendedores"
       [length]="total"
       [pageSize]="size"
       [pageIndex]="page - 1"

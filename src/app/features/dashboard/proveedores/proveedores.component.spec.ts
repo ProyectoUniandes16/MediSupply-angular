@@ -56,6 +56,9 @@ describe('ProveedoresComponent', () => {
       ]
     }).compileComponents();
 
+    const translateService = TestBed.inject(TranslateService);
+    translateService.use('es');
+
     dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     proveedorServiceSpy = TestBed.inject(ProveedorHttpService) as jasmine.SpyObj<ProveedorHttpService>;
     fixture = TestBed.createComponent(ProveedoresComponent);

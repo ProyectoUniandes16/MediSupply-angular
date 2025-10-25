@@ -7,16 +7,17 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarProveedorComponent } from './registrar-proveedor/registrar-proveedor.component';
 import { ProveedorHttpService } from '../../../core/services/proveedor-http.service';
 import { Proveedor, Paginacion } from '../../../core/models/proveedor.models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-proveedores',
@@ -38,6 +39,7 @@ import { Proveedor, Paginacion } from '../../../core/models/proveedor.models';
     MatTooltipModule,
     TranslateModule
   ],
+  providers: [MatPaginatorIntl],
   templateUrl: './proveedores.component.html',
   styleUrl: './proveedores.component.scss'
 })
@@ -81,11 +83,71 @@ export class ProveedoresComponent implements OnInit {
   constructor(
     private readonly dialog: MatDialog,
     private readonly proveedorService: ProveedorHttpService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBar: MatSnackBar,
+    private readonly translate: TranslateService,
+    private readonly paginatorIntl: MatPaginatorIntl
   ) {}
 
   ngOnInit(): void {
     this.cargarProveedores();
+    this.inicializarFiltros();
+    this.configurarPaginador();
+  }
+
+  /**
+   * Configura las traducciones del paginador
+   */
+  private configurarPaginador(): void {
+    this.actualizarEtiquetasPaginador();
+    // Suscribirse a cambios de idioma solo una vez
+    this._paginatorLangSub ??= this.translate.onLangChange.subscribe(() => {
+      this.actualizarEtiquetasPaginador();
+    });
+  }
+
+  private _paginatorLangSub?: Subscription;
+
+  private actualizarEtiquetasPaginador(): void {
+    this.paginatorIntl.itemsPerPageLabel = this.translate.instant('COMMON.PAGINATOR.ITEMS_PER_PAGE');
+    this.paginatorIntl.nextPageLabel = this.translate.instant('COMMON.PAGINATOR.NEXT_PAGE');
+    this.paginatorIntl.previousPageLabel = this.translate.instant('COMMON.PAGINATOR.PREVIOUS_PAGE');
+    this.paginatorIntl.firstPageLabel = this.translate.instant('COMMON.PAGINATOR.FIRST_PAGE');
+    this.paginatorIntl.lastPageLabel = this.translate.instant('COMMON.PAGINATOR.LAST_PAGE');
+
+    this.paginatorIntl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0 || pageSize === 0) {
+        return this.translate.instant('COMMON.PAGINATOR.RANGE_PAGE_LABEL_1', { length });
+      }
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+      return this.translate.instant('COMMON.PAGINATOR.RANGE_PAGE_LABEL_2', {
+        startIndex: startIndex + 1,
+        endIndex,
+        length
+      });
+    };
+    // Notificar cambios
+    this.paginatorIntl.changes.next();
+  }
+
+  /**
+   * Inicializa las opciones de filtros con traducciones
+   */
+  private inicializarFiltros(): void {
+    this.paises = [
+      { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_COUNTRIES') || 'Todos' },
+      { value: 'Colombia', label: 'Colombia' },
+      { value: 'México', label: 'México' },
+      { value: 'Argentina', label: 'Argentina' },
+      { value: 'Chile', label: 'Chile' },
+      { value: 'Perú', label: 'Perú' }
+    ];
+    
+    this.estados = [
+      { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_STATUSES') || 'Todos' },
+      { value: 'Activo', label: this.translate.instant('PROVEEDORES.STATUS.ACTIVE') || 'Activo' },
+      { value: 'Inactivo', label: this.translate.instant('PROVEEDORES.STATUS.INACTIVE') || 'Inactivo' }
+    ];
   }
 
   /**
@@ -193,6 +255,13 @@ export class ProveedoresComponent implements OnInit {
    */
   get tieneProveedores(): boolean {
     return this.proveedores.length > 0;
+  }
+
+  /**
+   * Retorna true si hay filtros activos
+   */
+  get hasFiltrosActivos(): boolean {
+    return !!(this.searchTerm || (this.selectedPais && this.selectedPais !== 'Todos' && this.selectedPais !== '') || (this.selectedEstado && this.selectedEstado !== 'Todos' && this.selectedEstado !== ''));
   }
 
   /**

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { VendedorHttpService } from './vendedor-http.service';
-import { RegistrarVendedorRequest } from '../models/vendedor.models';
+import { RegistrarVendedorRequest, ObtenerVendedoresResponse } from '../models/vendedor.models';
 
 describe('VendedorHttpService', () => {
   let service: VendedorHttpService;
@@ -39,15 +39,17 @@ describe('VendedorHttpService', () => {
     };
 
     const mockResponse = {
-      id: 1,
-      nombres: 'Juan',
+      id: '1',
+      nombre: 'Juan',
       apellidos: 'Pérez',
       zona: 'Colombia',
       estado: 'Activo',
       telefono: '3001234567',
-      email: 'juan.perez@example.com',
-      created_at: '2025-01-01',
-      updated_at: '2025-01-01'
+      correo: 'juan.perez@example.com',
+      fechaCreacion: '2025-01-01',
+      fechaActualizacion: '2025-01-01',
+      usuarioCreacion: 'admin',
+      usuarioActualizacion: null
     };
 
     service.registrarVendedor(mockRequest).subscribe(response => {
@@ -89,27 +91,66 @@ describe('VendedorHttpService', () => {
     expect(result.errors.length).toBeGreaterThan(0);
   });
 
-  it('should get list of vendedores', () => {
-    const mockResponse = [
-      {
-        id: 1,
-        nombres: 'Juan',
-        apellidos: 'Pérez',
-        zona: 'Colombia',
-        estado: 'Activo',
-        telefono: '3001234567',
-        email: 'juan.perez@example.com',
-        created_at: '2025-01-01',
-        updated_at: '2025-01-01'
-      }
-    ];
+  it('should get list of vendedores with pagination', () => {
+    const mockResponse: ObtenerVendedoresResponse = {
+      items: [
+        {
+          id: '1',
+          nombre: 'Juan',
+          apellidos: 'Pérez',
+          zona: 'Colombia',
+          estado: 'Activo',
+          telefono: '3001234567',
+          correo: 'juan.perez@example.com',
+          fechaCreacion: '2025-01-01',
+          fechaActualizacion: '2025-01-01',
+          usuarioCreacion: 'admin',
+          usuarioActualizacion: null
+        }
+      ],
+      page: 1,
+      size: 10,
+      total: 1
+    };
 
     service.obtenerVendedores().subscribe(res => {
-      expect(res.length).toBe(1);
-      expect(res[0].nombres).toBe('Juan');
+      expect(res.items.length).toBe(1);
+      expect(res.items[0].nombre).toBe('Juan');
+      expect(res.page).toBe(1);
+      expect(res.total).toBe(1);
     });
 
-    const req = httpMock.expectOne('/api/vendedor/');
+    const req = httpMock.expectOne('/api/vendedor');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should get vendedores with filters', () => {
+    const params = {
+      page: 1,
+      size: 10,
+      nombre: 'Juan',
+      zona: 'Colombia',
+      estado: 'Activo'
+    };
+
+    const mockResponse: ObtenerVendedoresResponse = {
+      items: [],
+      page: 1,
+      size: 10,
+      total: 0
+    };
+
+    service.obtenerVendedores(params).subscribe(res => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(request => 
+      request.url === '/api/vendedor' && 
+      request.params.get('nombre') === 'Juan' &&
+      request.params.get('zona') === 'Colombia' &&
+      request.params.get('estado') === 'Activo'
+    );
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -124,7 +165,7 @@ describe('VendedorHttpService', () => {
       }
     });
 
-    const req = httpMock.expectOne('/api/vendedor/');
+    const req = httpMock.expectOne('/api/vendedor');
     expect(req.request.method).toBe('GET');
     req.flush({ message: 'server error' }, { status: 500, statusText: 'Server Error' });
 
@@ -133,20 +174,22 @@ describe('VendedorHttpService', () => {
 
   it('should get vendedor by id', () => {
     const mockResponse = {
-      id: 2,
-      nombres: 'Ana',
+      id: '2',
+      nombre: 'Ana',
       apellidos: 'Gómez',
       zona: 'Bogotá',
       estado: 'Activo',
       telefono: '1234567',
-      email: 'ana@example.com',
-      created_at: '2025-01-01',
-      updated_at: '2025-01-01'
+      correo: 'ana@example.com',
+      fechaCreacion: '2025-01-01',
+      fechaActualizacion: '2025-01-01',
+      usuarioCreacion: 'admin',
+      usuarioActualizacion: null
     };
 
     service.obtenerVendedorPorId(2).subscribe(res => {
-      expect(res.id).toBe(2);
-      expect(res.nombres).toBe('Ana');
+      expect(res.id).toBe('2');
+      expect(res.nombre).toBe('Ana');
     });
 
     const req = httpMock.expectOne('/api/vendedor/2');
@@ -174,15 +217,17 @@ describe('VendedorHttpService', () => {
   it('should update vendedor', () => {
     const update = { zona: 'Medellín' };
     const mockResponse = {
-      id: 5,
-      nombres: 'Luis',
+      id: '5',
+      nombre: 'Luis',
       apellidos: 'Martínez',
       zona: 'Medellín',
       estado: 'Activo',
       telefono: '7654321',
-      email: 'luis@example.com',
-      created_at: '2025-01-01',
-      updated_at: '2025-02-01'
+      correo: 'luis@example.com',
+      fechaCreacion: '2025-01-01',
+      fechaActualizacion: '2025-02-01',
+      usuarioCreacion: 'admin',
+      usuarioActualizacion: 'admin'
     };
 
     service.actualizarVendedor(5, update).subscribe(res => {

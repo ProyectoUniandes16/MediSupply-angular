@@ -15,8 +15,160 @@
     </button>
   </div>
 
-  <!-- Mensaje inicial -->
-  <div class="empty-state">
-    <p>{{ 'VENDEDORES.LIST_EMPTY' | translate }}</p>
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div class="error-message" *ngIf="errorMessage && !isLoading">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="cargarVendedores()">
+      {{ 'VENDEDORES.RETRY' | translate }}
+    </button>
+  </div>
+
+  <!-- Estado vacío (sin filtros y sin datos) -->
+  <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tieneVendedores && !hasFiltrosActivos">
+    <mat-icon class="empty-icon">people</mat-icon>
+    <p class="empty-message">{{ 'VENDEDORES.LIST_EMPTY' | translate }}</p>
+  </div>
+
+  <!-- Barra de Filtros (siempre visible cuando no hay error ni loading) -->
+  <div *ngIf="!isLoading && !errorMessage && (tieneVendedores || hasFiltrosActivos)">
+    <div class="filters-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'VENDEDORES.FILTERS.SEARCH_PLACEHOLDER' | translate }}</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="aplicarFiltros()"
+          [placeholder]="'VENDEDORES.FILTERS.SEARCH_PLACEHOLDER' | translate">
+        <mat-icon matPrefix>search</mat-icon>
+        <button 
+          mat-icon-button 
+          matSuffix
+          *ngIf="searchTerm"
+          (click)="searchTerm = ''; aplicarFiltros()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'VENDEDORES.FILTERS.SELECT_ZONE' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedZona"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option *ngFor="let zona of zonas" [value]="zona.value">
+            {{ zona.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'VENDEDORES.FILTERS.SELECT_STATUS' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedEstado"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button 
+        mat-stroked-button 
+        class="clear-button"
+        (click)="limpiarFiltros()"
+        [disabled]="!searchTerm && !selectedZona && !selectedEstado">
+        <mat-icon>close</mat-icon>
+        {{ 'VENDEDORES.FILTERS.CLEAR' | translate }}
+      </button>
+      
+    </div>
+
+    <!-- Tabla de Vendedores (solo visible cuando hay datos) -->
+    <div class="table-container" *ngIf="tieneVendedores">
+      <table mat-table [dataSource]="vendedores" class="vendedores-table">
+        
+        <!-- Columna Nombre Vendedor -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VENDEDORES.TABLE.SELLER_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let vendedor">
+            {{ vendedor.nombre }} {{ vendedor.apellidos }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Contacto -->
+        <ng-container matColumnDef="contacto">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VENDEDORES.TABLE.CONTACT' | translate }}</th>
+          <td mat-cell *matCellDef="let vendedor">
+            <div class="contacto-info">
+              <span class="telefono">{{ vendedor.telefono }}</span>
+              <span class="email-contacto">{{ vendedor.correo }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Zona -->
+        <ng-container matColumnDef="zona">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VENDEDORES.TABLE.ZONE' | translate }}</th>
+          <td mat-cell *matCellDef="let vendedor">{{ vendedor.zona }}</td>
+        </ng-container>
+
+        <!-- Columna Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VENDEDORES.TABLE.STATUS' | translate }}</th>
+          <td mat-cell *matCellDef="let vendedor">
+            <mat-chip [class]="getEstadoClass(vendedor.estado)">
+              {{ vendedor.estado }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>{{ 'VENDEDORES.TABLE.ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let vendedor">
+            <button 
+              mat-icon-button 
+              (click)="editarVendedor(vendedor)"
+              [matTooltip]="'VENDEDORES.TABLE.EDIT_TOOLTIP' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button 
+              mat-icon-button
+              [matTooltip]="'VENDEDORES.TABLE.MORE_OPTIONS' | translate">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+      </table>
+    </div>
+
+    <!-- Mensaje cuando no hay resultados después de filtrar -->
+    <div class="no-results" *ngIf="!tieneVendedores && hasFiltrosActivos">
+      <mat-icon>search_off</mat-icon>
+      <p>{{ 'VENDEDORES.NO_RESULTS' | translate }}</p>
+      <button mat-button color="primary" (click)="limpiarFiltros()">
+        {{ 'VENDEDORES.FILTERS.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <!-- Paginador (solo visible cuando hay datos) -->
+    <mat-paginator
+      *ngIf="tieneVendedores"
+      [length]="total"
+      [pageSize]="size"
+      [pageIndex]="page - 1"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
   </div>
 </div>

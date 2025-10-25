@@ -19,29 +19,51 @@ export interface RegistrarVendedorRequest {
  * Interfaz para la respuesta de registro de vendedor
  */
 export interface RegistrarVendedorResponse {
-  id: number;
-  nombres: string;
+  id: string;
+  nombre: string;
   apellidos: string;
   zona: string;
   estado: string;
   telefono: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
+  correo: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+  usuarioCreacion: string | null;
+  usuarioActualizacion: string | null;
 }
 
 /**
  * Interfaz para los datos completos de un vendedor
  */
 export interface Vendedor {
-  id: number;
-  nombres: string;
+  id: string;
+  nombre: string;
   apellidos: string;
   zona: string;
   estado: string;
   telefono: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
-  is_active?: boolean;
+  correo: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+  usuarioCreacion: string | null;
+  usuarioActualizacion: string | null;
+}
+
+/**
+ * Interfaz para la paginación de vendedores
+ */
+export interface PaginacionVendedores {
+  page: number;
+  size: number;
+  total: number;
+}
+
+/**
+ * Interfaz para la respuesta de la lista de vendedores
+ */
+export interface ObtenerVendedoresResponse {
+  items: Vendedor[];
+  page: number;
+  size: number;
+  total: number;
 }

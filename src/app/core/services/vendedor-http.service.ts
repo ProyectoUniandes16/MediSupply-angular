@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   RegistrarVendedorRequest,
   RegistrarVendedorResponse,
-  Vendedor
+  Vendedor,
+  ObtenerVendedoresResponse
 } from '../models/vendedor.models';
 
 /**
@@ -58,12 +59,41 @@ export class VendedorHttpService {
   }
 
   /**
-   * Obtiene la lista de todos los vendedores
+   * Obtiene la lista de vendedores con paginación y filtros
    * 
-   * @returns Observable con el array de vendedores
+   * @param params - Parámetros de paginación y filtros
+   * @returns Observable con la respuesta paginada de vendedores
+   * 
+   * Endpoint: GET /api/vendedor
+   * 
+   * @example
+   * const params = {
+   *   page: 1,
+   *   size: 10,
+   *   nombre: 'Juan',
+   *   zona: 'Colombia',
+   *   estado: 'Activo'
+   * };
+   * 
+   * this.vendedorHttpService.obtenerVendedores(params).subscribe({
+   *   next: (response) => console.log('Vendedores:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
    */
-  obtenerVendedores(): Observable<Vendedor[]> {
-    return this.http.get<Vendedor[]>(`${this.apiUrl}/vendedor/`).pipe(
+  obtenerVendedores(params?: any): Observable<ObtenerVendedoresResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      for (const key of Object.keys(params)) {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      }
+    }
+
+    return this.http.get<ObtenerVendedoresResponse>(`${this.apiUrl}/vendedor`, {
+      params: httpParams
+    }).pipe(
       catchError(error => {
         console.error('Error al obtener vendedores:', error);
         return throwError(() => error);
@@ -157,7 +187,7 @@ export class VendedorHttpService {
     }
 
     // Validar teléfono (mínimo 7 dígitos)
-    const telefonoDigits = data.telefono?.replace(/\D/g, '');
+    const telefonoDigits = data.telefono?.replaceAll(/\D/g, '');
     if (!telefonoDigits || telefonoDigits.length < 7) {
       errors.push('El teléfono debe tener al menos 7 dígitos');
     }

@@ -97,6 +97,8 @@
     "SUBTITLE": "Manage sellers who supply products to the company",
     "NEW": "Register Seller",
     "LIST_EMPTY": "Click on \"Register Seller\" to add a new seller to the system.",
+    "RETRY": "Retry",
+    "NO_RESULTS": "No sellers found with the applied filters",
     "REGISTER": {
       "TITLE": "Register Seller",
       "EDIT_TITLE": "Edit Seller",
@@ -113,6 +115,26 @@
       "ZONA": "Assigned Zone",
       "COMISION": "Commission (%)",
       "ESTADO": "Status"
+    },
+    "FILTERS": {
+      "SEARCH_PLACEHOLDER": "Search by name...",
+      "SELECT_ZONE": "Select Zone",
+      "SELECT_STATUS": "Select Status",
+      "CLEAR": "Clear",
+      "CLEAR_FILTERS": "Clear filters"
+    },
+    "TABLE": {
+      "SELLER_NAME": "Seller Name",
+      "CONTACT": "Contact",
+      "ZONE": "Zone",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "EDIT_TOOLTIP": "Edit seller",
+      "MORE_OPTIONS": "More options"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
     }
   },
   "PRODUCTOS": {

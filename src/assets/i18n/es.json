@@ -97,6 +97,8 @@
     "SUBTITLE": "Gestiona vendedores que suministran productos a la compañía",
     "NEW": "Registrar Vendedor",
     "LIST_EMPTY": "Haz clic en \"Registrar Vendedor\" para agregar un nuevo vendedor al sistema.",
+    "RETRY": "Reintentar",
+    "NO_RESULTS": "No se encontraron vendedores con los filtros aplicados",
     "REGISTER": {
       "TITLE": "Registrar Vendedor",
       "EDIT_TITLE": "Editar Vendedor",
@@ -113,6 +115,26 @@
       "ZONA": "Zona Asignada",
       "COMISION": "Comisión (%)",
       "ESTADO": "Estado"
+    },
+    "FILTERS": {
+      "SEARCH_PLACEHOLDER": "Buscar por nombre...",
+      "SELECT_ZONE": "Seleccione Zona",
+      "SELECT_STATUS": "Seleccione Estado",
+      "CLEAR": "Limpiar",
+      "CLEAR_FILTERS": "Limpiar filtros"
+    },
+    "TABLE": {
+      "SELLER_NAME": "Nombre Vendedor",
+      "CONTACT": "Contacto",
+      "ZONE": "Zona",
+      "STATUS": "Estado",
+      "ACTIONS": "Acciones",
+      "EDIT_TOOLTIP": "Editar vendedor",
+      "MORE_OPTIONS": "Más opciones"
+    },
+    "STATUS": {
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo"
     }
   },
   "PRODUCTOS": {

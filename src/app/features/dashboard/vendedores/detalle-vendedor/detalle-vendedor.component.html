@@ -1,0 +1,117 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>{{ 'VENDEDORES.DETAIL.TITLE' | translate }}</h2>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="cerrar()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Loading Spinner -->
+    <div class="loading-container" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div class="error-message" *ngIf="errorMessage && !isLoading">
+      <mat-icon>error_outline</mat-icon>
+      <p>{{ errorMessage }}</p>
+      <button mat-raised-button color="primary" (click)="cargarDetalleVendedor()">
+        {{ 'VENDEDORES.RETRY' | translate }}
+      </button>
+    </div>
+
+    <!-- Detalle del vendedor -->
+    <div class="vendedor-detail" *ngIf="vendedor && !isLoading && !errorMessage">
+      <!-- Información Personal -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'VENDEDORES.DETAIL.PERSONAL_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.NOMBRE' | translate }}</label>
+            <p>{{ vendedor.nombre }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.APELLIDOS' | translate }}</label>
+            <p>{{ vendedor.apellidos }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.DETAIL.FULL_NAME' | translate }}</label>
+            <p class="highlight">{{ vendedor.nombre }} {{ vendedor.apellidos }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.DETAIL.ID' | translate }}</label>
+            <p class="monospace">{{ vendedor.id }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Información de Contacto -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'VENDEDORES.DETAIL.CONTACT_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.EMAIL' | translate }}</label>
+            <p>
+              <a [href]="'mailto:' + vendedor.correo">{{ vendedor.correo }}</a>
+            </p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.TELEFONO' | translate }}</label>
+            <p>
+              <a [href]="'tel:' + vendedor.telefono">{{ vendedor.telefono }}</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Información Laboral -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'VENDEDORES.DETAIL.WORK_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.ZONA' | translate }}</label>
+            <p>{{ vendedor.zona }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'VENDEDORES.FIELDS.ESTADO' | translate }}</label>
+            <p>
+              <mat-chip [class]="getEstadoClass(vendedor.estado)">
+                {{ vendedor.estado }}
+              </mat-chip>
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </mat-dialog-content>
+
+  <!-- Acciones del diálogo -->
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button (click)="cerrar()">
+      {{ 'COMMON.CLOSE' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

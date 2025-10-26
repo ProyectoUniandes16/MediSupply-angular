@@ -1,0 +1,188 @@
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+// H-8: Estética y diseño minimalista
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #E0E0E0;
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    color: #424242;
+  }
+}
+
+.dialog-content {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+// H-3: Control y libertad - Botones de acción claros
+.dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #E0E0E0;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+
+  button {
+    min-width: 140px;
+    height: 40px;
+  }
+}
+
+// Loading y mensajes de error
+.loading-container,
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 16px;
+
+  p {
+    margin: 0;
+    color: #757575;
+    font-size: 14px;
+  }
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #f44336;
+  }
+}
+
+.loading-container {
+  mat-spinner {
+    margin-bottom: 8px;
+  }
+}
+
+// Secciones de detalle
+.detail-section {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E0E0E0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #424242;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #757575;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #424242;
+    word-break: break-word;
+  }
+
+  .highlight {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1976d2;
+  }
+
+  .monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background-color: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  a {
+    color: #1976d2;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  mat-chip {
+    width: fit-content;
+  }
+}
+
+// Estilos para chips de estado
+.estado-activo {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.estado-inactivo {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+// H-4: Consistencia y estándares - Diseño responsive
+@media (max-width: 768px) {
+  .dialog-header {
+    padding: 16px;
+
+    h2 {
+      font-size: 20px;
+    }
+  }
+
+  .dialog-content {
+    padding: 16px;
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+    padding: 16px;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .detail-section {
+    margin-bottom: 24px;
+  }
+}

@@ -147,11 +147,25 @@
       "STATUS": "Status",
       "ACTIONS": "Actions",
       "EDIT_TOOLTIP": "Edit seller",
+      "VIEW_TOOLTIP": "View detail",
       "MORE_OPTIONS": "More options"
     },
     "STATUS": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
+    },
+    "DETAIL": {
+      "TITLE": "Seller Details",
+      "PERSONAL_INFO": "Personal Information",
+      "CONTACT_INFO": "Contact Information",
+      "WORK_INFO": "Work Information",
+      "SYSTEM_INFO": "System Information",
+      "ID": "Seller ID",
+      "FULL_NAME": "Full Name",
+      "CREATED_DATE": "Creation Date",
+      "CREATED_BY": "Created By",
+      "UPDATED_DATE": "Last Update",
+      "UPDATED_BY": "Updated By"
     }
   },
   "PRODUCTOS": {

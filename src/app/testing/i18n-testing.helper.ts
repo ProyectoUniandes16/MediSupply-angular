@@ -91,6 +91,23 @@ export class FakeTranslateLoader implements TranslateLoader {
             TELEFONO: 'Teléfono',
             ZONA: 'Zona Asignada',
             ESTADO: 'Estado'
+          },
+          TABLE: {
+            VIEW_TOOLTIP: 'Ver detalle',
+            EDIT_TOOLTIP: 'Editar vendedor'
+          },
+          DETAIL: {
+            TITLE: 'Detalle del Vendedor',
+            PERSONAL_INFO: 'Información Personal',
+            CONTACT_INFO: 'Información de Contacto',
+            WORK_INFO: 'Información Laboral',
+            SYSTEM_INFO: 'Información del Sistema',
+            ID: 'ID del Vendedor',
+            FULL_NAME: 'Nombre Completo',
+            CREATED_DATE: 'Fecha de Creación',
+            CREATED_BY: 'Creado Por',
+            UPDATED_DATE: 'Última Actualización',
+            UPDATED_BY: 'Actualizado Por'
           }
         }
       },

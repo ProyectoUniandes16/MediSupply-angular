@@ -134,6 +134,12 @@
           <td mat-cell *matCellDef="let vendedor">
             <button 
               mat-icon-button 
+              (click)="verDetalleVendedor(vendedor)"
+              [matTooltip]="'VENDEDORES.TABLE.VIEW_TOOLTIP' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
               (click)="editarVendedor(vendedor)"
               [matTooltip]="'VENDEDORES.TABLE.EDIT_TOOLTIP' | translate">
               <mat-icon>edit</mat-icon>

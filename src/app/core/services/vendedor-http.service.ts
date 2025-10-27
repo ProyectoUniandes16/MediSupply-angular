@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   RegistrarVendedorRequest,
@@ -104,11 +104,20 @@ export class VendedorHttpService {
   /**
    * Obtiene un vendedor por su ID
    * 
-   * @param id - ID del vendedor
+   * @param id - ID del vendedor (UUID)
    * @returns Observable con los datos del vendedor
+   * 
+   * Endpoint: GET /api/vendedor/{id}
+   * 
+   * @example
+   * this.vendedorHttpService.obtenerVendedorPorId('993987b4-6a58-45da-a216-4c2da0a03978').subscribe({
+   *   next: (vendedor) => console.log('Vendedor:', vendedor),
+   *   error: (error) => console.error('Error:', error)
+   * });
    */
-  obtenerVendedorPorId(id: number): Observable<Vendedor> {
-    return this.http.get<Vendedor>(`${this.apiUrl}/vendedor/${id}`).pipe(
+  obtenerVendedorPorId(id: string): Observable<Vendedor> {
+    return this.http.get<{ data: Vendedor }>(`${this.apiUrl}/vendedor/${id}`).pipe(
+      map(response => response.data),
       catchError(error => {
         console.error(`Error al obtener vendedor ${id}:`, error);
         return throwError(() => error);

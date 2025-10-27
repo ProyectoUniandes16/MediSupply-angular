@@ -187,29 +187,29 @@ describe('VendedorHttpService', () => {
       usuarioActualizacion: null
     };
 
-    service.obtenerVendedorPorId(2).subscribe(res => {
+    service.obtenerVendedorPorId('2').subscribe(res => {
       expect(res.id).toBe('2');
       expect(res.nombre).toBe('Ana');
     });
 
     const req = httpMock.expectOne('/api/vendedor/2');
     expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
+    req.flush({ data: mockResponse });
   });
 
   it('should handle error when getting vendedor by id', () => {
     spyOn(console, 'error');
 
-    service.obtenerVendedorPorId(99).subscribe({
+    service.obtenerVendedorPorId('99').subscribe({
       next: () => fail('expected an error'),
       error: (err) => {
         expect(err.status).toBe(404);
       }
     });
 
-    const req = httpMock.expectOne('/api/vendedor/99');
-    expect(req.request.method).toBe('GET');
-    req.flush({ message: 'not found' }, { status: 404, statusText: 'Not Found' });
+  const req = httpMock.expectOne('/api/vendedor/99');
+  expect(req.request.method).toBe('GET');
+  req.flush({ message: 'not found' }, { status: 404, statusText: 'Not Found' });
 
     expect(console.error).toHaveBeenCalled();
   });

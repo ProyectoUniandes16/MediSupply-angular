@@ -147,11 +147,25 @@
       "STATUS": "Estado",
       "ACTIONS": "Acciones",
       "EDIT_TOOLTIP": "Editar vendedor",
+      "VIEW_TOOLTIP": "Ver detalle",
       "MORE_OPTIONS": "Más opciones"
     },
     "STATUS": {
       "ACTIVE": "Activo",
       "INACTIVE": "Inactivo"
+    },
+    "DETAIL": {
+      "TITLE": "Detalle del Vendedor",
+      "PERSONAL_INFO": "Información Personal",
+      "CONTACT_INFO": "Información de Contacto",
+      "WORK_INFO": "Información Laboral",
+      "SYSTEM_INFO": "Información del Sistema",
+      "ID": "ID del Vendedor",
+      "FULL_NAME": "Nombre Completo",
+      "CREATED_DATE": "Fecha de Creación",
+      "CREATED_BY": "Creado Por",
+      "UPDATED_DATE": "Última Actualización",
+      "UPDATED_BY": "Actualizado Por"
     }
   },
   "PRODUCTOS": {

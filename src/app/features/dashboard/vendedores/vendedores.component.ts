@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarVendedorComponent } from './registrar-vendedor/registrar-vendedor.component';
+import { DetalleVendedorComponent } from './detalle-vendedor/detalle-vendedor.component';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { Vendedor } from '../../../core/models/vendedor.models';
 import { Subscription } from 'rxjs';
@@ -232,6 +233,19 @@ export class VendedoresComponent implements OnInit {
   editarVendedor(vendedor: Vendedor): void {
     console.log('Editar vendedor:', vendedor);
     this.snackBar.open('Funcionalidad en desarrollo', 'Cerrar', { duration: 2000 });
+  }
+
+  /**
+   * Abre el diálogo con el detalle del vendedor
+   */
+  verDetalleVendedor(vendedor: Vendedor): void {
+    this.dialog.open(DetalleVendedorComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      data: { vendedorId: vendedor.id },
+      disableClose: false,
+      autoFocus: false
+    });
   }
 
   /**

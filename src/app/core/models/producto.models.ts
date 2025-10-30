@@ -44,13 +44,21 @@ export interface Producto {
   codigo_sku: string;
   categoria: string;
   precio_unitario: number;
+  cantidad_disponible: number;
   condiciones_almacenamiento: string;
   fecha_vencimiento: string;
-  bodega: string;
-  lote: string;
+  fecha_registro: string;
+  fecha_actualizacion: string;
+  estado: string;
+  proveedor_id: number;
+  tiene_certificacion: boolean;
+  usuario_registro: string;
+  // Campos legacy para compatibilidad
+  bodega?: string;
+  lote?: string;
   certificaciones_urls?: string[];
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   is_active?: boolean;
 }
 
@@ -132,4 +140,37 @@ export interface CargaMasivaResponse {
   errores: number;
   mensaje?: string;
   detalles?: string[];
+}
+
+/**
+ * Interfaz para los filtros aplicados en la consulta de productos
+ */
+export interface FiltrosProductos {
+  buscar: string | null;
+  categoria: string | null;
+  estado: string | null;
+  proveedor_id: number | null;
+}
+
+/**
+ * Interfaz para la información de paginación de productos
+ */
+export interface PaginacionProductos {
+  pagina_actual: number;
+  productos_por_pagina: number;
+  tiene_anterior: boolean;
+  tiene_siguiente: boolean;
+  total_paginas: number;
+  total_productos: number;
+}
+
+/**
+ * Interfaz para la respuesta paginada de obtención de productos
+ */
+export interface ObtenerProductosResponse {
+  data: {
+    filtros_aplicados: FiltrosProductos;
+    paginacion: PaginacionProductos;
+    productos: Producto[];
+  };
 }

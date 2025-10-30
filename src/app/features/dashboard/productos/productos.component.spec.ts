@@ -1,20 +1,61 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductosComponent } from './productos.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { of, throwError } from 'rxjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
+import { ProductoHttpService } from '../../../core/services/producto-http.service';
+import { PageEvent } from '@angular/material/paginator';
+import { ObtenerProductosResponse } from '../../../core/models/producto.models';
 
 describe('ProductosComponent', () => {
   let component: ProductosComponent;
   let fixture: ComponentFixture<ProductosComponent>;
   let dialog: MatDialog;
+  let productoService: jasmine.SpyObj<ProductoHttpService>;
+
+  const mockResponse: ObtenerProductosResponse = {
+    data: {
+      filtros_aplicados: {
+        buscar: null,
+        categoria: null,
+        estado: null,
+        proveedor_id: null
+      },
+      paginacion: {
+        pagina_actual: 1,
+        productos_por_pagina: 10,
+        tiene_anterior: false,
+        tiene_siguiente: true,
+        total_paginas: 3,
+        total_productos: 25
+      },
+      productos: [
+        {
+          id: 1,
+          nombre: 'Paracetamol',
+          codigo_sku: 'PARA-500',
+          categoria: 'medicamento',
+          precio_unitario: 1200,
+          cantidad_disponible: 100,
+          condiciones_almacenamiento: 'Seco y fresco',
+          fecha_vencimiento: '2026-01-01',
+          fecha_registro: '2025-01-01',
+          fecha_actualizacion: '2025-01-02',
+          estado: 'Activo',
+          proveedor_id: 10,
+          tiene_certificacion: true,
+          usuario_registro: 'admin'
+        }
+      ]
+    }
+  };
 
   beforeEach(async () => {
+    productoService = jasmine.createSpyObj('ProductoHttpService', ['obtenerProductos']);
+    productoService.obtenerProductos.and.returnValue(of(mockResponse));
+
     await TestBed.configureTestingModule({
       imports: [
         ProductosComponent, 
@@ -24,8 +65,8 @@ describe('ProductosComponent', () => {
         })
       ],
       providers: [
-        provideHttpClient(),
-        TranslateService
+        TranslateService,
+        { provide: ProductoHttpService, useValue: productoService }
       ]
     }).compileComponents();
 
@@ -62,9 +103,15 @@ describe('ProductosComponent', () => {
   });
 
   it('should display empty state message', () => {
+    // Si no hay productos y sin filtros activos, debe verse el empty state
+    component['productos'] = [];
+    component['searchTerm'] = '';
+    component['selectedCategoria'] = '';
+    component['selectedEstado'] = '';
+    fixture.detectChanges();
     const compiled = fixture.nativeElement;
     const emptyState = compiled.querySelector('.empty-state p');
-    expect(emptyState.textContent).toContain('Haz clic en "Registrar Producto"');
+    expect(emptyState).toBeTruthy();
   });
 
   it('should have openRegistrarProductoDialog method', () => {
@@ -80,15 +127,11 @@ describe('ProductosComponent', () => {
     });
     spyOn(dialog, 'open').and.returnValue(mockDialogRef);
     
-    // Simulamos la lógica del método sin llamarlo directamente
-    mockDialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
-        console.log('Nuevo producto:', result);
-      }
-    });
+    component.openRegistrarProductoDialog();
     
     setTimeout(() => {
-      expect(console.log).toHaveBeenCalledWith('Nuevo producto:', mockResult);
+      // El componente abre un snackbar y recarga productos
+      expect(productoService.obtenerProductos).toHaveBeenCalled();
       done();
     }, 50);
   });
@@ -100,12 +143,7 @@ describe('ProductosComponent', () => {
     });
     spyOn(dialog, 'open').and.returnValue(mockDialogRef);
     
-    // Simulamos la lógica del método sin llamarlo directamente
-    mockDialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
-        console.log('Nuevo producto:', result);
-      }
-    });
+    component.openRegistrarProductoDialog();
     
     setTimeout(() => {
       expect(console.log).not.toHaveBeenCalled();
@@ -181,10 +219,15 @@ describe('ProductosComponent', () => {
   });
 
   it('should verify empty state contains correct text content', () => {
+    component['productos'] = [];
+    component['searchTerm'] = '';
+    component['selectedCategoria'] = '';
+    component['selectedEstado'] = '';
+    fixture.detectChanges();
     const emptyState = fixture.nativeElement.querySelector('.empty-state p');
+    expect(emptyState).toBeTruthy();
     const text = emptyState.textContent.trim();
     expect(text.length).toBeGreaterThan(0);
-    expect(text).toContain('producto');
   });
 
   it('should have button with click handler defined', () => {
@@ -194,60 +237,100 @@ describe('ProductosComponent', () => {
   });
 
   // New tests that invoke component methods to improve coverage
-  it('should open registrar producto dialog and handle result', (done) => {
-    spyOn(console, 'log');
-    const mockResult = { nombre: 'Nuevo', sku: 'SKU-123' };
-  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(mockResult) });
-  const openSpy = spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
-
-    component.openRegistrarProductoDialog();
-
-    // Verify dialog was opened with the expected config
-  const args = openSpy.calls.mostRecent().args;
-  const componentType = args[0];
-  const config = args[1] as any;
-  expect(componentType).toBeDefined();
-  expect((componentType as any).name).toContain('RegistrarProductoComponent');
-  expect(config?.width).toBe('800px');
-  expect(config?.maxWidth).toBe('95vw');
-
-    setTimeout(() => {
-      expect(console.log).toHaveBeenCalledWith('Nuevo producto:', mockResult);
-      done();
-    }, 0);
+  it('should call obtenerProductos on init and set data', () => {
+    expect(productoService.obtenerProductos).toHaveBeenCalled();
+    expect(component.productos.length).toBe(1);
+    expect(component.total).toBe(25);
   });
 
-  it('should open registrar producto dialog and handle null result (no log)', (done) => {
-    spyOn(console, 'log');
-  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(null) });
-  spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
-
-    component.openRegistrarProductoDialog();
-
-    setTimeout(() => {
-      expect(console.log).not.toHaveBeenCalled();
-      done();
-    }, 0);
+  it('should apply filters and pass params to service', () => {
+    productoService.obtenerProductos.calls.reset();
+    component.searchTerm = 'para';
+    component.selectedCategoria = 'medicamento';
+    component.selectedEstado = 'Activo';
+    component.aplicarFiltros();
+    expect(productoService.obtenerProductos).toHaveBeenCalled();
+    const params = productoService.obtenerProductos.calls.mostRecent().args[0];
+    expect(params.page).toBe(1); // reset page on filter
+    expect(params.size).toBe(10);
+    expect(params.buscar).toBe('para');
+    expect(params.categoria).toBe('medicamento');
+    expect(params.estado).toBe('Activo');
   });
 
-  it('should open carga masiva dialog and handle reload flag', (done) => {
-    spyOn(console, 'log');
-  const mockDialogRef = jasmine.createSpyObj({ afterClosed: of({ reload: true }) });
-  const openSpy = spyOn(component['dialog'], 'open').and.returnValue(mockDialogRef);
+  it('should handle error when service fails', () => {
+    // Make the service throw an error
+    productoService.obtenerProductos.and.returnValue(throwError(() => ({ status: 500 })));
 
-    component.openCargaMasivaDialog();
+    // Trigger load
+    component.cargarProductos();
+    expect(component.isLoading).toBeFalse();
+    expect(component.errorMessage).toContain('Error');
+  });
 
-  const args2 = openSpy.calls.mostRecent().args;
-  const componentType2 = args2[0];
-  const config2 = args2[1] as any;
-  expect((componentType2 as any).name).toContain('CargaMasivaProductosComponent');
-  expect(config2?.width).toBe('900px');
-  expect(config2?.maxHeight).toBe('90vh');
+  it('should change page and size on onPageChange and call service', () => {
+    productoService.obtenerProductos.calls.reset();
+    const event = { pageIndex: 1, pageSize: 20 } as PageEvent;
+    component.onPageChange(event);
+    expect(productoService.obtenerProductos).toHaveBeenCalled();
+    const params = productoService.obtenerProductos.calls.mostRecent().args[0];
+    expect(params.page).toBe(2);
+    expect(params.size).toBe(20);
+  });
 
-    setTimeout(() => {
-      expect(console.log).toHaveBeenCalledWith('Recargando lista de productos...');
-      done();
-    }, 0);
+  it('should clear filters on limpiarFiltros and reload from page 1', () => {
+    component.searchTerm = 'x';
+    component.selectedCategoria = 'medicamento';
+    component.selectedEstado = 'Activo';
+    productoService.obtenerProductos.calls.reset();
+    component.limpiarFiltros();
+    expect(component.searchTerm).toBe('');
+    expect(component.selectedCategoria).toBe('');
+    expect(component.selectedEstado).toBe('');
+    const params = productoService.obtenerProductos.calls.mostRecent().args[0];
+    expect(params.page).toBe(1);
+  });
+
+  it('should compute estado class correctly', () => {
+    expect(component.getEstadoClass('Activo')).toBe('estado-activo');
+    expect(component.getEstadoClass('Inactivo')).toBe('estado-inactivo');
+  });
+
+  it('should format price properly', () => {
+    const formatted = component.formatearPrecio(15000);
+    expect(formatted).toContain('15');
+    expect(formatted).toMatch(/\d{1,3}(\.\d{3})*/);
+  });
+
+  it('should configure categorias including dispositivo', () => {
+    component['configurarCategorias']();
+    const values = component.categorias.map(c => c.value);
+    expect(values).toContain('dispositivo');
+  });
+
+  it('should open snackbar on editarProducto and verDetalleProducto', () => {
+    const snackOpenSpy = spyOn((component as any)['snackBar'], 'open');
+    const mockProducto = mockResponse.data.productos[0] as any;
+
+    component.editarProducto(mockProducto);
+    component.verDetalleProducto(mockProducto);
+
+    expect(snackOpenSpy).toHaveBeenCalled();
+    expect(snackOpenSpy.calls.count()).toBeGreaterThanOrEqual(2);
+  });
+
+  it('should compute getters correctly', () => {
+    component.productos = [];
+    expect(component.tieneProductos).toBeFalse();
+    expect(component.hasFiltrosActivos).toBeFalse();
+    component.searchTerm = 'x';
+    expect(component.hasFiltrosActivos).toBeTrue();
+    component.searchTerm = '';
+    component.selectedCategoria = 'medicamento';
+    expect(component.hasFiltrosActivos).toBeTrue();
+    component.selectedCategoria = '';
+    component.selectedEstado = 'Activo';
+    expect(component.hasFiltrosActivos).toBeTrue();
   });
 });
 

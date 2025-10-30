@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   RegistrarProductoRequest,
-  RegistrarProductoResponse
+  RegistrarProductoResponse,
+  ObtenerProductosResponse
 } from '../models/producto.models';
 
 /**
@@ -212,6 +213,49 @@ export class ProductoHttpService {
     ).pipe(
       catchError(error => {
         console.error('Error en carga masiva:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene la lista de productos con paginación y filtros
+   * 
+   * @param params - Parámetros de paginación y filtros
+   * @returns Observable con la respuesta paginada de productos
+   * 
+   * Endpoint: GET /api/producto
+   * 
+   * @example
+   * const params = {
+   *   page: 1,
+   *   size: 10,
+   *   nombre: 'Paracetamol',
+   *   categoria: 'medicamento',
+   *   estado: 'Activo'
+   * };
+   * 
+   * this.productoHttpService.obtenerProductos(params).subscribe({
+   *   next: (response) => console.log('Productos:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerProductos(params?: any): Observable<ObtenerProductosResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      for (const key of Object.keys(params)) {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      }
+    }
+
+    return this.http.get<ObtenerProductosResponse>(`${this.apiUrl}/producto`, {
+      params: httpParams
+    }).pipe(
+      catchError(error => {
+        console.error('Error al obtener productos:', error);
         return throwError(() => error);
       })
     );

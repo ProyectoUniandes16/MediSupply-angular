@@ -226,12 +226,13 @@ describe('DashboardLayoutComponent', () => {
     expect(proveedoresItem?.icon).toBe('business');
   });
 
-  it('should have all three main navigation items', () => {
-    expect(component.navigationItems.length).toBe(3);
+  it('should have all main navigation items', () => {
+    expect(component.navigationItems.length).toBe(4);
     
     const routes = component.navigationItems.map(item => item.route);
     expect(routes).toContain('/dashboard/proveedores');
     expect(routes).toContain('/dashboard/vendedores');
+    expect(routes).toContain('/dashboard/planes-venta');
     expect(routes).toContain('/dashboard/productos');
   });
 

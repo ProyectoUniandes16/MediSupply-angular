@@ -57,6 +57,7 @@
     "MENU": {
       "PROVEEDORES": "Suppliers",
       "VENDEDORES": "Sellers",
+      "PLANES_VENTA": "Sales Plans",
       "PRODUCTOS": "Products",
       "PROFILE": "Profile",
       "SETTINGS": "Settings"
@@ -271,6 +272,39 @@
         "INVALID_FORMAT": "File must be CSV format",
         "FILE_TOO_LARGE": "File is too large (max. 10MB)"
       }
+    }
+  },
+  "PLANES_VENTA": {
+    "TITLE": "Sales Plans",
+    "SUBTITLE": "Manage sales plans for sellers",
+    "NEW": "Add Plan",
+    "LIST_EMPTY": "Click \"Add Plan\" to create a new sales plan",
+    "REGISTER": {
+      "TITLE": "Add Plan",
+      "SUBTITLE": "Complete the supplier information and attach the required health certifications",
+      "METAS": "Goals",
+      "SUBMIT": "Register Plan",
+      "SUCCESS_MESSAGE": "Sales plan registered successfully",
+      "ERROR_MESSAGE": "Error registering sales plan"
+    },
+    "FIELDS": {
+      "NOMBRE_PLAN": "Plan Name",
+      "NOMBRE_PLAN_PLACEHOLDER": "Plan Name",
+      "VENDEDOR": "Select Sellers",
+      "PERIODO": "Period",
+      "PERIODO_PLACEHOLDER": "Enter Visit Goal",
+      "META_INGRESOS": "Revenue Goal",
+      "META_INGRESOS_PLACEHOLDER": "Enter revenue goal",
+      "META_VISITAS": "Visit Goal",
+      "META_VISITAS_PLACEHOLDER": "Enter visit goal",
+      "META_CLIENTES_NUEVOS": "New Customers Goal",
+      "META_CLIENTES_NUEVOS_PLACEHOLDER": "Enter New Customers Goal",
+      "ESTADO": "Select Status"
+    },
+    "STATUS": {
+      "ACTIVO": "Active",
+      "INACTIVO": "Inactive",
+      "PENDIENTE": "Pending"
     }
   }
 }

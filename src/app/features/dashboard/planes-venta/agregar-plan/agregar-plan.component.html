@@ -1,0 +1,212 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>{{ 'PLANES_VENTA.REGISTER.TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'PLANES_VENTA.REGISTER.SUBTITLE' | translate }}</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onCancel()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <form [formGroup]="planForm">
+      
+      <!-- Fila 1: Nombre Plan y Estado -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.NOMBRE_PLAN' | translate }}</mat-label>
+          <input 
+            matInput 
+            [placeholder]="'PLANES_VENTA.FIELDS.NOMBRE_PLAN_PLACEHOLDER' | translate"
+            formControlName="nombrePlan">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('nombrePlan')?.value"
+            (click)="clearField('nombrePlan')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('nombrePlan')?.invalid && planForm.get('nombrePlan')?.touched">
+            {{ getErrorMessage('nombrePlan') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.ESTADO' | translate }}</mat-label>
+          <mat-select formControlName="estado">
+            <mat-option *ngFor="let estado of estados" [value]="estado.value">
+              {{ 'PLANES_VENTA.STATUS.' + estado.value.toUpperCase() | translate }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('estado')?.value"
+            (click)="clearField('estado')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('estado')?.invalid && planForm.get('estado')?.touched">
+            {{ getErrorMessage('estado') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 2: Vendedor y Periodo -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.VENDEDOR' | translate }}</mat-label>
+          <mat-select formControlName="vendedorId">
+            <mat-option *ngIf="isLoadingVendedores" disabled>
+              {{ 'COMMON.LOADING' | translate }}...
+            </mat-option>
+            <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor.id">
+              {{ getVendedorNombre(vendedor) }}
+            </mat-option>
+          </mat-select>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('vendedorId')?.value"
+            (click)="clearField('vendedorId')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('vendedorId')?.invalid && planForm.get('vendedorId')?.touched">
+            {{ getErrorMessage('vendedorId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.PERIODO' | translate }}</mat-label>
+          <input 
+            matInput 
+            [placeholder]="'PLANES_VENTA.FIELDS.PERIODO_PLACEHOLDER' | translate"
+            formControlName="periodo">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('periodo')?.value"
+            (click)="clearField('periodo')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('periodo')?.invalid && planForm.get('periodo')?.touched">
+            {{ getErrorMessage('periodo') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Sección Metas -->
+      <div class="section-header">
+        <h3>{{ 'PLANES_VENTA.REGISTER.METAS' | translate }}</h3>
+      </div>
+
+      <!-- Fila 3: Meta de Ingresos -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.META_INGRESOS' | translate }}</mat-label>
+          <input 
+            matInput 
+            type="number"
+            min="1"
+            step="0.01"
+            [placeholder]="'PLANES_VENTA.FIELDS.META_INGRESOS_PLACEHOLDER' | translate"
+            formControlName="metaIngresos">
+          <span matTextPrefix>$&nbsp;</span>
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('metaIngresos')?.value"
+            (click)="clearField('metaIngresos')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('metaIngresos')?.invalid && planForm.get('metaIngresos')?.touched">
+            {{ getErrorMessage('metaIngresos') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 4: Meta de Visitas y Meta de Clientes Nuevos -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.META_VISITAS' | translate }}</mat-label>
+          <input 
+            matInput 
+            type="number"
+            min="1"
+            [placeholder]="'PLANES_VENTA.FIELDS.META_VISITAS_PLACEHOLDER' | translate"
+            formControlName="metaVisitas">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('metaVisitas')?.value"
+            (click)="clearField('metaVisitas')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('metaVisitas')?.invalid && planForm.get('metaVisitas')?.touched">
+            {{ getErrorMessage('metaVisitas') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PLANES_VENTA.FIELDS.META_CLIENTES_NUEVOS' | translate }}</mat-label>
+          <input 
+            matInput 
+            type="number"
+            min="1"
+            [placeholder]="'PLANES_VENTA.FIELDS.META_CLIENTES_NUEVOS_PLACEHOLDER' | translate"
+            formControlName="metaClientesNuevos">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="planForm.get('metaClientesNuevos')?.value"
+            (click)="clearField('metaClientesNuevos')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="planForm.get('metaClientesNuevos')?.invalid && planForm.get('metaClientesNuevos')?.touched">
+            {{ getErrorMessage('metaClientesNuevos') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <!-- Mensaje de error general -->
+    <div *ngIf="errorMessage" class="error-message">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Spinner de carga -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!planForm.valid || isLoading">
+      {{ 'PLANES_VENTA.REGISTER.SUBMIT' | translate }}
+    </button>
+    <button 
+      mat-stroked-button
+      (click)="onCancel()"
+      [disabled]="isLoading">
+      {{ 'COMMON.CANCEL' | translate }}
+    </button>
+  </div>
+</div>

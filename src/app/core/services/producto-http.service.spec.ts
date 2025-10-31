@@ -230,4 +230,51 @@ describe('ProductoHttpService', () => {
     const req = httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/producto');
     req.flush({ message: 'server error' }, { status: 500, statusText: 'Server Error' });
   });
+
+  it('should get producto detalle by id and map response', () => {
+    const mockDetalle = {
+      data: {
+        producto: {
+          id: 7,
+          nombre: 'Aspirina',
+          codigo_sku: 'ASP-100',
+          categoria: 'medicamento',
+          precio_unitario: 2500,
+          condiciones_almacenamiento: 'Seco',
+          fecha_vencimiento: '2027-12-31',
+          estado: 'Activo',
+          proveedor_id: 5,
+          inventario: { cantidad_disponible: 50, tiene_stock: true },
+          certificaciones: [
+            { id: 1, tipo_certificacion: 'Sanitaria', nombre_archivo: 'cert.pdf', tamano_archivo: 1024, url_descarga: 'http://x', fecha_emision: '2025-01-01', fecha_vencimiento: '2026-01-01', estado: 'Activo' }
+          ],
+          created_at: '2025-01-01',
+          updated_at: '2025-01-02',
+          usuario_registro: 'admin'
+        }
+      }
+    };
+
+    service.obtenerProductoPorId(7).subscribe(prod => {
+      expect(prod.id).toBe(7);
+      expect(prod.nombre).toBe('Aspirina');
+      expect(prod.inventario.tiene_stock).toBeTrue();
+      expect(prod.certificaciones.length).toBe(1);
+    });
+
+    const req = httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/producto/7');
+    req.flush(mockDetalle);
+  });
+
+  it('should propagate error when obtenerProductoPorId fails', () => {
+    service.obtenerProductoPorId(99).subscribe({
+      next: () => fail('should error'),
+      error: (err) => {
+        expect(err.status).toBe(404);
+      }
+    });
+
+    const req = httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/producto/99');
+    req.flush({ message: 'not found' }, { status: 404, statusText: 'Not Found' });
+  });
 });

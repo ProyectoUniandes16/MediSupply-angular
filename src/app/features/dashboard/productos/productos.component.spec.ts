@@ -308,15 +308,29 @@ describe('ProductosComponent', () => {
     expect(values).toContain('dispositivo');
   });
 
-  it('should open snackbar on editarProducto and verDetalleProducto', () => {
+  it('should open snackbar on editarProducto', () => {
     const snackOpenSpy = spyOn((component as any)['snackBar'], 'open');
     const mockProducto = mockResponse.data.productos[0] as any;
 
     component.editarProducto(mockProducto);
-    component.verDetalleProducto(mockProducto);
 
     expect(snackOpenSpy).toHaveBeenCalled();
-    expect(snackOpenSpy.calls.count()).toBeGreaterThanOrEqual(2);
+  });
+
+  it('should open DetalleProductoComponent dialog on verDetalleProducto with productoId', () => {
+    const mockProducto = mockResponse.data.productos[0] as any;
+    const mockDialogRef = jasmine.createSpyObj({ afterClosed: of(undefined) });
+    const dialogOpenSpy = spyOn((component as any)['dialog'], 'open').and.returnValue(mockDialogRef as any);
+
+    component.verDetalleProducto(mockProducto);
+
+    expect(dialogOpenSpy).toHaveBeenCalled();
+    const callArgs = dialogOpenSpy.calls.mostRecent().args as any[];
+  const config: any = callArgs[1];
+    // First arg is the component, second is config with data
+    expect(config.data.productoId).toBe(mockProducto.id);
+    expect(config.width).toBe('900px');
+    expect(config.maxWidth).toBe('95vw');
   });
 
   it('should compute getters correctly', () => {

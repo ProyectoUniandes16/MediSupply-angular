@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   RegistrarProductoRequest,
   RegistrarProductoResponse,
-  ObtenerProductosResponse
+  ObtenerProductosResponse,
+  ObtenerProductoDetalleResponse,
+  ProductoDetalle
 } from '../models/producto.models';
 
 /**
@@ -256,6 +258,30 @@ export class ProductoHttpService {
     }).pipe(
       catchError(error => {
         console.error('Error al obtener productos:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene el detalle de un producto por su ID
+   * 
+   * @param id - ID del producto a obtener
+   * @returns Observable con el detalle del producto
+   * 
+   * Endpoint: GET /api/producto/{id}
+   * 
+   * @example
+   * this.productoHttpService.obtenerProductoPorId(1).subscribe({
+   *   next: (producto) => console.log('Producto:', producto),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerProductoPorId(id: number): Observable<ProductoDetalle> {
+    return this.http.get<ObtenerProductoDetalleResponse>(`${this.apiUrl}/producto/${id}`).pipe(
+      map(response => response.data.producto),
+      catchError(error => {
+        console.error(`Error al obtener producto ${id}:`, error);
         return throwError(() => error);
       })
     );

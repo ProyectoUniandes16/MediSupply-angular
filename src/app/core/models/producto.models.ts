@@ -174,3 +174,51 @@ export interface ObtenerProductosResponse {
     productos: Producto[];
   };
 }
+
+/**
+ * Interfaz para la información de certificación de un producto
+ */
+export interface Certificacion {
+  id: number;
+  tipo_certificacion: string;
+  nombre_archivo: string;
+  tamano_archivo: number;
+  url_descarga: string;
+  fecha_emision: string;
+  fecha_vencimiento: string;
+  estado: string;
+}
+
+/**
+ * Interfaz para la información de inventario de un producto
+ */
+export interface InventarioProducto {
+  cantidad_disponible: number;
+  tiene_stock: boolean;
+}
+
+/**
+ * Interfaz para el detalle completo de un producto
+ */
+export interface ProductoDetalle {
+  id: number;
+  nombre: string;
+  codigo_sku: string;
+  categoria: string;
+  precio_unitario: number;
+  condiciones_almacenamiento: string;
+  fecha_vencimiento: string;
+  estado: string;
+  proveedor_id: number;
+  inventario: InventarioProducto;
+  certificaciones: Certificacion[];
+}
+
+/**
+ * Interfaz para la respuesta de obtención de detalle de producto
+ */
+export interface ObtenerProductoDetalleResponse {
+  data: {
+    producto: ProductoDetalle;
+  };
+}

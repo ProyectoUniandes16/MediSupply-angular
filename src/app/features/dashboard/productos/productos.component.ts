@@ -16,6 +16,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarProductoComponent } from './registrar-producto/registrar-producto.component';
 import { CargaMasivaProductosComponent } from './carga-masiva-productos/carga-masiva-productos.component';
+import { DetalleProductoComponent } from './detalle-producto/detalle-producto.component';
 import { ProductoHttpService } from '../../../core/services/producto-http.service';
 import { Producto } from '../../../core/models/producto.models';
 import { Subscription } from 'rxjs';
@@ -272,8 +273,19 @@ export class ProductosComponent implements OnInit {
    * Abre el diálogo con el detalle del producto
    */
   verDetalleProducto(producto: Producto): void {
-    console.log('Ver detalle del producto:', producto);
-    this.snackBar.open('Funcionalidad en desarrollo', 'Cerrar', { duration: 2000 });
+    const dialogRef = this.dialog.open(DetalleProductoComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true,
+      data: {
+        productoId: producto.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      // No necesita recargar la lista al cerrar el detalle
+    });
   }
 
   /**

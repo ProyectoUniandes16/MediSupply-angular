@@ -175,6 +175,79 @@
     "NEW": "Register Product",
     "BULK_UPLOAD": "Bulk Upload",
     "LIST_EMPTY": "Click on \"Register Product\" to add a new product to the inventory.",
+    "RETRY": "Retry",
+    "NO_RESULTS": "No products found with the applied filters",
+    "TABLE": {
+      "NAME": "Name",
+      "SKU": "SKU Code",
+      "UNIT_PRICE": "Unit Price",
+      "AVAILABLE_QUANTITY": "Available Quantity",
+      "STATUS": "Status",
+      "ACTIONS": "Actions",
+      "EDIT_TOOLTIP": "Edit product",
+      "VIEW_TOOLTIP": "View detail",
+      "MORE_OPTIONS": "More options"
+    },
+    "FILTERS": {
+      "SEARCH_PLACEHOLDER": "Search by name...",
+      "SELECT_CATEGORY": "Select Category",
+      "SELECT_STATUS": "Select Status",
+      "ALL_CATEGORIES": "All Categories",
+      "ALL_STATUSES": "All Statuses",
+      "CLEAR": "Clear",
+      "CLEAR_FILTERS": "Clear filters"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "DETAIL": {
+      "TITLE": "Product Detail",
+      "BASIC_INFO": "Basic Information",
+      "STORAGE_INFO": "Storage Information",
+      "INVENTORY_INFO": "Inventory Information",
+      "ID": "ID",
+      "NAME": "Name",
+      "SKU": "SKU Code",
+      "CATEGORY": "Category",
+      "PRICE": "Unit Price",
+      "STATUS": "Status",
+      "STORAGE_CONDITIONS": "Storage Conditions",
+      "EXPIRY_DATE": "Expiry Date",
+      "SUPPLIER_ID": "Supplier ID",
+      "AVAILABLE_QUANTITY": "Available Quantity",
+      "HAS_STOCK": "Stock Available",
+      "IN_STOCK": "In Stock",
+      "OUT_OF_STOCK": "Out of Stock",
+      "CERTIFICATIONS": "Certifications",
+      "NO_CERTIFICATIONS": "No certifications registered for this product",
+      "CERT_TYPE": "Certification Type",
+      "FILE_NAME": "File Name",
+      "EMISSION_DATE": "Issue Date",
+      "EXPIRATION_DATE": "Expiry Date",
+      "DOWNLOAD_CERT": "Download Certification",
+      "CLOSE": "Close",
+      "ERROR_LOADING": "Error loading product detail",
+      "RETRY": "Retry"
+    },
+    "CERTIFICATIONS": {
+      "TITLE": "Certifications",
+      "NO_CERTIFICATIONS": "No certifications registered for this product",
+      "TABLE": {
+        "TYPE": "Type",
+        "FILE": "File",
+        "ISSUE_DATE": "Issue Date",
+        "EXPIRY_DATE": "Expiry Date",
+        "SIZE": "Size",
+        "STATUS": "Status",
+        "ACTIONS": "Actions"
+      },
+      "DOWNLOAD": "Download"
+    },
+    "INVENTORY": {
+      "HAS_STOCK": "In Stock",
+      "NO_STOCK": "Out of Stock"
+    },
     "REGISTER": {
       "TITLE": "Register Product",
       "EDIT_TITLE": "Edit Product",
@@ -213,8 +286,8 @@
     "CATEGORIES": {
       "MEDICAMENTO": "Medicine",
       "INSUMO": "Supply",
-      "EQUIPO": "Equipment",
-      "REACTIVO": "Reagent"
+      "REACTIVO": "Reagent",
+      "DISPOSITIVO": "Device"
     },
     "BULK": {
       "TITLE": "Bulk Product Upload",

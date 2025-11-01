@@ -1,0 +1,212 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>{{ 'PRODUCTOS.DETAIL.TITLE' | translate }}</h2>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="cerrar()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Loading Spinner -->
+    <div class="loading-container" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>{{ 'COMMON.LOADING' | translate }}</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div class="error-message" *ngIf="errorMessage && !isLoading">
+      <mat-icon>error_outline</mat-icon>
+      <p>{{ errorMessage }}</p>
+      <button mat-raised-button color="primary" (click)="cargarDetalleProducto()">
+        {{ 'PRODUCTOS.RETRY' | translate }}
+      </button>
+    </div>
+
+    <!-- Detalle del producto -->
+    <div class="producto-detail" *ngIf="producto && !isLoading && !errorMessage">
+      <!-- Información Básica -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'PRODUCTOS.DETAIL.BASIC_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.DETAIL.ID' | translate }}</label>
+            <p class="monospace">{{ producto.id }}</p>
+          </div>
+
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.FIELDS.NOMBRE' | translate }}</label>
+            <p class="highlight">{{ producto.nombre }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.TABLE.SKU' | translate }}</label>
+            <p class="monospace">{{ producto.codigo_sku }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.FIELDS.CATEGORIA' | translate }}</label>
+            <p>{{ producto.categoria }}</p>
+          </div>
+
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.TABLE.UNIT_PRICE' | translate }}</label>
+            <p class="precio">{{ formatearPrecio(producto.precio_unitario) }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.FIELDS.ESTADO' | translate }}</label>
+            <p>
+              <mat-chip [class]="getEstadoClass(producto.estado)">
+                {{ producto.estado }}
+              </mat-chip>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Información de Almacenamiento -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'PRODUCTOS.DETAIL.STORAGE_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item full-width">
+            <label>{{ 'PRODUCTOS.FIELDS.CONDICIONES_ALMACENAMIENTO' | translate }}</label>
+            <p>{{ producto.condiciones_almacenamiento }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.FIELDS.FECHA_VENCIMIENTO' | translate }}</label>
+            <p>{{ producto.fecha_vencimiento }}</p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.FIELDS.PROVEEDOR' | translate }} ID</label>
+            <p>{{ producto.proveedor_id }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Información de Inventario -->
+      <section class="detail-section">
+        <h3 class="section-title">
+          {{ 'PRODUCTOS.DETAIL.INVENTORY_INFO' | translate }}
+        </h3>
+        
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.TABLE.AVAILABLE_QUANTITY' | translate }}</label>
+            <p [class.stock-warning]="!producto.inventario.tiene_stock">
+              {{ producto.inventario.cantidad_disponible }}
+            </p>
+          </div>
+          
+          <div class="detail-item">
+            <label>{{ 'PRODUCTOS.DETAIL.HAS_STOCK' | translate }}</label>
+            <p>
+              <mat-chip [class]="producto.inventario.tiene_stock ? 'stock-disponible' : 'stock-agotado'">
+                {{ producto.inventario.tiene_stock ? ('PRODUCTOS.DETAIL.IN_STOCK' | translate) : ('PRODUCTOS.DETAIL.OUT_OF_STOCK' | translate) }}
+              </mat-chip>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabla de Certificaciones -->
+      <section class="detail-section" *ngIf="producto.certificaciones && producto.certificaciones.length > 0">
+        <h3 class="section-title">
+          {{ 'PRODUCTOS.DETAIL.CERTIFICATIONS' | translate }}
+        </h3>
+
+        <div class="table-container">
+          <table mat-table [dataSource]="producto.certificaciones" class="certificaciones-table">
+            
+            <!-- Columna Tipo de Certificación -->
+            <ng-container matColumnDef="tipo_certificacion">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.DETAIL.CERT_TYPE' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">{{ cert.tipo_certificacion }}</td>
+            </ng-container>
+
+            <!-- Columna Nombre de Archivo -->
+            <ng-container matColumnDef="nombre_archivo">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.DETAIL.FILE_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">
+                <div class="file-info">
+                  <mat-icon class="file-icon">description</mat-icon>
+                  <span>{{ cert.nombre_archivo }}</span>
+                  <span class="file-size">({{ formatearTamanoArchivo(cert.tamano_archivo) }})</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Columna Fecha de Emisión -->
+            <ng-container matColumnDef="fecha_emision">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.DETAIL.EMISSION_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">{{ formatearFecha(cert.fecha_emision) }}</td>
+            </ng-container>
+
+            <!-- Columna Fecha de Vencimiento -->
+            <ng-container matColumnDef="fecha_vencimiento">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.DETAIL.EXPIRATION_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">{{ cert.fecha_vencimiento }}</td>
+            </ng-container>
+
+            <!-- Columna Estado -->
+            <ng-container matColumnDef="estado">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.TABLE.STATUS' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">
+                <mat-chip [class]="getEstadoClass(cert.estado)">
+                  {{ cert.estado }}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <!-- Columna Acciones -->
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.TABLE.ACTIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let cert">
+                <button 
+                  mat-icon-button 
+                  (click)="descargarCertificacion(cert)"
+                  [matTooltip]="'PRODUCTOS.DETAIL.DOWNLOAD_CERT' | translate">
+                  <mat-icon>download</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- Mensaje si no hay certificaciones -->
+      <section class="detail-section" *ngIf="!producto.certificaciones || producto.certificaciones.length === 0">
+        <h3 class="section-title">
+          {{ 'PRODUCTOS.DETAIL.CERTIFICATIONS' | translate }}
+        </h3>
+        <div class="no-certifications">
+          <mat-icon>info</mat-icon>
+          <p>{{ 'PRODUCTOS.DETAIL.NO_CERTIFICATIONS' | translate }}</p>
+        </div>
+      </section>
+    </div>
+  </mat-dialog-content>
+
+  <!-- Acciones del diálogo -->
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button (click)="cerrar()">
+      {{ 'COMMON.CLOSE' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

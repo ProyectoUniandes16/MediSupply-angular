@@ -18,12 +18,20 @@ module.exports = {
     "suppressAll": true
   },
   "coverageReporter": {
-    "dir": require("path").join(__dirname, "./coverage/medysupply-angular"),
+    "dir": require("node:path").join(__dirname, "./coverage/medysupply-angular"),
     "subdir": ".",
     "reporters": [
       { "type": "html" },
       { "type": "text-summary" }
-    ]
+    ],
+    "check": {
+      "global": {
+        "statements": 85,
+        "branches": 70,
+        "functions": 85,
+        "lines": 85
+      }
+    }
   },
   "reporters": ["progress", "kjhtml"],
   "browsers": ["Chrome"],

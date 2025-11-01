@@ -174,6 +174,79 @@
     "NEW": "Registrar Producto",
     "BULK_UPLOAD": "Carga Masiva",
     "LIST_EMPTY": "Haz clic en \"Registrar Producto\" para agregar un nuevo producto al inventario.",
+    "RETRY": "Reintentar",
+    "NO_RESULTS": "No se encontraron productos con los filtros aplicados",
+    "TABLE": {
+      "NAME": "Nombre",
+      "SKU": "Código SKU",
+      "UNIT_PRICE": "Precio Unitario",
+      "AVAILABLE_QUANTITY": "Cantidad Disponible",
+      "STATUS": "Estado",
+      "ACTIONS": "Acciones",
+      "EDIT_TOOLTIP": "Editar producto",
+      "VIEW_TOOLTIP": "Ver detalle",
+      "MORE_OPTIONS": "Más opciones"
+    },
+    "FILTERS": {
+      "SEARCH_PLACEHOLDER": "Buscar por nombre...",
+      "SELECT_CATEGORY": "Seleccione Categoría",
+      "SELECT_STATUS": "Seleccione Estado",
+      "ALL_CATEGORIES": "Todas las Categorías",
+      "ALL_STATUSES": "Todos los Estados",
+      "CLEAR": "Limpiar",
+      "CLEAR_FILTERS": "Limpiar filtros"
+    },
+    "STATUS": {
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo"
+    },
+    "DETAIL": {
+      "TITLE": "Detalle del Producto",
+      "BASIC_INFO": "Información Básica",
+      "STORAGE_INFO": "Información de Almacenamiento",
+      "INVENTORY_INFO": "Información de Inventario",
+      "ID": "ID",
+      "NAME": "Nombre",
+      "SKU": "Código SKU",
+      "CATEGORY": "Categoría",
+      "PRICE": "Precio Unitario",
+      "STATUS": "Estado",
+      "STORAGE_CONDITIONS": "Condiciones de Almacenamiento",
+      "EXPIRY_DATE": "Fecha de Vencimiento",
+      "SUPPLIER_ID": "ID Proveedor",
+      "AVAILABLE_QUANTITY": "Cantidad Disponible",
+      "HAS_STOCK": "Stock Disponible",
+      "IN_STOCK": "En Stock",
+      "OUT_OF_STOCK": "Sin Stock",
+      "CERTIFICATIONS": "Certificaciones",
+      "NO_CERTIFICATIONS": "No hay certificaciones registradas para este producto",
+      "CERT_TYPE": "Tipo de Certificación",
+      "FILE_NAME": "Nombre del Archivo",
+      "EMISSION_DATE": "Fecha de Emisión",
+      "EXPIRATION_DATE": "Fecha de Vencimiento",
+      "DOWNLOAD_CERT": "Descargar Certificación",
+      "CLOSE": "Cerrar",
+      "ERROR_LOADING": "Error al cargar el detalle del producto",
+      "RETRY": "Reintentar"
+    },
+    "CERTIFICATIONS": {
+      "TITLE": "Certificaciones",
+      "NO_CERTIFICATIONS": "No hay certificaciones registradas para este producto",
+      "TABLE": {
+        "TYPE": "Tipo",
+        "FILE": "Archivo",
+        "ISSUE_DATE": "Fecha de Emisión",
+        "EXPIRY_DATE": "Fecha de Vencimiento",
+        "SIZE": "Tamaño",
+        "STATUS": "Estado",
+        "ACTIONS": "Acciones"
+      },
+      "DOWNLOAD": "Descargar"
+    },
+    "INVENTORY": {
+      "HAS_STOCK": "En Stock",
+      "NO_STOCK": "Sin Stock"
+    },
     "REGISTER": {
       "TITLE": "Registrar Producto",
       "EDIT_TITLE": "Editar Producto",
@@ -208,8 +281,8 @@
     "CATEGORIES": {
       "MEDICAMENTO": "Medicamento",
       "INSUMO": "Insumo",
-      "EQUIPO": "Equipo",
-      "REACTIVO": "Reactivo"
+      "REACTIVO": "Reactivo",
+      "DISPOSITIVO": "Dispositivo"
     },
     "BULK": {
       "TITLE": "Carga Masiva de Productos",

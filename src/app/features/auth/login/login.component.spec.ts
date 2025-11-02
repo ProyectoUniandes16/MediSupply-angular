@@ -19,13 +19,14 @@ describe('LoginComponent', () => {
     nombre: 'Test',
     apellido: 'User',
     email: 'test@example.com',
+    rol: 'gerente',
     is_active: true,
     created_at: '2025-10-10T01:27:40.334026',
     updated_at: '2025-10-10T01:27:40.334028'
   };
 
   beforeEach(async () => {
-    const authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
+    const authServiceSpy = jasmine.createSpyObj('AuthService', ['login', 'logout']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -94,7 +95,14 @@ describe('LoginComponent', () => {
   });
 
   it('should call authService.login on submit', () => {
-    authService.login.and.returnValue(of(mockUser));
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: mockUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
 
     component.loginForm.patchValue({
       email: 'test@example.com',
@@ -107,7 +115,14 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to dashboard on successful login', () => {
-    authService.login.and.returnValue(of(mockUser));
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: mockUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
 
     component.loginForm.patchValue({
       email: 'test@example.com',
@@ -160,7 +175,14 @@ describe('LoginComponent', () => {
   });
 
   it('should set isLoading to true during login', () => {
-    authService.login.and.returnValue(of(mockUser));
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: mockUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
 
     component.loginForm.patchValue({
       email: 'test@example.com',
@@ -171,6 +193,53 @@ describe('LoginComponent', () => {
 
     // isLoading should be false after subscription completes
     expect(component.isLoading).toBe(false);
+  });
+
+  it('should reject login when user does not have gerente role', () => {
+    const nonGerenteUser: User = {
+      ...mockUser,
+      rol: 'vendedor'
+    };
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: nonGerenteUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
+
+    component.loginForm.patchValue({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+
+    component.onSubmit();
+
+    expect(authService.logout).toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(component.errorMessage).toBe('No tienes permisos para acceder al sistema.');
+  });
+
+  it('should allow login when user has gerente role', () => {
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: mockUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
+
+    component.loginForm.patchValue({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+
+    component.onSubmit();
+
+    expect(authService.logout).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should mark all fields as touched when form is invalid on submit', () => {
@@ -222,7 +291,14 @@ describe('LoginComponent', () => {
 
   it('should clear error message on new submit attempt', () => {
     component.errorMessage = 'Previous error';
-    authService.login.and.returnValue(of(mockUser));
+    const mockResponse = {
+      data: {
+        access_token: 'test-token',
+        user: mockUser
+      },
+      message: 'Login exitoso'
+    };
+    authService.login.and.returnValue(of(mockResponse));
 
     component.loginForm.patchValue({
       email: 'test@example.com',

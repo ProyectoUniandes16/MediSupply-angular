@@ -34,11 +34,12 @@ describe('ProductoHttpService', () => {
       nombre: 'Producto Test',
       codigo_sku: 'SKU-001',
       categoria: 'medicamento',
-      precio_unitario: 100.50,
+  precio_unitario: 100.5,
       condiciones_almacenamiento: 'Temperatura ambiente',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 10,
       certificaciones: [mockFile]
     };
 
@@ -69,8 +70,9 @@ describe('ProductoHttpService', () => {
       precio_unitario: 100.50,
       condiciones_almacenamiento: 'Temperatura ambiente',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 5,
       certificaciones: [mockFile]
     };
 
@@ -87,8 +89,9 @@ describe('ProductoHttpService', () => {
       precio_unitario: 0,
       condiciones_almacenamiento: '',
       fecha_vencimiento: '',
-      bodega: '',
+      ubicacion: '',
       lote: '',
+      cantidad_inicial: 0,
       certificaciones: []
     };
 
@@ -107,15 +110,18 @@ describe('ProductoHttpService', () => {
       condicionesAlmacenamiento: 'Temperatura ambiente',
       fechaVencimiento: '2026-12-31',
       bodega: 'bodega_principal',
-      lote: 'LOTE-001'
+      lote: 'LOTE-001',
+      cantidadInicial: '7'
     };
 
     const result = service.mapearFormularioARequest(formValue, [mockFile]);
 
     expect(result.nombre).toBe('Producto Test');
     expect(result.codigo_sku).toBe('SKU-001');
-    expect(result.precio_unitario).toBe(100.50);
+  expect(result.precio_unitario).toBe(100.5);
     expect(result.certificaciones.length).toBe(1);
+    expect(result.ubicacion).toBe('bodega_principal');
+    expect(result.cantidad_inicial).toBe(7);
   });
 
   it('should format fecha_vencimiento to DD/MM/AAAA when registering producto', () => {
@@ -124,11 +130,12 @@ describe('ProductoHttpService', () => {
       nombre: 'Producto Test',
       codigo_sku: 'SKU-001',
       categoria: 'medicamento',
-      precio_unitario: 100.50,
+  precio_unitario: 100.5,
       condiciones_almacenamiento: 'Temperatura ambiente',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 3,
       certificaciones: [mockFile]
     };
 
@@ -147,8 +154,10 @@ describe('ProductoHttpService', () => {
     
     // Verificar que el FormData contiene la fecha formateada
     const formData = req.request.body as FormData;
-    expect(formData.get('fecha_vencimiento')).toBe('31/12/2026');
-    expect(formData.get('fecha_vencimiento_cert')).toBe('31/12/2026');
+  expect(formData.get('fecha_vencimiento')).toBe('31/12/2026');
+  expect(formData.get('fecha_vencimiento_cert')).toBe('31/12/2026');
+  expect(formData.get('ubicacion')).toBe('bodega_principal');
+  expect(formData.get('cantidad_inicial')).toBe('3');
     
     req.flush(mockResponse);
   });
@@ -165,8 +174,9 @@ describe('ProductoHttpService', () => {
       precio_unitario: 10,
       condiciones_almacenamiento: 'Condiciones',
       fecha_vencimiento: '2099-12-31',
-      bodega: 'principal',
+      ubicacion: 'principal',
       lote: 'L1',
+      cantidad_inicial: 1,
       certificaciones: [bigFile, wrongTypeFile]
     };
 
@@ -181,11 +191,54 @@ describe('ProductoHttpService', () => {
     const pastDate = '2000-01-01';
     const reqPast: RegistrarProductoRequest = {
       nombre: 'Prod', codigo_sku: 'S', categoria: 'medicamento', precio_unitario: 1,
-      condiciones_almacenamiento: 'x', fecha_vencimiento: pastDate, bodega: 'b', lote: 'l', certificaciones: [mockFile]
+      condiciones_almacenamiento: 'x', fecha_vencimiento: pastDate, ubicacion: 'b', lote: 'l', cantidad_inicial: 2, certificaciones: [mockFile]
     };
     const result = service.validarDatosProducto(reqPast);
     expect(result.valid).toBeFalse();
     expect(result.errors.some(e => e.includes('debe ser futura'))).toBeTrue();
+  });
+
+  it('should get product inventories by id', () => {
+    const mockInventarios = {
+      data: {
+        inventarios: [
+          {
+            id: 'uuid-1',
+            productoId: 52,
+            ubicacion: 'bodega_refrigerada',
+            cantidad: 350,
+            usuarioCreacion: '2',
+            usuarioActualizacion: '2',
+            fechaCreacion: '2025-11-02T03:34:12.044373',
+            fechaActualizacion: '2025-11-02T03:34:12.044373'
+          }
+        ],
+        productoId: '52',
+        source: 'cache',
+        total: 1,
+        totalCantidad: 350
+      }
+    };
+
+    service.obtenerInventariosProducto(52).subscribe(resp => {
+      expect(resp.data.inventarios.length).toBe(1);
+      expect(resp.data.totalCantidad).toBe(350);
+    });
+
+    const req = httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/producto/52/inventarios');
+    req.flush(mockInventarios);
+  });
+
+  it('should propagate error when obtenerInventariosProducto fails', () => {
+    service.obtenerInventariosProducto(77).subscribe({
+      next: () => fail('should error'),
+      error: (err) => {
+        expect(err.status).toBe(500);
+      }
+    });
+
+    const req = httpMock.expectOne(r => r.method === 'GET' && r.url === '/api/producto/77/inventarios');
+    req.flush({ message: 'server error' }, { status: 500, statusText: 'Server Error' });
   });
 
   it('should format date from string and Date via private formatearFecha', () => {

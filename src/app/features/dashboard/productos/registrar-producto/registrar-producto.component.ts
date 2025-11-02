@@ -83,6 +83,7 @@ export class RegistrarProductoComponent implements OnInit {
       fechaVencimiento: ['', Validators.required],
       bodega: ['', Validators.required],
       lote: ['', Validators.required],
+      cantidadInicial: ['', [Validators.required, Validators.min(1)]],
       estado: ['', Validators.required]
     });
   }

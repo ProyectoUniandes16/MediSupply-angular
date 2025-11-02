@@ -42,8 +42,30 @@ describe('DetalleProductoComponent', () => {
   } as any;
 
   beforeEach(async () => {
-    productoService = jasmine.createSpyObj('ProductoHttpService', ['obtenerProductoPorId']);
+    const inventariosMock = {
+      data: {
+        inventarios: [
+          {
+            id: '81f048a9-aa6e-4a85-b730-b7a839d656f0',
+            productoId: 1,
+            ubicacion: 'bodega_refrigerada',
+            cantidad: 350,
+            usuarioCreacion: '2',
+            usuarioActualizacion: '2',
+            fechaCreacion: '2025-11-02T03:34:12.044373',
+            fechaActualizacion: '2025-11-02T03:34:12.044373'
+          }
+        ],
+        productoId: '1',
+        source: 'cache',
+        total: 1,
+        totalCantidad: 350
+      }
+    };
+
+    productoService = jasmine.createSpyObj('ProductoHttpService', ['obtenerProductoPorId', 'obtenerInventariosProducto']);
     productoService.obtenerProductoPorId.and.returnValue(of(detalleMock));
+    productoService.obtenerInventariosProducto.and.returnValue(of(inventariosMock as any));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -75,6 +97,19 @@ describe('DetalleProductoComponent', () => {
     expect(compiled.textContent).toContain('Paracetamol');
   });
 
+  it('should load and render inventory table', async () => {
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(productoService.obtenerInventariosProducto).toHaveBeenCalledWith(1);
+    expect(component.inventarios.length).toBeGreaterThan(0);
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const table = compiled.querySelector('.inventarios-table');
+    expect(table).toBeTruthy();
+    expect(compiled.textContent).toContain('bodega_refrigerada');
+    expect(compiled.textContent).toContain('350');
+  });
+
   it('should show error message when service fails and allow retry', fakeAsync(() => {
     productoService.obtenerProductoPorId.and.returnValue(throwError(() => new Error('fail')));
     component.cargarDetalleProducto();
@@ -94,6 +129,18 @@ describe('DetalleProductoComponent', () => {
 
     compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.producto-detail')).toBeTruthy();
+  }));
+
+  it('should handle inventories error gracefully', fakeAsync(() => {
+    productoService.obtenerInventariosProducto.and.returnValue(throwError(() => new Error('inv error')));
+    component.cargarInventarios();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.inventarios.length).toBe(0);
+    const compiled = fixture.nativeElement as HTMLElement;
+    const empty = compiled.querySelector('.no-inventarios');
+    expect(empty).toBeTruthy();
   }));
 
   it('should format helpers correctly', () => {

@@ -159,11 +159,12 @@ describe('RegistrarProductoComponent', () => {
       nombreProducto: 'Test Producto',
       codigoSku: 'SKU-001',
       categoria: 'medicamento',
-      precioUnitario: 100.50,
+      precioUnitario: 100.5,
       condicionesAlmacenamiento: 'Temp ambiente',
       fechaVencimiento: '2026-12-31',
       bodega: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidadInicial: 5,
       estado: 'activo'
     });
 
@@ -180,11 +181,12 @@ describe('RegistrarProductoComponent', () => {
       nombreProducto: 'Test Producto',
       codigoSku: 'SKU-001',
       categoria: 'medicamento',
-      precioUnitario: 100.50,
+      precioUnitario: 100.5,
       condicionesAlmacenamiento: 'Temp ambiente',
       fechaVencimiento: '2026-12-31',
       bodega: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidadInicial: 10,
       estado: 'activo'
     });
 
@@ -192,11 +194,12 @@ describe('RegistrarProductoComponent', () => {
       nombre: 'Test Producto',
       codigo_sku: 'SKU-001',
       categoria: 'medicamento',
-      precio_unitario: 100.50,
+      precio_unitario: 100.5,
       condiciones_almacenamiento: 'Temp ambiente',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 10,
       certificaciones: [mockFile]
     };
 
@@ -205,11 +208,12 @@ describe('RegistrarProductoComponent', () => {
       nombre: 'Test Producto',
       codigo_sku: 'SKU-001',
       categoria: 'medicamento',
-      precio_unitario: 100.50,
+      precio_unitario: 100.5,
       condiciones_almacenamiento: 'Temp ambiente',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 10,
       certificaciones_urls: ['http://example.com/cert.pdf'],
       created_at: '2025-10-14T22:00:00.000000',
       updated_at: '2025-10-14T22:00:00.000000'
@@ -238,6 +242,7 @@ describe('RegistrarProductoComponent', () => {
       fechaVencimiento: '2026-12-31',
       bodega: 'bodega_principal',
       lote: 'L',
+      cantidadInicial: 1,
       estado: 'activo'
     });
 
@@ -248,8 +253,9 @@ describe('RegistrarProductoComponent', () => {
       precio_unitario: 100,
       condiciones_almacenamiento: 'Temp',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'L',
+      cantidad_inicial: 1,
       certificaciones: [mockFile]
     };
 
@@ -278,6 +284,7 @@ describe('RegistrarProductoComponent', () => {
       fechaVencimiento: '2026-12-31',
       bodega: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidadInicial: 2,
       estado: 'activo'
     });
 
@@ -288,8 +295,9 @@ describe('RegistrarProductoComponent', () => {
       precio_unitario: 100,
       condiciones_almacenamiento: 'Temp',
       fecha_vencimiento: '2026-12-31',
-      bodega: 'bodega_principal',
+      ubicacion: 'bodega_principal',
       lote: 'LOTE-001',
+      cantidad_inicial: 2,
       certificaciones: [mockFile]
     };
 

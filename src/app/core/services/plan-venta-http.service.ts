@@ -33,12 +33,13 @@ export class PlanVentaHttpService {
    * const request: RegistrarPlanVentaRequest = {
    *   nombre_plan: 'Plan Q1 2025',
    *   gerente_id: 'uuid-gerente',
-   *   vendedor_id: 'uuid-vendedor',
+   *   vendedores_ids: ['uuid-vendedor-1', 'uuid-vendedor-2'],
    *   periodo: '2025-01',
    *   meta_ingresos: 50000.00,
    *   meta_visitas: 100,
    *   meta_clientes_nuevos: 20,
-   *   estado: 'activo'
+   *   estado: 'activo',
+   *   plan_id: 'uuid-plan-opcional'
    * };
    * 
    * this.planVentaHttpService.registrarPlanVenta(request).subscribe({
@@ -78,9 +79,9 @@ export class PlanVentaHttpService {
       errors.push('El gerente es obligatorio');
     }
 
-    // Validar vendedor_id
-    if (!data.vendedor_id || data.vendedor_id.trim().length === 0) {
-      errors.push('El vendedor es obligatorio');
+    // Validar vendedores_ids
+    if (!data.vendedores_ids || !Array.isArray(data.vendedores_ids) || data.vendedores_ids.length === 0) {
+      errors.push('Debe seleccionar al menos un vendedor');
     }
 
     // Validar periodo
@@ -126,12 +127,13 @@ export class PlanVentaHttpService {
     return {
       nombre_plan: formValue.nombrePlan,
       gerente_id: formValue.gerenteId || 'default-gerente-id', // Por ahora usamos un ID por defecto
-      vendedor_id: formValue.vendedorId,
+      vendedores_ids: formValue.vendedoresIds || [],
       periodo: formValue.periodo,
-      meta_ingresos: parseFloat(formValue.metaIngresos),
-      meta_visitas: parseInt(formValue.metaVisitas, 10),
-      meta_clientes_nuevos: parseInt(formValue.metaClientesNuevos, 10),
-      estado: formValue.estado
+      meta_ingresos: Number.parseFloat(formValue.metaIngresos),
+      meta_visitas: Number.parseInt(formValue.metaVisitas, 10),
+      meta_clientes_nuevos: Number.parseInt(formValue.metaClientesNuevos, 10),
+      estado: formValue.estado,
+      plan_id: formValue.planId
     };
   }
 }

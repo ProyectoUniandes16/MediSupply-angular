@@ -35,7 +35,7 @@ describe('PlanVentaHttpService', () => {
       const mockRequest: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor-1', 'uuid-vendedor-2'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -64,7 +64,7 @@ describe('PlanVentaHttpService', () => {
       const mockRequest: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -90,7 +90,7 @@ describe('PlanVentaHttpService', () => {
       const mockRequest: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -117,7 +117,7 @@ describe('PlanVentaHttpService', () => {
       const validData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -134,7 +134,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: '',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -151,7 +151,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: '',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -164,11 +164,11 @@ describe('PlanVentaHttpService', () => {
       expect(result.errors).toContain('El gerente es obligatorio');
     });
 
-    it('should return error for empty vendedor_id', () => {
+    it('should return error for empty vendedores_ids', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: '',
+        vendedores_ids: [],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -178,14 +178,14 @@ describe('PlanVentaHttpService', () => {
 
       const result = service.validarDatosPlanVenta(invalidData);
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('El vendedor es obligatorio');
+      expect(result.errors).toContain('Debe seleccionar al menos un vendedor');
     });
 
     it('should return error for invalid periodo format', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025/01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -202,7 +202,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 0,
         meta_visitas: 100,
@@ -219,7 +219,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 0,
@@ -236,7 +236,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -253,7 +253,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
@@ -270,7 +270,7 @@ describe('PlanVentaHttpService', () => {
       const invalidData: RegistrarPlanVentaRequest = {
         nombre_plan: '',
         gerente_id: '',
-        vendedor_id: '',
+        vendedores_ids: [],
         periodo: 'invalid',
         meta_ingresos: 0,
         meta_visitas: 0,
@@ -289,7 +289,7 @@ describe('PlanVentaHttpService', () => {
       const formValue = {
         nombrePlan: 'Plan Q1 2025',
         gerenteId: 'uuid-gerente',
-        vendedorId: 'uuid-vendedor',
+        vendedoresIds: ['uuid-vendedor-1', 'uuid-vendedor-2'],
         periodo: '2025-01',
         metaIngresos: '50000',
         metaVisitas: '100',
@@ -299,22 +299,23 @@ describe('PlanVentaHttpService', () => {
 
       const result = service.mapearFormularioARequest(formValue);
 
-      expect(result).toEqual({
+      expect(result).toEqual(jasmine.objectContaining({
         nombre_plan: 'Plan Q1 2025',
         gerente_id: 'uuid-gerente',
-        vendedor_id: 'uuid-vendedor',
+        vendedores_ids: ['uuid-vendedor-1', 'uuid-vendedor-2'],
         periodo: '2025-01',
         meta_ingresos: 50000,
         meta_visitas: 100,
         meta_clientes_nuevos: 20,
         estado: 'activo'
-      });
+      }));
+      expect(result.plan_id).toBeUndefined();
     });
 
     it('should use default gerente_id when not provided', () => {
       const formValue = {
         nombrePlan: 'Plan Q1 2025',
-        vendedorId: 'uuid-vendedor',
+        vendedoresIds: ['uuid-vendedor'],
         periodo: '2025-01',
         metaIngresos: '50000',
         metaVisitas: '100',
@@ -331,7 +332,7 @@ describe('PlanVentaHttpService', () => {
       const formValue = {
         nombrePlan: 'Plan Q1 2025',
         gerenteId: 'uuid-gerente',
-        vendedorId: 'uuid-vendedor',
+        vendedoresIds: ['uuid-vendedor'],
         periodo: '2025-01',
         metaIngresos: '75000.5',
         metaVisitas: '150',

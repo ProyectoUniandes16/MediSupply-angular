@@ -52,6 +52,47 @@
   }
 }
 
+// Tabla de vendedores seleccionados
+.vendedores-table-container {
+  margin: 20px 0;
+  padding: 16px;
+  background-color: #FAFAFA;
+  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+
+  h4 {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #424242;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.vendedores-table {
+  width: 100%;
+  background-color: white;
+
+  th {
+    background-color: #F5F5F5;
+    font-weight: 600;
+    color: #616161;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    color: #424242;
+    font-size: 14px;
+  }
+
+  tr.mat-mdc-row:hover {
+    background-color: #F5F5F5;
+  }
+}
+
 .section-header {
   margin: 24px 0 16px;
   padding-bottom: 8px;

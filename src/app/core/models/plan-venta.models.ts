@@ -9,12 +9,13 @@
 export interface RegistrarPlanVentaRequest {
   nombre_plan: string;
   gerente_id: string;
-  vendedor_id: string;
+  vendedores_ids: string[];
   periodo: string;
   meta_ingresos: number;
   meta_visitas: number;
   meta_clientes_nuevos: number;
   estado: string;
+  plan_id?: string;
 }
 
 /**
@@ -24,12 +25,13 @@ export interface RegistrarPlanVentaResponse {
   id: string;
   nombre_plan: string;
   gerente_id: string;
-  vendedor_id: string;
+  vendedores_ids: string[];
   periodo: string;
   meta_ingresos: number;
   meta_visitas: number;
   meta_clientes_nuevos: number;
   estado: string;
+  plan_id?: string;
   fecha_creacion?: string;
   fecha_actualizacion?: string;
 }
@@ -41,12 +43,13 @@ export interface PlanVenta {
   id: string;
   nombre_plan: string;
   gerente_id: string;
-  vendedor_id: string;
+  vendedores_ids: string[];
   periodo: string;
   meta_ingresos: number;
   meta_visitas: number;
   meta_clientes_nuevos: number;
   estado: string;
+  plan_id?: string;
   fecha_creacion?: string;
   fecha_actualizacion?: string;
 }

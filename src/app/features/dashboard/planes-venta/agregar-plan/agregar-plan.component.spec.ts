@@ -93,7 +93,7 @@ describe('AgregarPlanComponent', () => {
   it('should initialize form with validators', () => {
     expect(component.planForm).toBeDefined();
     expect(component.planForm.get('nombrePlan')).toBeDefined();
-    expect(component.planForm.get('vendedorId')).toBeDefined();
+    expect(component.planForm.get('vendedoresIds')).toBeDefined();
     expect(component.planForm.get('periodo')).toBeDefined();
     expect(component.planForm.get('metaIngresos')).toBeDefined();
     expect(component.planForm.get('metaVisitas')).toBeDefined();
@@ -166,7 +166,7 @@ describe('AgregarPlanComponent', () => {
     const mockRequest = {
       nombre_plan: 'Plan Q1 2025',
       gerente_id: 'default-gerente-id',
-      vendedor_id: '1',
+      vendedores_ids: ['1', '2'],
       periodo: '2025-01',
       meta_ingresos: 50000,
       meta_visitas: 100,
@@ -185,7 +185,7 @@ describe('AgregarPlanComponent', () => {
 
     component.planForm.patchValue({
       nombrePlan: 'Plan Q1 2025',
-      vendedorId: '1',
+      vendedoresIds: ['1', '2'],
       periodo: '2025-01',
       metaIngresos: 50000,
       metaVisitas: 100,
@@ -205,7 +205,7 @@ describe('AgregarPlanComponent', () => {
   it('should not submit invalid form', () => {
     component.planForm.patchValue({
       nombrePlan: '',
-      vendedorId: '',
+      vendedoresIds: [],
       periodo: '',
       metaIngresos: '',
       metaVisitas: '',
@@ -224,7 +224,7 @@ describe('AgregarPlanComponent', () => {
     const mockRequest = {
       nombre_plan: '',
       gerente_id: 'default-gerente-id',
-      vendedor_id: '',
+      vendedores_ids: [],
       periodo: '',
       meta_ingresos: 0,
       meta_visitas: 0,
@@ -240,7 +240,7 @@ describe('AgregarPlanComponent', () => {
 
     component.planForm.patchValue({
       nombrePlan: '',
-      vendedorId: '',
+      vendedoresIds: [],
       periodo: '',
       metaIngresos: 0,
       metaVisitas: 0,
@@ -269,7 +269,7 @@ describe('AgregarPlanComponent', () => {
     const mockRequest = {
       nombre_plan: 'Plan Q1 2025',
       gerente_id: 'default-gerente-id',
-      vendedor_id: '1',
+      vendedores_ids: ['1'],
       periodo: '2025-01',
       meta_ingresos: 50000,
       meta_visitas: 100,
@@ -285,7 +285,7 @@ describe('AgregarPlanComponent', () => {
 
     component.planForm.patchValue({
       nombrePlan: 'Plan Q1 2025',
-      vendedorId: '1',
+      vendedoresIds: ['1'],
       periodo: '2025-01',
       metaIngresos: 50000,
       metaVisitas: 100,
@@ -307,7 +307,7 @@ describe('AgregarPlanComponent', () => {
     const mockRequest = {
       nombre_plan: 'Plan Q1 2025',
       gerente_id: 'default-gerente-id',
-      vendedor_id: '1',
+      vendedores_ids: ['1'],
       periodo: '2025-01',
       meta_ingresos: 50000,
       meta_visitas: 100,
@@ -323,7 +323,7 @@ describe('AgregarPlanComponent', () => {
 
     component.planForm.patchValue({
       nombrePlan: 'Plan Q1 2025',
-      vendedorId: '1',
+      vendedoresIds: ['1'],
       periodo: '2025-01',
       metaIngresos: 50000,
       metaVisitas: 100,
@@ -377,5 +377,15 @@ describe('AgregarPlanComponent', () => {
     
     const loadingOverlay = fixture.nativeElement.querySelector('.loading-overlay');
     expect(loadingOverlay).toBeTruthy();
+  });
+
+  it('should remove a selected vendedor from form when eliminarVendedor is called', () => {
+    // set selected ids
+    component.planForm.patchValue({ vendedoresIds: ['1', '2'] });
+    // call eliminar on vendor object with id '1'
+    const vendedor = component.vendedores.find(v => v.id === '1')!;
+    component.eliminarVendedor(vendedor);
+    const ids: string[] = component.planForm.get('vendedoresIds')?.value || [];
+    expect(ids).toEqual(['2']);
   });
 });

@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { PlanVentaHttpService } from '../../../../core/services/plan-venta-http.service';
 import { VendedorHttpService } from '../../../../core/services/vendedor-http.service';
@@ -28,6 +30,8 @@ import { Vendedor } from '../../../../core/models/vendedor.models';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatTableModule,
+    MatTooltipModule,
     TranslateModule
   ],
   templateUrl: './agregar-plan.component.html',
@@ -39,6 +43,7 @@ export class AgregarPlanComponent implements OnInit {
   isLoadingVendedores = false;
   errorMessage = '';
   vendedores: Vendedor[] = [];
+  displayedColumns: string[] = ['nombre', 'email', 'telefono', 'acciones'];
   
   estados = [
     { value: 'activo', label: 'Activo' },
@@ -57,7 +62,7 @@ export class AgregarPlanComponent implements OnInit {
   ngOnInit(): void {
     this.planForm = this.fb.group({
       nombrePlan: ['', [Validators.required, Validators.minLength(3)]],
-      vendedorId: ['', Validators.required],
+      vendedoresIds: [[], Validators.required],
       periodo: ['', [Validators.required, Validators.pattern(/^\d{4}-\d{2}$/)]],
       metaIngresos: ['', [Validators.required, Validators.min(1)]],
       metaVisitas: ['', [Validators.required, Validators.min(1)]],
@@ -135,6 +140,23 @@ export class AgregarPlanComponent implements OnInit {
   }
 
   /**
+   * Obtiene los vendedores seleccionados basado en los IDs del formulario
+   */
+  get vendedoresSeleccionados(): Vendedor[] {
+    const ids = this.planForm.get('vendedoresIds')?.value || [];
+    return this.vendedores.filter(v => ids.includes(v.id));
+  }
+
+  /**
+   * Elimina un vendedor de la selección
+   */
+  eliminarVendedor(vendedor: Vendedor): void {
+    const ids = this.planForm.get('vendedoresIds')?.value || [];
+    const nuevosIds = ids.filter((id: string) => id !== vendedor.id);
+    this.planForm.patchValue({ vendedoresIds: nuevosIds });
+  }
+
+  /**
    * Guarda el plan de venta
    */
   onSubmit(): void {
@@ -204,9 +226,9 @@ export class AgregarPlanComponent implements OnInit {
       });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
-      Object.keys(this.planForm.controls).forEach(key => {
+      for (const key of Object.keys(this.planForm.controls)) {
         this.planForm.get(key)?.markAsTouched();
-      });
+      }
     }
   }
 

@@ -63,13 +63,15 @@ src/
 │   │   │   ├── auth.models.ts          # Modelos de autenticación
 │   │   │   ├── producto.models.ts      # Modelos de productos
 │   │   │   ├── proveedor.models.ts     # Modelos de proveedores
-│   │   │   └── vendedor.models.ts      # Modelos de vendedores
+│   │   │   ├── vendedor.models.ts      # Modelos de vendedores
+│   │   │   └── plan-venta.models.ts    # Modelos de planes de venta
 │   │   └── services/
 │   │       ├── auth.service.ts         # Servicio de autenticación
 │   │       ├── auth-http.service.ts    # Servicio HTTP de autenticación
 │   │       ├── producto-http.service.ts # Servicio HTTP de productos
 │   │       ├── proveedor-http.service.ts # Servicio HTTP de proveedores
-│   │       └── vendedor-http.service.ts # Servicio HTTP de vendedores
+│   │       ├── vendedor-http.service.ts # Servicio HTTP de vendedores
+│   │       └── plan-venta-http.service.ts # Servicio HTTP de planes de venta
 │   │
 │   ├── features/                       # Módulos de funcionalidad
 │   │   ├── auth/                       # Módulo de autenticación
@@ -104,6 +106,7 @@ src/
 │   │       │   │   ├── registrar-vendedor.component.html
 │   │       │   │   ├── registrar-vendedor.component.scss
 │   │       │   │   └── registrar-vendedor.component.spec.ts
+│   │       │   ├── detalle-vendedor/   # Detalle de vendedor
 │   │       │   ├── vendedores.component.ts
 │   │       │   ├── vendedores.component.html
 │   │       │   ├── vendedores.component.scss
@@ -115,15 +118,27 @@ src/
 │   │       │   │   ├── registrar-producto.component.html
 │   │       │   │   ├── registrar-producto.component.scss
 │   │       │   │   └── registrar-producto.component.spec.ts
-│   │       │   ├── carga-masiva/       # Carga masiva de productos
-│   │       │   │   ├── carga-masiva.component.ts
-│   │       │   │   ├── carga-masiva.component.html
-│   │       │   │   ├── carga-masiva.component.scss
-│   │       │   │   └── carga-masiva.component.spec.ts
+│   │       │   ├── carga-masiva-productos/       # Carga masiva de productos
+│   │       │   │   ├── carga-masiva-productos.component.ts
+│   │       │   │   ├── carga-masiva-productos.component.html
+│   │       │   │   ├── carga-masiva-productos.component.scss
+│   │       │   │   └── carga-masiva-productos.component.spec.ts
+│   │       │   ├── detalle-producto/   # Detalle de producto
 │   │       │   ├── productos.component.ts
 │   │       │   ├── productos.component.html
 │   │       │   ├── productos.component.scss
 │   │       │   └── productos.component.spec.ts
+│   │       │
+│   │       ├── planes-venta/           # Gestión de planes de venta
+│   │       │   ├── agregar-plan/       # Registro de plan de venta
+│   │       │   │   ├── agregar-plan.component.ts
+│   │       │   │   ├── agregar-plan.component.html
+│   │       │   │   ├── agregar-plan.component.scss
+│   │       │   │   └── agregar-plan.component.spec.ts
+│   │       │   ├── planes-venta.component.ts
+│   │       │   ├── planes-venta.component.html
+│   │       │   ├── planes-venta.component.scss
+│   │       │   └── planes-venta.component.spec.ts
 │   │       │
 │   │       └── dashboard.routes.ts
 │   │
@@ -164,7 +179,9 @@ src/
 ### Módulo del Dashboard (DashboardModule)
 
 ### DashboardLayoutComponent
+
 Layout principal con navegación responsiva que incluye:
+
 - Sidenav colapsable con menú de navegación
 - Barra superior con selector de idioma (ES/EN)
 - Indicador de ruta activa (breadcrumb)
@@ -172,7 +189,9 @@ Layout principal con navegación responsiva que incluye:
 - Adaptación automática a dispositivos móviles
 
 ### Módulo de Proveedores
+
 **ProveedoresComponent**: Gestión completa de proveedores
+
 - Tabla con paginación del lado del servidor
 - Filtros por nombre, país y estado
 - Búsqueda en tiempo real
@@ -180,6 +199,7 @@ Layout principal con navegación responsiva que incluye:
 - Modal de registro integrado
 
 **RegistrarProveedorComponent**: Registro de nuevos proveedores
+
 - Formulario reactivo con validación completa
 - Carga múltiple de documentos certificados (PDF, JPG, PNG)
 - Validaciones personalizadas (NIT, email, teléfono)
@@ -188,13 +208,16 @@ Layout principal con navegación responsiva que incluye:
 - Manejo de errores del backend (409 Conflicto, 400 Bad Request)
 
 ### Módulo de Vendedores
+
 **VendedoresComponent**: Gestión de vendedores
+
 - Tabla con información de vendedores
 - Filtros y búsqueda
 - Estados visuales (activo/inactivo)
 - Modal de registro
 
 **RegistrarVendedorComponent**: Registro de vendedores
+
 - Campos separados para nombres y apellidos
 - Selección de zona asignada
 - Validación de email y teléfono
@@ -202,19 +225,23 @@ Layout principal con navegación responsiva que incluye:
 - Soporte multiidioma
 
 ### Módulo de Productos
+
 **ProductosComponent**: Gestión del inventario
+
 - Listado de productos con paginación
 - Filtros avanzados (categoría, proveedor, estado)
 - Acceso rápido a carga masiva
 - Modal de registro de producto individual
 
 **RegistrarProductoComponent**: Registro individual
+
 - Formulario con información básica y adicional
 - Carga de certificaciones sanitarias
 - Validación de SKU único
 - Campos calculados (precio de venta con IVA)
 
 **CargaMasivaComponent**: Importación masiva de productos
+
 - Descarga de plantilla CSV
 - Drag & drop de archivos
 - Validación de formato y contenido
@@ -225,7 +252,9 @@ Layout principal con navegación responsiva que incluye:
 - Resumen de resultados (exitosos/fallidos)
 
 ### Módulo de Autenticación
+
 **LoginComponent**: Pantalla de inicio de sesión
+
 - Formulario reactivo con validación
 - Feedback visual del estado de carga
 - Manejo de errores 401 Unauthorized
@@ -262,13 +291,17 @@ La aplicación está optimizada para:
 ```bash
 # Desarrollo
 npm start                        # Inicia servidor de desarrollo en puerto 4200
+npm run start:no-proxy           # Inicia sin proxy
 npm run build                    # Construye la aplicación para producción
-npm run build:dev                # Construye para desarrollo
 npm run watch                    # Construye en modo watch
 npm test                         # Ejecuta pruebas unitarias
-npm run test:coverage            # Ejecuta pruebas con reporte de cobertura
-npm run test:headless            # Ejecuta pruebas en modo headless
-npm run lint                     # Ejecuta el linter
+
+# E2E / Cypress
+npm run cy:open                  # Abre Cypress en modo interactivo
+npm run cy:run                   # Ejecuta Cypress en modo headless
+npm run cy:run:headless          # Alias explícito para Chrome headless
+npm run cy:monkey                # Levanta la app y corre el monkey headless
+npm run gif:monkey               # Convierte el video del monkey a GIF (requiere ffmpeg)
 
 ```
 
@@ -277,12 +310,12 @@ npm run lint                     # Ejecuta el linter
 El proyecto cuenta con pruebas unitarias exhaustivas utilizando Jasmine y Karma:
 
 **Cobertura actual:**
-- Statements: 86.92%
-- Branches: 74.72%
-- Functions: 83.78%
-- Lines: 88.31%
+
+- Cobertura: se genera un reporte al ejecutar pruebas con cobertura habilitada.
+- Revisa la carpeta `coverage/` para ver el reporte HTML (abre `index.html`).
 
 **Componentes con pruebas:**
+
 - ✅ LoginComponent (100% cobertura)
 - ✅ DashboardLayoutComponent
 - ✅ ProveedoresComponent
@@ -298,10 +331,13 @@ El proyecto cuenta con pruebas unitarias exhaustivas utilizando Jasmine y Karma:
 - ✅ Servicios HTTP (ProveedorHttpService, VendedorHttpService, ProductoHttpService)
 
 **Ejecutar pruebas:**
+
 ```bash
-npm test                              # Modo interactivo
-npm run test:headless                 # Modo headless (CI/CD)
-npm run test:coverage                 # Con reporte de cobertura
+# Ejecutar pruebas unitarias
+ng test                              # Modo interactivo (abre navegador)
+ng test --watch=false                # Corre una sola vez (útil en CI)
+ng test --code-coverage              # Genera reporte de cobertura en /coverage
+ng test --browsers=ChromeHeadless --watch=false   # Headless
 ```
 
 ## 🌐 Internacionalización (i18n)
@@ -309,10 +345,12 @@ npm run test:coverage                 # Con reporte de cobertura
 La aplicación soporta múltiples idiomas mediante @ngx-translate:
 
 **Idiomas soportados:**
+
 - Español (es) - Idioma por defecto
 - Inglés (en)
 
 **Características:**
+
 - Cambio de idioma en tiempo real desde el menú superior
 - Persistencia de la selección en localStorage
 - Traducciones para todos los componentes
@@ -320,10 +358,12 @@ La aplicación soporta múltiples idiomas mediante @ngx-translate:
 - Placeholders y labels contextuales
 
 **Archivos de traducción:**
+
 - `src/assets/i18n/es.json` - Traducciones en español
 - `src/assets/i18n/en.json` - Traducciones en inglés
 
 **Agregar un nuevo idioma:**
+
 1. Crear archivo `src/assets/i18n/[codigo].json`
 2. Copiar estructura de es.json
 3. Traducir todos los textos
@@ -334,6 +374,7 @@ La aplicación soporta múltiples idiomas mediante @ngx-translate:
 La aplicación se comunica con un backend RESTful mediante servicios HTTP:
 
 **Endpoints principales:**
+
 - `POST /auth/login` - Autenticación de usuarios
 - `GET /api/proveedor` - Listar proveedores (con paginación y filtros)
 - `POST /api/proveedor` - Crear proveedor
@@ -342,13 +383,17 @@ La aplicación se comunica con un backend RESTful mediante servicios HTTP:
 - `GET /api/producto` - Listar productos
 - `POST /api/producto` - Crear producto
 - `POST /api/producto/carga-masiva` - Importar productos CSV
+- `GET /api/planes-venta` - Listar planes de venta
+- `POST /api/planes-venta` - Registrar plan de venta
 
 **Configuración:**
+
 - Variables de entorno en `src/environments/`
 - Proxy configuration en `proxy.conf.json` para desarrollo
 - Interceptor automático de tokens JWT
 
 **Manejo de errores:**
+
 - Códigos HTTP estándar (400, 401, 404, 409, 500)
 - Mensajes de error contextuales
 - Reintentos automáticos para errores temporales
@@ -362,6 +407,84 @@ La aplicación se comunica con un backend RESTful mediante servicios HTTP:
 5. **H-6: Reconocimiento antes que recuerdo**: Labels y placeholders descriptivos
 6. **H-7: Flexibilidad y eficiencia**: Atajos, filtros, navegación clara
 7. **H-8: Estética y diseño minimalista**: Interfaz limpia sin elementos innecesarios
+
+## 🐒 Pruebas Monkey (Cypress E2E)
+
+Las pruebas monkey ejercen la UI con interacciones aleatorias tras iniciar sesión, para descubrir errores difíciles de reproducir.
+
+
+Características:
+
+- Login automático con stub de /auth/login (rol 'gerente')
+
+- Navegación por secciones: /dashboard/proveedores, /dashboard/vendedores, /dashboard/productos y /dashboard/planes-venta; ~N acciones por sección
+
+- Re-login automático si la app redirige a /auth/login durante la exploración
+
+- Acciones aleatorias: clicks, tipeo, selects (nativo y Angular Material), scroll y navegación interna
+
+- Capturas de pantalla tras el login, cada N acciones y al finalizar
+
+- Grabación de video en modo headless
+
+
+Ubicación del spec: `cypress/e2e/monkey/monkey.cy.ts`
+
+### Comandos
+
+```bash
+# Abrir Cypress en modo interactivo
+npm run cy:open
+
+# Ejecutar el monkey en headless (requiere la app corriendo en http://localhost:4200)
+npm run cy:run -- --spec cypress/e2e/monkey/monkey.cy.ts --browser chrome --headless
+
+# Levantar la app y correr el monkey automáticamente en headless
+npm run cy:monkey
+
+```
+
+### Variables de entorno (PowerShell)
+
+```powershell
+$env:CYPRESS_ACTIONS_PER_SECTION=200; $env:CYPRESS_DELAY_MS=50; $env:CYPRESS_SNAPSHOT_EVERY=25; npm run cy:monkey
+
+# Limpiar variables
+Remove-Item Env:CYPRESS_ACTIONS_PER_SECTION; Remove-Item Env:CYPRESS_DELAY_MS; Remove-Item Env:CYPRESS_SNAPSHOT_EVERY
+
+```
+
+### Salida (artefactos)
+
+- Screenshots: `cypress/screenshots/monkey.cy.ts/`
+
+- Video: `cypress/videos/monkey.cy.ts.mp4`
+
+
+Nota: el video se genera en modo 
+`run`
+; en modo 
+`open`
+ no se graba por defecto.
+
+Ambos directorios de artefactos están ignorados por Git (.gitignore).
+
+### GIF de ejemplo (opcional)
+
+Puedes convertir el video del monkey a GIF usando ffmpeg para incrustarlo en documentación o PRs. El siguiente script genera `docs/media/monkey.gif` a partir del video más reciente:
+
+
+Requisitos: ffmpeg instalado y disponible en PATH. En Windows puedes instalarlo con Chocolatey: `choco install ffmpeg`
+
+```bash
+# Generar GIF desde el video del monkey
+npm run gif:monkey
+
+```
+
+#### Vista previa
+
+![Recorrido Monkey](docs/media/monkey.gif)
 
 ## 🤝 Contribución
 

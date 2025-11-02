@@ -3,6 +3,17 @@
  */
 
 /**
+ * Información resumida de un vendedor asociado a un plan
+ */
+export interface VendedorPlan {
+  id: string;
+  nombre: string;
+  apellidos: string;
+  correo: string;
+  zona: string;
+}
+
+/**
  * Interfaz para el request de registro de plan de venta
  * Los nombres coinciden con la API del backend
  */
@@ -44,6 +55,7 @@ export interface PlanVenta {
   nombre_plan: string;
   gerente_id: string;
   vendedores_ids: string[];
+  vendedores: VendedorPlan[];
   periodo: string;
   meta_ingresos: number;
   meta_visitas: number;
@@ -53,3 +65,26 @@ export interface PlanVenta {
   fecha_creacion?: string;
   fecha_actualizacion?: string;
 }
+
+/**
+ * Parámetros para consulta de planes de venta
+ */
+export interface ObtenerPlanesVentaParams {
+  page?: number;
+  size?: number;
+  vendedor_id?: string;
+  nombre_plan?: string;
+  estado?: string;
+}
+
+/**
+ * Respuesta paginada de planes de venta
+ */
+export interface ObtenerPlanesVentaResponse {
+  items: PlanVenta[];
+  page: number;
+  pages: number;
+  size: number;
+  total: number;
+}
+

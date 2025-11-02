@@ -251,7 +251,11 @@
     },
     "INVENTORY": {
       "HAS_STOCK": "En Stock",
-      "NO_STOCK": "Sin Stock"
+      "NO_STOCK": "Sin Stock",
+      "LOCATION": "Ubicación",
+      "QUANTITY": "Cantidad",
+      "TOTAL_QUANTITY": "Cantidad Total",
+      "NO_INVENTORY": "No hay registros de inventario para este producto"
     },
     "REGISTER": {
       "TITLE": "Registrar Producto",
@@ -274,6 +278,7 @@
       "DESCRIPCION": "Descripción",
       "PRECIO": "Precio Unitario",
       "CANTIDAD": "Cantidad en Stock",
+      "CANTIDAD_INICIAL": "Cantidad Inicial",
       "CATEGORIA": "Categoría",
       "PROVEEDOR": "Proveedor",
       "CERTIFICACION": "Tiene Certificación",

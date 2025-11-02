@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
-import { ProductoDetalle, Certificacion } from '../../../../core/models/producto.models';
+import { ProductoDetalle, Certificacion, InventarioDetalle } from '../../../../core/models/producto.models';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -30,9 +30,13 @@ import { ProductoDetalle, Certificacion } from '../../../../core/models/producto
 })
 export class DetalleProductoComponent implements OnInit {
   producto: ProductoDetalle | null = null;
+  inventarios: InventarioDetalle[] = [];
+  totalCantidad = 0;
   isLoading = true;
+  isLoadingInventarios = false;
   errorMessage = '';
   displayedColumns: string[] = ['tipo_certificacion', 'nombre_archivo', 'fecha_emision', 'fecha_vencimiento', 'estado', 'acciones'];
+  displayedInventarioColumns: string[] = ['ubicacion', 'cantidad'];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { productoId: number },
@@ -42,6 +46,7 @@ export class DetalleProductoComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarDetalleProducto();
+    this.cargarInventarios();
   }
 
   /**
@@ -61,6 +66,28 @@ export class DetalleProductoComponent implements OnInit {
           console.error('Error al cargar detalle del producto:', error);
           this.errorMessage = 'Error al cargar el detalle del producto. Por favor, intente nuevamente.';
           this.isLoading = false;
+        }
+      });
+  }
+
+  /**
+   * Carga los inventarios del producto desde el backend
+   */
+  cargarInventarios(): void {
+    this.isLoadingInventarios = true;
+
+    this.productoService.obtenerInventariosProducto(this.data.productoId)
+      .subscribe({
+        next: (response) => {
+          this.inventarios = response.data.inventarios;
+          this.totalCantidad = response.data.totalCantidad;
+          this.isLoadingInventarios = false;
+        },
+        error: (error) => {
+          console.error('Error al cargar inventarios del producto:', error);
+          this.inventarios = [];
+          this.totalCantidad = 0;
+          this.isLoadingInventarios = false;
         }
       });
   }

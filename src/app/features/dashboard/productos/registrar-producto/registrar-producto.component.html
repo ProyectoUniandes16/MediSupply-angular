@@ -180,7 +180,7 @@
         </mat-form-field>
       </div>
 
-      <!-- Fila 5: Lote -->
+      <!-- Fila 5: Lote y Cantidad Inicial -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>{{ 'PRODUCTOS.FIELDS.LOTE' | translate }}</mat-label>
@@ -198,6 +198,26 @@
           </button>
           <mat-error *ngIf="productoForm.get('lote')?.invalid && productoForm.get('lote')?.touched">
             {{ getErrorMessage('lote') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>{{ 'PRODUCTOS.FIELDS.CANTIDAD_INICIAL' | translate }}</mat-label>
+          <input 
+            matInput 
+            type="number"
+            [placeholder]="'PRODUCTOS.FIELDS.CANTIDAD_INICIAL' | translate"
+            formControlName="cantidadInicial">
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            *ngIf="productoForm.get('cantidadInicial')?.value"
+            (click)="clearField('cantidadInicial')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="productoForm.get('cantidadInicial')?.invalid && productoForm.get('cantidadInicial')?.touched">
+            {{ getErrorMessage('cantidadInicial') }}
           </mat-error>
         </mat-form-field>
       </div>

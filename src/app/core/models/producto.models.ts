@@ -12,8 +12,9 @@ export interface RegistrarProductoRequest {
   precio_unitario: number;
   condiciones_almacenamiento: string;
   fecha_vencimiento: string;
-  bodega: string;
+  ubicacion: string;
   lote: string;
+  cantidad_inicial: number;
   certificaciones: File[];
 }
 
@@ -220,5 +221,32 @@ export interface ProductoDetalle {
 export interface ObtenerProductoDetalleResponse {
   data: {
     producto: ProductoDetalle;
+  };
+}
+
+/**
+ * Interfaz para un registro de inventario de producto
+ */
+export interface InventarioDetalle {
+  id: string;
+  productoId: number;
+  ubicacion: string;
+  cantidad: number;
+  usuarioCreacion: string;
+  usuarioActualizacion: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+}
+
+/**
+ * Interfaz para la respuesta de inventarios de un producto
+ */
+export interface ObtenerInventariosProductoResponse {
+  data: {
+    productoId: string;
+    inventarios: InventarioDetalle[];
+    total: number;
+    totalCantidad: number;
+    source: string;
   };
 }

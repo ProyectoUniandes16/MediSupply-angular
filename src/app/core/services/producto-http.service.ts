@@ -8,6 +8,7 @@ import {
   RegistrarProductoResponse,
   ObtenerProductosResponse,
   ObtenerProductoDetalleResponse,
+  ObtenerInventariosProductoResponse,
   ProductoDetalle
 } from '../models/producto.models';
 
@@ -45,9 +46,10 @@ export class ProductoHttpService {
     formData.append('precio_unitario', data.precio_unitario.toString());
     formData.append('condiciones_almacenamiento', data.condiciones_almacenamiento);
     formData.append('fecha_vencimiento', fechaFormateada);
-    formData.append('bodega', data.bodega);
+    formData.append('ubicacion', data.ubicacion);
     formData.append('proveedor_id', '1234');
     formData.append('lote', data.lote);
+    formData.append('cantidad_inicial', data.cantidad_inicial.toString());
     formData.append('fecha_vencimiento_cert', fechaFormateada);
     formData.append('tipo_certificacion', 'INVIMA');
 
@@ -118,13 +120,18 @@ export class ProductoHttpService {
     }
 
     // Validar bodega
-    if (!data.bodega || data.bodega.trim().length === 0) {
-      errors.push('La bodega es obligatoria');
+    if (!data.ubicacion || data.ubicacion.trim().length === 0) {
+      errors.push('La ubicación es obligatoria');
     }
 
     // Validar lote
     if (!data.lote || data.lote.trim().length === 0) {
       errors.push('El lote es obligatorio');
+    }
+
+    // Validar cantidad inicial
+    if (!data.cantidad_inicial || data.cantidad_inicial <= 0) {
+      errors.push('La cantidad inicial debe ser mayor a 0');
     }
 
     // Validar certificaciones
@@ -166,8 +173,9 @@ export class ProductoHttpService {
       precio_unitario: Number.parseFloat(formValue.precioUnitario),
       condiciones_almacenamiento: formValue.condicionesAlmacenamiento,
       fecha_vencimiento: formValue.fechaVencimiento,
-      bodega: formValue.bodega,
+      ubicacion: formValue.bodega,
       lote: formValue.lote,
+      cantidad_inicial: Number.parseInt(formValue.cantidadInicial, 10),
       certificaciones: certificaciones
     };
   }
@@ -282,6 +290,29 @@ export class ProductoHttpService {
       map(response => response.data.producto),
       catchError(error => {
         console.error(`Error al obtener producto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene los inventarios de un producto por su ID
+   * 
+   * @param id - ID del producto
+   * @returns Observable con la información de inventarios del producto
+   * 
+   * Endpoint: GET /api/producto/{id}/inventarios
+   * 
+   * @example
+   * this.productoHttpService.obtenerInventariosProducto(52).subscribe({
+   *   next: (response) => console.log('Inventarios:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerInventariosProducto(id: number): Observable<ObtenerInventariosProductoResponse> {
+    return this.http.get<ObtenerInventariosProductoResponse>(`${this.apiUrl}/producto/${id}/inventarios`).pipe(
+      catchError(error => {
+        console.error(`Error al obtener inventarios del producto ${id}:`, error);
         return throwError(() => error);
       })
     );

@@ -19,6 +19,11 @@
     "LOADING": "Cargando...",
     "NO_DATA": "No hay datos disponibles",
     "DOCUMENTS": "Documentos Adjuntados",
+    "ALL": "Todos",
+    "CLEAR_FILTERS": "Limpiar filtros",
+    "MORE_OPTIONS": "Más opciones",
+    "VIEW_DETAIL": "Ver detalle",
+    "RETRY": "Reintentar",
     "PAGINATOR": {
       "ITEMS_PER_PAGE": "Elementos por página:",
       "NEXT_PAGE": "Página siguiente",
@@ -348,6 +353,22 @@
     "SUBTITLE": "Gestiona planes de venta para vendedores",
     "NEW": "Agregar Plan",
     "LIST_EMPTY": "Haz clic en \"Agregar Plan\" para crear un nuevo plan de venta",
+    "NO_RESULTS": "No se encontraron planes de venta con los filtros aplicados",
+    "TABLE": {
+      "ID_PLAN": "ID Plan",
+      "NOMBRE_PLAN": "Nombre Plan",
+      "VENDEDORES": "Vendedores",
+      "GERENTE": "Gerente de Cuenta",
+      "META_INGRESOS": "Meta de Ingresos",
+      "META_VISITAS": "Meta de Visitas",
+      "META_CLIENTES_NUEVOS": "Meta Clientes Nuevos",
+      "ESTADO": "Estado"
+    },
+    "FILTERS": {
+      "SEARCH_NAME": "Buscar por nombre",
+      "SEARCH_NAME_PLACEHOLDER": "Nombre del plan...",
+      "VENDOR": "Vendedor"
+    },
     "REGISTER": {
       "TITLE": "Agregar Plan",
       "SUBTITLE": "Complete la información del proveedor y adjunte las certificaciones sanitarias requeridas",

@@ -19,6 +19,11 @@
     "LOADING": "Loading...",
     "NO_DATA": "No data available",
     "DOCUMENTS": "Attached Documents",
+    "ALL": "All",
+    "CLEAR_FILTERS": "Clear filters",
+    "MORE_OPTIONS": "More options",
+    "VIEW_DETAIL": "View detail",
+    "RETRY": "Retry",
     "PAGINATOR": {
       "ITEMS_PER_PAGE": "Items per page:",
       "NEXT_PAGE": "Next page",
@@ -352,6 +357,22 @@
     "SUBTITLE": "Manage sales plans for sellers",
     "NEW": "Add Plan",
     "LIST_EMPTY": "Click \"Add Plan\" to create a new sales plan",
+    "NO_RESULTS": "No sales plans found with the applied filters",
+    "TABLE": {
+      "ID_PLAN": "Plan ID",
+      "NOMBRE_PLAN": "Plan Name",
+      "VENDEDORES": "Sellers",
+      "GERENTE": "Account Manager",
+      "META_INGRESOS": "Revenue Goal",
+      "META_VISITAS": "Visit Goal",
+      "META_CLIENTES_NUEVOS": "New Customers Goal",
+      "ESTADO": "Status"
+    },
+    "FILTERS": {
+      "SEARCH_NAME": "Search by name",
+      "SEARCH_NAME_PLACEHOLDER": "Plan name...",
+      "VENDOR": "Seller"
+    },
     "REGISTER": {
       "TITLE": "Add Plan",
       "SUBTITLE": "Complete the supplier information and attach the required health certifications",

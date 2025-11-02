@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   RegistrarPlanVentaRequest,
-  RegistrarPlanVentaResponse
+  RegistrarPlanVentaResponse,
+  ObtenerPlanesVentaParams,
+  ObtenerPlanesVentaResponse
 } from '../models/plan-venta.models';
 
 /**
@@ -54,6 +56,58 @@ export class PlanVentaHttpService {
     ).pipe(
       catchError(error => {
         console.error('Error al registrar plan de venta:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene una lista paginada de planes de venta
+   * 
+   * @param params - Parámetros de filtrado y paginación
+   * @returns Observable con la respuesta paginada del servidor
+   * 
+   * Endpoint: GET /api/planes-venta
+   * Query params: page, size, vendedor_id, nombre_plan, estado
+   * 
+   * @example
+   * this.planVentaHttpService.obtenerPlanesVenta({ 
+   *   page: 1, 
+   *   size: 10,
+   *   estado: 'activo'
+   * }).subscribe({
+   *   next: (response) => console.log('Planes:', response.items),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerPlanesVenta(params: ObtenerPlanesVentaParams = {}): Observable<ObtenerPlanesVentaResponse> {
+    let httpParams = new HttpParams();
+
+    // Agregar parámetros de paginación
+    if (params.page) {
+      httpParams = httpParams.set('page', params.page.toString());
+    }
+    if (params.size) {
+      httpParams = httpParams.set('size', params.size.toString());
+    }
+
+    // Agregar filtros
+    if (params.vendedor_id) {
+      httpParams = httpParams.set('vendedor_id', params.vendedor_id);
+    }
+    if (params.nombre_plan && params.nombre_plan.trim().length > 0) {
+      httpParams = httpParams.set('nombre_plan', params.nombre_plan.trim());
+    }
+    if (params.estado) {
+      httpParams = httpParams.set('estado', params.estado);
+    }
+
+    return this.http.get<ObtenerPlanesVentaResponse>(
+      `${this.apiUrl}/planes-venta`,
+      { params: httpParams }
+    ).pipe(
+      catchError(error => {
+        console.error('Error al obtener planes de venta:', error);
         return throwError(() => error);
       })
     );

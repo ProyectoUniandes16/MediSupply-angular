@@ -16,9 +16,205 @@
     </div>
   </div>
 
-  <!-- Estado Vacío -->
-  <div class="empty-state">
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div class="error-message" *ngIf="errorMessage && !isLoading">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" (click)="cargarPlanesVenta()">
+      {{ 'COMMON.RETRY' | translate }}
+    </button>
+  </div>
+
+  <!-- Estado vacío (sin filtros y sin datos) -->
+  <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tienePlanesVenta && !hasFiltrosActivos">
     <mat-icon class="empty-icon">description</mat-icon>
-    <h2>{{ 'PLANES_VENTA.LIST_EMPTY' | translate }}</h2>
+    <p class="empty-message">{{ 'PLANES_VENTA.LIST_EMPTY' | translate }}</p>
+  </div>
+
+  <!-- Barra de Filtros y Tabla (siempre visible cuando no hay error ni loading) -->
+  <div *ngIf="!isLoading && !errorMessage && (tienePlanesVenta || hasFiltrosActivos)">
+    <div class="filters-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'PLANES_VENTA.FILTERS.SEARCH_NAME_PLACEHOLDER' | translate }}</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="aplicarFiltros()"
+          [placeholder]="'PLANES_VENTA.FILTERS.SEARCH_NAME_PLACEHOLDER' | translate">
+        <mat-icon matPrefix>search</mat-icon>
+        <button 
+          mat-icon-button 
+          matSuffix
+          *ngIf="searchTerm"
+          (click)="searchTerm = ''; aplicarFiltros()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'PLANES_VENTA.FILTERS.VENDOR' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedVendedor"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+          <mat-option *ngIf="isLoadingVendedores" disabled>
+            {{ 'COMMON.LOADING' | translate }}...
+          </mat-option>
+          <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor.id">
+            {{ vendedor.nombre }} {{ vendedor.apellidos }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'PLANES_VENTA.TABLE.ESTADO' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedEstado"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button 
+        mat-stroked-button 
+        class="clear-button"
+        (click)="limpiarFiltros()"
+        [disabled]="!searchTerm && !selectedVendedor && !selectedEstado">
+        <mat-icon>close</mat-icon>
+        {{ 'VENDEDORES.FILTERS.CLEAR' | translate }}
+      </button>
+    </div>
+
+    <!-- Tabla de Planes de Venta (solo visible cuando hay datos) -->
+    <div class="table-container" *ngIf="tienePlanesVenta">
+      <table mat-table [dataSource]="planesVenta" class="planes-table">
+        
+        <!-- Columna ID Plan -->
+        <ng-container matColumnDef="id_plan">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.ID_PLAN' | translate }}</th>
+          <td mat-cell *matCellDef="let plan; let i = index">
+            <span class="plan-id">{{ getIdPlanFormateado(plan, i) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Nombre Plan -->
+        <ng-container matColumnDef="nombre_plan">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.NOMBRE_PLAN' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <div class="plan-info">
+              <span class="plan-name">{{ plan.nombre_plan }}</span>
+              <span class="plan-period">{{ plan.periodo }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Vendedores -->
+        <ng-container matColumnDef="vendedores">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.VENDEDORES' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <div class="vendedores-cell">
+              <span *ngIf="plan.vendedores && plan.vendedores.length === 1">
+                {{ plan.vendedores[0].nombre }} {{ plan.vendedores[0].apellidos }}
+              </span>
+              <span *ngIf="plan.vendedores && plan.vendedores.length > 1" 
+                    [matTooltip]="getVendedoresNombres(plan)">
+                {{ plan.vendedores[0].nombre }} {{ plan.vendedores[0].apellidos }}
+                <mat-chip class="count-chip">+{{ plan.vendedores.length - 1 }}</mat-chip>
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        
+        <!-- Columna Meta de Ingresos -->
+        <ng-container matColumnDef="meta_ingresos">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.META_INGRESOS' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <span class="amount">{{ formatearMonto(plan.meta_ingresos) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Meta de Visitas -->
+        <ng-container matColumnDef="meta_visitas">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.META_VISITAS' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <span>{{ plan.meta_visitas }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Meta Clientes Nuevos -->
+        <ng-container matColumnDef="meta_clientes_nuevos">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.META_CLIENTES_NUEVOS' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <span>{{ plan.meta_clientes_nuevos }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PLANES_VENTA.TABLE.ESTADO' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <mat-chip [class]="getEstadoClass(plan.estado)">
+              {{ plan.estado }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let plan">
+            <button 
+              mat-icon-button 
+              (click)="verDetalle(plan)"
+              [matTooltip]="'COMMON.VIEW_DETAIL' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
+              (click)="editarPlan(plan)"
+              [matTooltip]="'COMMON.EDIT' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button 
+              mat-icon-button
+              [matTooltip]="'COMMON.MORE_OPTIONS' | translate">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+      </table>
+    </div>
+
+    <!-- Mensaje cuando no hay resultados después de filtrar -->
+    <div class="no-results" *ngIf="!tienePlanesVenta && hasFiltrosActivos">
+      <mat-icon>search_off</mat-icon>
+      <p>{{ 'PLANES_VENTA.NO_RESULTS' | translate }}</p>
+      <button mat-button color="primary" (click)="limpiarFiltros()">
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <!-- Paginador (solo visible cuando hay datos) -->
+    <mat-paginator
+      *ngIf="tienePlanesVenta"
+      [length]="total"
+      [pageSize]="size"
+      [pageIndex]="page - 1"
+      [pageSizeOptions]="[10, 20, 50, 100]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
   </div>
 </div>

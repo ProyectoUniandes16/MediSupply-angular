@@ -51,7 +51,8 @@
         "EMAIL_INVALID": "Please enter a valid email",
         "PASSWORD_REQUIRED": "Password is required",
         "PASSWORD_MIN": "Password must be at least 6 characters",
-        "LOGIN_FAILED": "Invalid credentials. Please check your email and password."
+        "LOGIN_FAILED": "Invalid credentials. Please check your email and password.",
+        "UNAUTHORIZED_ROLE": "You do not have permission to access the system."
       }
     }
   },

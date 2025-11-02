@@ -20,6 +20,7 @@ describe('AuthHttpService', () => {
         nombre: 'Juan',
         apellido: 'Pérez',
         email: 'usuario@ejemplo.com',
+        rol: 'gerente',
         is_active: true,
         created_at: '2025-10-10T01:27:40.334026',
         updated_at: '2025-10-10T01:27:40.334028'

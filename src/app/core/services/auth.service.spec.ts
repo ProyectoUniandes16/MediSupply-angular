@@ -13,6 +13,7 @@ describe('AuthService', () => {
     nombre: 'Juan',
     apellido: 'Pérez',
     email: 'test@example.com',
+    rol: 'gerente',
     is_active: true,
     created_at: '2025-10-10T01:27:40.334026',
     updated_at: '2025-10-10T01:27:40.334028'
@@ -62,9 +63,9 @@ describe('AuthService', () => {
       rememberMe: false
     };
 
-    service.login(credentials).subscribe(user => {
-      expect(user).toBeTruthy();
-      expect(user.email).toBe('test@example.com');
+    service.login(credentials).subscribe(response => {
+      expect(response).toBeTruthy();
+      expect(response.data.user.email).toBe('test@example.com');
       expect(service.isAuthenticated()).toBeTruthy();
       expect(service.getToken()).toBe('test-token');
       done();

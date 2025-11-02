@@ -38,7 +38,7 @@ export class AuthService {
    * Inicia sesión con las credenciales proporcionadas
    * Realiza una petición HTTP al backend
    */
-  login(credentials: LoginCredentials): Observable<User> {
+  login(credentials: LoginCredentials): Observable<LoginResponse> {
     const loginRequest: LoginRequest = {
       email: credentials.email,
       password: credentials.password
@@ -54,7 +54,6 @@ export class AuthService {
         // Actualizar el subject con el usuario actual
         this.currentUserSubject.next(response.data.user);
       }),
-      map((response: LoginResponse) => response.data.user),
       catchError(error => {
         console.error('Login error:', error);
         return throwError(() => error);

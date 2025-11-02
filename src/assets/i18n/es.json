@@ -51,7 +51,8 @@
         "EMAIL_INVALID": "Ingresa un correo electrónico válido",
         "PASSWORD_REQUIRED": "La contraseña es requerida",
         "PASSWORD_MIN": "La contraseña debe tener al menos 6 caracteres",
-        "LOGIN_FAILED": "Credenciales inválidas. Por favor verifica tu correo y contraseña."
+        "LOGIN_FAILED": "Credenciales inválidas. Por favor verifica tu correo y contraseña.",
+        "UNAUTHORIZED_ROLE": "No tienes permisos para acceder al sistema."
       }
     }
   },

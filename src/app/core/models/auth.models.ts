@@ -14,6 +14,7 @@ export interface User {
   nombre: string;
   apellido: string;
   email: string;
+  rol: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;

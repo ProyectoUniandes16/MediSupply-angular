@@ -34,7 +34,8 @@ export class FakeTranslateLoader implements TranslateLoader {
               EMAIL_REQUIRED: 'El correo electrónico es obligatorio',
               EMAIL_INVALID: 'El correo electrónico no es válido',
               PASSWORD_REQUIRED: 'La contraseña es obligatoria',
-              LOGIN_FAILED: 'Error al iniciar sesión. Verifica tus credenciales.'
+              LOGIN_FAILED: 'Error al iniciar sesión. Verifica tus credenciales.',
+              UNAUTHORIZED_ROLE: 'No tienes permisos para acceder al sistema.'
             }
           }
         },

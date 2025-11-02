@@ -105,8 +105,16 @@ export class LoginComponent implements OnInit {
       this.errorMessage = '';
 
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (response) => {
           this.isLoading = false;
+          
+          // Validar que el usuario tenga rol de gerente
+          if (response.data.user.rol !== 'gerente') {
+            this.errorMessage = this.translate.instant('AUTH.LOGIN.ERRORS.UNAUTHORIZED_ROLE');
+            this.authService.logout();
+            return;
+          }
+          
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {

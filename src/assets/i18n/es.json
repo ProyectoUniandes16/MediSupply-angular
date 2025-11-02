@@ -57,6 +57,7 @@
     "MENU": {
       "PROVEEDORES": "Proveedores",
       "VENDEDORES": "Vendedores",
+      "PLANES_VENTA": "Planes de Venta",
       "PRODUCTOS": "Productos",
       "PROFILE": "Perfil",
       "SETTINGS": "Configuración"
@@ -340,6 +341,43 @@
         "INVALID_FORMAT": "El archivo debe ser formato CSV",
         "FILE_TOO_LARGE": "El archivo es demasiado grande (máx. 10MB)"
       }
+    }
+  },
+  "PLANES_VENTA": {
+    "TITLE": "Planes de Venta",
+    "SUBTITLE": "Gestiona planes de venta para vendedores",
+    "NEW": "Agregar Plan",
+    "LIST_EMPTY": "Haz clic en \"Agregar Plan\" para crear un nuevo plan de venta",
+    "REGISTER": {
+      "TITLE": "Agregar Plan",
+      "SUBTITLE": "Complete la información del proveedor y adjunte las certificaciones sanitarias requeridas",
+      "METAS": "Metas",
+      "SUBMIT": "Registrar Plan",
+      "SUCCESS_MESSAGE": "Plan de venta registrado exitosamente",
+      "ERROR_MESSAGE": "Error al registrar el plan de venta"
+    },
+    "FIELDS": {
+      "NOMBRE_PLAN": "Nombre Plan",
+      "NOMBRE_PLAN_PLACEHOLDER": "Nombre Plan",
+      "VENDEDOR": "Seleccione Vendedores",
+      "VENDEDORES": "Vendedores",
+      "VENDEDORES_SELECCIONADOS": "Vendedores Seleccionados",
+      "SELECCIONAR_VENDEDOR": "Seleccionar Vendedor",
+      "AGREGAR": "Agregar",
+      "PERIODO": "Periodo",
+      "PERIODO_PLACEHOLDER": "Introducir Meta de Visitas",
+      "META_INGRESOS": "Meta de Ingresos",
+      "META_INGRESOS_PLACEHOLDER": "Ingrese meta de ingresos",
+      "META_VISITAS": "Meta de Visitas",
+      "META_VISITAS_PLACEHOLDER": "Ingrese meta de visitas",
+      "META_CLIENTES_NUEVOS": "Meta Clientes Nuevos",
+      "META_CLIENTES_NUEVOS_PLACEHOLDER": "Introducir Meta Clientes Nuevos",
+      "ESTADO": "Seleccione Estado"
+    },
+    "STATUS": {
+      "ACTIVO": "Activo",
+      "INACTIVO": "Inactivo",
+      "PENDIENTE": "Pendiente"
     }
   }
 }

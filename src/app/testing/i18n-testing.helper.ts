@@ -109,6 +109,27 @@ export class FakeTranslateLoader implements TranslateLoader {
             UPDATED_DATE: 'Última Actualización',
             UPDATED_BY: 'Actualizado Por'
           }
+        },
+        PLANES_VENTA: {
+          TITLE: 'Planes de Venta',
+          SUBTITLE: 'Gestiona planes de venta para vendedores',
+          NEW: 'Agregar Plan',
+          REGISTER: {
+            TITLE: 'Agregar Plan',
+            SUBTITLE: 'Complete la información del proveedor y adjunte las certificaciones sanitarias requeridas',
+            METAS: 'Metas',
+            SUBMIT: 'Registrar Plan'
+          },
+          FIELDS: {
+            NOMBRE_PLAN: 'Nombre Plan',
+            VENDEDOR: 'Seleccione Vendedores',
+            ESTADO: 'Seleccione Estado'
+          },
+          STATUS: {
+            ACTIVO: 'Activo',
+            INACTIVO: 'Inactivo',
+            PENDIENTE: 'Pendiente'
+          }
         }
       },
       en: {

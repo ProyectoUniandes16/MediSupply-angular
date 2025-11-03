@@ -127,16 +127,6 @@
           </td>
         </ng-container>
 
-        <!-- Columna Cantidad Disponible -->
-        <ng-container matColumnDef="cantidad_disponible">
-          <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.TABLE.AVAILABLE_QUANTITY' | translate }}</th>
-          <td mat-cell *matCellDef="let producto">
-            <span class="cantidad" [class.cantidad-baja]="producto.cantidad_disponible < 10">
-              {{ producto.cantidad_disponible }}
-            </span>
-          </td>
-        </ng-container>
-
         <!-- Columna Estado -->
         <ng-container matColumnDef="estado">
           <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.TABLE.STATUS' | translate }}</th>

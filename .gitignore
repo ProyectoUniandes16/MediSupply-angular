@@ -30,3 +30,4 @@ yarn-error.log*
 # Cypress artifacts (screenshots and videos from monkey tests)
 /cypress/screenshots/
 /cypress/videos/
+/cypress/results/

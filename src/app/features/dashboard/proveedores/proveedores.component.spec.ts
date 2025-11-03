@@ -222,6 +222,22 @@ describe('ProveedoresComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('should call matDialog.open and reload on successful close', () => {
+    // Aseguramos interceptar cualquier instancia real de MatDialog
+    const openProtoSpy = spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => of(true)
+    } as any);
+    const snackOpenSpy = spyOn(MatSnackBar.prototype, 'open');
+    const cargarSpy = spyOn(component, 'cargarProveedores');
+
+    component.openRegistrarProveedorDialog();
+
+    expect(openProtoSpy).toHaveBeenCalled();
+    // afterClosed(true) dispara recarga y snackbar
+    expect(cargarSpy).toHaveBeenCalled();
+    expect(snackOpenSpy).toHaveBeenCalled();
+  });
+
   it('should reload proveedores after successful registration', () => {
     dialogRefSpyObj.afterClosed.and.returnValue(of(true));
     const cargarSpy = spyOn(component, 'cargarProveedores');
@@ -339,6 +355,31 @@ describe('ProveedoresComponent', () => {
     expect(component.estados[0].label).toBe('Todos');
     expect(component.estados[1].value).toBe('Activo');
     expect(component.estados[2].value).toBe('Inactivo');
+  });
+
+  it('should compute hasFiltrosActivos correctly', () => {
+    component.searchTerm = '';
+    component.selectedPais = 'Todos';
+    component.selectedEstado = 'Todos';
+    expect(component.hasFiltrosActivos).toBeFalse();
+
+    component.searchTerm = 'abc';
+    expect(component.hasFiltrosActivos).toBeTrue();
+
+    component.searchTerm = '';
+    component.selectedPais = 'Colombia';
+    expect(component.hasFiltrosActivos).toBeTrue();
+
+    component.selectedPais = 'Todos';
+    component.selectedEstado = 'Activo';
+    expect(component.hasFiltrosActivos).toBeTrue();
+  });
+
+  it('should return proper chip classes', () => {
+    expect(component.getEstadoClass('Activo')).toBe('estado-activo');
+    expect(component.getEstadoClass('Inactivo')).toBe('estado-inactivo');
+    expect(component.getEstadoCertificacionClass('vigente')).toBe('certificacion-vigente');
+    expect(component.getEstadoCertificacionClass('vencida')).toBe('certificacion-vencida');
   });
 });
 

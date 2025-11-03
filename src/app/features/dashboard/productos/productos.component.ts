@@ -46,7 +46,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './productos.component.scss'
 })
 export class ProductosComponent implements OnInit {
-  displayedColumns: string[] = ['nombre', 'codigo_sku', 'precio_unitario', 'cantidad_disponible', 'estado', 'acciones'];
+  displayedColumns: string[] = ['nombre', 'codigo_sku', 'precio_unitario', 'estado', 'acciones'];
   productos: Producto[] = [];
   
   // Filtros

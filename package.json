@@ -1,6 +1,6 @@
 {
   "name": "medysupply-angular",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
@@ -11,7 +11,7 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:headless": "cypress run --browser chrome --headless",
-  "cy:monkey": "start-server-and-test \"npm start\" http://localhost:4200 \"npm run cy:run:headless -- --spec cypress/e2e/monkey/monkey.cy.ts\"",
+    "cy:monkey": "start-server-and-test \"npm start\" http://localhost:4200 \"npm run cy:run:headless -- --spec cypress/e2e/monkey/monkey.cy.ts\"",
     "gif:monkey": "ffmpeg -y -i cypress/videos/monkey.cy.ts.mp4 -vf fps=10,scale=800:-1:flags=lanczos -loop 0 docs/media/monkey.gif"
   },
   "private": true,

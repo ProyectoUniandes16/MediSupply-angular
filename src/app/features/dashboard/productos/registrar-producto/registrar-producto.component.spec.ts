@@ -173,6 +173,26 @@ describe('RegistrarProductoComponent', () => {
     expect(productoServiceSpy.registrarProducto).not.toHaveBeenCalled();
   });
 
+  it('should show snackbar when no documents attached', () => {
+    const snackOpenSpy = spyOn(MatSnackBar.prototype, 'open');
+    component.productoForm.patchValue({
+      nombreProducto: 'Test Producto',
+      codigoSku: 'SKU-001',
+      categoria: 'medicamento',
+      precioUnitario: 100.5,
+      condicionesAlmacenamiento: 'Temp ambiente',
+      fechaVencimiento: '2026-12-31',
+      bodega: 'bodega_principal',
+      lote: 'LOTE-001',
+      cantidadInicial: 5,
+      estado: 'activo'
+    });
+
+    component.onSubmit();
+
+    expect(snackOpenSpy).toHaveBeenCalled();
+  });
+
   it('should submit successfully with valid data', () => {
     const mockFile = new File(['content'], 'cert.pdf', { type: 'application/pdf' });
     component.documentosAdjuntos = [{ nombre: 'cert.pdf', archivo: mockFile }];
@@ -314,6 +334,63 @@ describe('RegistrarProductoComponent', () => {
       expect(component.errorMessage).toContain('SKU');
       done();
     }, 100);
+  });
+
+  it('should handle 400 bad request error', (done: DoneFn) => {
+    const mockFile = new File(['content'], 'cert.pdf', { type: 'application/pdf' });
+    component.documentosAdjuntos = [{ nombre: 'cert.pdf', archivo: mockFile }];
+
+    component.productoForm.patchValue({
+      nombreProducto: 'Test Producto',
+      codigoSku: 'SKU-001',
+      categoria: 'medicamento',
+      precioUnitario: 100,
+      condicionesAlmacenamiento: 'Temp',
+      fechaVencimiento: '2026-12-31',
+      bodega: 'bodega_principal',
+      lote: 'LOTE-001',
+      cantidadInicial: 2,
+      estado: 'activo'
+    });
+
+    const mockRequest = {
+      nombre: 'Test Producto', codigo_sku: 'SKU-001', categoria: 'medicamento', precio_unitario: 100,
+      condiciones_almacenamiento: 'Temp', fecha_vencimiento: '2026-12-31', ubicacion: 'bodega_principal',
+      lote: 'LOTE-001', cantidad_inicial: 2, certificaciones: [mockFile]
+    };
+
+    productoServiceSpy.mapearFormularioARequest.and.returnValue(mockRequest);
+    productoServiceSpy.validarDatosProducto.and.returnValue({ valid: true, errors: [] });
+    productoServiceSpy.registrarProducto.and.returnValue(
+      throwError(() => ({ status: 400, error: { message: 'Datos inválidos' } }))
+    );
+
+    component.onSubmit();
+
+    setTimeout(() => {
+      expect(component.isLoading).toBe(false);
+      expect(component.errorMessage).toContain('Datos');
+      done();
+    }, 100);
+  });
+
+  it('should trigger file input click', () => {
+    const input = document.createElement('input');
+    input.id = 'fileInput';
+    spyOn(document, 'getElementById').and.returnValue(input);
+    const clickSpy = spyOn(input, 'click');
+
+    component.triggerFileInput();
+
+    expect(document.getElementById).toHaveBeenCalledWith('fileInput');
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('should return minLength error message', () => {
+    const nombreControl = component.productoForm.get('nombreProducto');
+    nombreControl?.setValue('aa');
+    (nombreControl as any).errors = { minLength: { requiredLength: 3 } };
+    expect(component.getErrorMessage('nombreProducto')).toContain('Mínimo');
   });
 
   it('should have categorias list defined', () => {

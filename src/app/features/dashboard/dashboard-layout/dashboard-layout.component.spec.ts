@@ -227,13 +227,14 @@ describe('DashboardLayoutComponent', () => {
   });
 
   it('should have all main navigation items', () => {
-    expect(component.navigationItems.length).toBe(4);
+    expect(component.navigationItems.length).toBe(5);
     
     const routes = component.navigationItems.map(item => item.route);
     expect(routes).toContain('/dashboard/proveedores');
     expect(routes).toContain('/dashboard/vendedores');
     expect(routes).toContain('/dashboard/planes-venta');
     expect(routes).toContain('/dashboard/productos');
+    expect(routes).toContain('/dashboard/pedidos');
   });
 
   it('should call _updateContentMargins after toggle on desktop', (done) => {

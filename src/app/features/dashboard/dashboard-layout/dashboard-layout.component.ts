@@ -49,6 +49,7 @@ export class DashboardLayoutComponent implements OnInit {
   navigationItems: NavigationItem[] = [
     { icon: 'business', label: 'Proveedores', translationKey: 'DASHBOARD.MENU.PROVEEDORES', route: '/dashboard/proveedores' },
     { icon: 'people', label: 'Vendedores', translationKey: 'DASHBOARD.MENU.VENDEDORES', route: '/dashboard/vendedores' },
+    { icon: 'shopping_cart', label: 'Pedidos', translationKey: 'DASHBOARD.MENU.PEDIDOS', route: '/dashboard/pedidos' },
     { icon: 'inventory_2', label: 'Productos', translationKey: 'DASHBOARD.MENU.PRODUCTOS', route: '/dashboard/productos' },
     { icon: 'description', label: 'Planes de venta', translationKey: 'DASHBOARD.MENU.PLANES_VENTA', route: '/dashboard/planes-venta' },
   ];

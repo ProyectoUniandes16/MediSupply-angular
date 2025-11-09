@@ -132,6 +132,17 @@ export class FakeTranslateLoader implements TranslateLoader {
             PENDIENTE: 'Pendiente'
           }
         }
+        ,
+        PEDIDOS: {
+          TITLE: 'Pedidos',
+          SUBTITLE: 'Consulta y filtra los pedidos realizados',
+          LIST_EMPTY: 'No hay pedidos registrados en el sistema.',
+          NO_RESULTS: 'No se encontraron pedidos con los filtros aplicados',
+          FILTERS: {
+            SELECT_SELLER: 'Seleccione Vendedor',
+            CLIENT_ID: 'ID del Cliente'
+          }
+        }
       },
       en: {
         COMMON: {

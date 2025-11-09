@@ -64,6 +64,7 @@
       "PROVEEDORES": "Suppliers",
       "VENDEDORES": "Sellers",
       "PLANES_VENTA": "Sales Plans",
+  "PEDIDOS": "Orders",
       "PRODUCTOS": "Products",
       "PROFILE": "Profile",
       "SETTINGS": "Settings"
@@ -409,6 +410,17 @@
       "ACTIVO": "Active",
       "INACTIVO": "Inactive",
       "PENDIENTE": "Pending"
+    }
+  }
+  ,
+  "PEDIDOS": {
+    "TITLE": "Orders",
+    "SUBTITLE": "Search and filter orders",
+    "LIST_EMPTY": "There are no orders in the system.",
+    "NO_RESULTS": "No orders found with the applied filters",
+    "FILTERS": {
+      "SELECT_SELLER": "Select Seller",
+      "CLIENT_ID": "Client ID"
     }
   }
 }

@@ -7,6 +7,10 @@ import { of, throwError } from 'rxjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
+import { RutaHttpService } from '../../../core/services/ruta-http.service';
+
+// Helper para evitar conflicto de tipos Assertion vs Jasmine
+const jexpect = (v: any) => (expect(v) as any);
 import { ObtenerVendedoresResponse, Vendedor } from '../../../core/models/vendedor.models';
 import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 
@@ -15,6 +19,7 @@ describe('VendedoresComponent', () => {
   let fixture: ComponentFixture<VendedoresComponent>;
   let dialog: MatDialog;
   let vendedorService: VendedorHttpService;
+  let rutaService: RutaHttpService;
 
   const mockVendedoresResponse: ObtenerVendedoresResponse = {
     items: [
@@ -65,6 +70,10 @@ describe('VendedoresComponent', () => {
         {
           provide: VendedorHttpService,
           useValue: jasmine.createSpyObj('VendedorHttpService', ['obtenerVendedores'])
+        },
+        {
+          provide: RutaHttpService,
+          useValue: jasmine.createSpyObj('RutaHttpService', ['obtenerZonas'])
         }
       ]
     }).compileComponents();
@@ -73,10 +82,12 @@ describe('VendedoresComponent', () => {
     translateService.use('es');
 
     dialog = TestBed.inject(MatDialog);
-    vendedorService = TestBed.inject(VendedorHttpService);
+  vendedorService = TestBed.inject(VendedorHttpService);
+  rutaService = TestBed.inject(RutaHttpService);
     
     // Mock del servicio
     (vendedorService.obtenerVendedores as jasmine.Spy).and.returnValue(of(mockVendedoresResponse));
+  (rutaService.obtenerZonas as jasmine.Spy).and.returnValue(of({ data: [], total: 0 }));
 
     fixture = TestBed.createComponent(VendedoresComponent);
     component = fixture.componentInstance;
@@ -84,40 +95,40 @@ describe('VendedoresComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    jexpect(component).toBeTruthy();
   });
 
   it('should have title "Vendedores"', () => {
     const compiled = fixture.nativeElement;
     const title = compiled.querySelector('.title');
-    expect(title.textContent).toContain('Vendedores');
+    jexpect(title.textContent).toContain('Vendedores');
   });
 
   it('should have subtitle', () => {
     const compiled = fixture.nativeElement;
     const subtitle = compiled.querySelector('.subtitle');
-    expect(subtitle.textContent).toContain('Gestiona vendedores');
+    jexpect(subtitle.textContent).toContain('Gestiona vendedores');
   });
 
   it('should have register button', () => {
     const compiled = fixture.nativeElement;
     const button = compiled.querySelector('.register-button');
-    expect(button).toBeTruthy();
-    expect(button.textContent).toContain('Registrar Vendedor');
+    jexpect(button).toBeTruthy();
+    jexpect(button.textContent).toContain('Registrar Vendedor');
   });
 
   it('should call cargarVendedores on init', () => {
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalled();
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalled();
   });
 
   it('should load vendedores successfully', fakeAsync(() => {
     component.cargarVendedores();
     tick();
     
-    expect(component.vendedores.length).toBe(2);
-    expect(component.vendedores[0].nombre).toBe('María');
-    expect(component.total).toBe(2);
-    expect(component.isLoading).toBe(false);
+    jexpect(component.vendedores.length).toBe(2);
+    jexpect(component.vendedores[0].nombre).toBe('María');
+    jexpect(component.total).toBe(2);
+    jexpect(component.isLoading).toBe(false);
   }));
 
   it('should display table when vendedores are loaded', fakeAsync(() => {
@@ -126,7 +137,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const table = fixture.nativeElement.querySelector('.vendedores-table');
-    expect(table).toBeTruthy();
+    jexpect(table).toBeTruthy();
   }));
 
   it('should display correct number of vendedores in table', fakeAsync(() => {
@@ -135,7 +146,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const rows = fixture.nativeElement.querySelectorAll('.vendedores-table tbody tr');
-    expect(rows.length).toBe(2);
+    jexpect(rows.length).toBe(2);
   }));
 
   it('should handle error when loading vendedores', fakeAsync(() => {
@@ -151,9 +162,9 @@ describe('VendedoresComponent', () => {
     newComponent.cargarVendedores();
     tick();
     
-    expect(newComponent.errorMessage).toBeTruthy();
-    expect(newComponent.isLoading).toBe(false);
-    expect(snackBarSpy).toHaveBeenCalled();
+    jexpect(newComponent.errorMessage).toBeTruthy();
+    jexpect(newComponent.isLoading).toBe(false);
+    jexpect(snackBarSpy).toHaveBeenCalled();
   }));
 
   it('should show loading spinner when loading', () => {
@@ -161,7 +172,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const spinner = fixture.nativeElement.querySelector('mat-spinner');
-    expect(spinner).toBeTruthy();
+    jexpect(spinner).toBeTruthy();
   });
 
   it('should show empty state when no vendedores', () => {
@@ -171,7 +182,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const emptyState = fixture.nativeElement.querySelector('.empty-state');
-    expect(emptyState).toBeTruthy();
+    jexpect(emptyState).toBeTruthy();
   });
 
   it('should show error message when error occurs', () => {
@@ -180,8 +191,8 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const errorMsg = fixture.nativeElement.querySelector('.error-message');
-    expect(errorMsg).toBeTruthy();
-    expect(errorMsg.textContent).toContain('Error al cargar');
+    jexpect(errorMsg).toBeTruthy();
+    jexpect(errorMsg.textContent).toContain('Error al cargar');
   });
 
   it('should apply filters when search term changes', fakeAsync(() => {
@@ -189,7 +200,7 @@ describe('VendedoresComponent', () => {
     component.aplicarFiltros();
     tick();
     
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
       jasmine.objectContaining({ nombre: 'María', page: 1 })
     );
   }));
@@ -199,7 +210,7 @@ describe('VendedoresComponent', () => {
     component.aplicarFiltros();
     tick();
     
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
       jasmine.objectContaining({ zona: 'Colombia', page: 1 })
     );
   }));
@@ -209,7 +220,7 @@ describe('VendedoresComponent', () => {
     component.aplicarFiltros();
     tick();
     
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalledWith(
       jasmine.objectContaining({ estado: 'Activo', page: 1 })
     );
   }));
@@ -222,10 +233,10 @@ describe('VendedoresComponent', () => {
     component.limpiarFiltros();
     tick();
     
-    expect(component.searchTerm).toBe('');
-    expect(component.selectedZona).toBe('');
-    expect(component.selectedEstado).toBe('');
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalled();
+    jexpect(component.searchTerm).toBe('');
+    jexpect(component.selectedZona).toBe('');
+    jexpect(component.selectedEstado).toBe('');
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalled();
   }));
 
   it('should handle page change', () => {
@@ -247,9 +258,9 @@ describe('VendedoresComponent', () => {
     
     component.onPageChange(pageEvent);
     
-    expect(component.page).toBe(2); // pageIndex 1 + 1 = page 2
-    expect(component.size).toBe(20);
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalled();
+    jexpect(component.page).toBe(2); // pageIndex 1 + 1 = page 2
+    jexpect(component.size).toBe(20);
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalled();
   });
 
   it('should open registrar vendedor dialog', () => {
@@ -258,7 +269,7 @@ describe('VendedoresComponent', () => {
     
     component.openRegistrarVendedorDialog();
     
-    expect(component['dialog'].open).toHaveBeenCalled();
+    jexpect(component['dialog'].open).toHaveBeenCalled();
   });
 
   it('should reload vendedores after successful registration', fakeAsync(() => {
@@ -270,12 +281,12 @@ describe('VendedoresComponent', () => {
     component.openRegistrarVendedorDialog();
     tick();
     
-    expect(snackBarSpy).toHaveBeenCalledWith(
+    jexpect(snackBarSpy).toHaveBeenCalledWith(
       'Vendedor registrado exitosamente',
       'Cerrar',
       { duration: 3000 }
     );
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalled();
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalled();
   }));
 
   it('should not reload vendedores if dialog is cancelled', fakeAsync(() => {
@@ -287,7 +298,7 @@ describe('VendedoresComponent', () => {
     tick();
     
     const finalCalls = (vendedorService.obtenerVendedores as jasmine.Spy).calls.count();
-    expect(finalCalls).toBe(initialCalls);
+    jexpect(finalCalls).toBe(initialCalls);
   }));
 
   it('should call editarVendedor when edit button is clicked', () => {
@@ -296,7 +307,7 @@ describe('VendedoresComponent', () => {
     
     component.editarVendedor(vendedor);
     
-    expect(component.editarVendedor).toHaveBeenCalledWith(vendedor);
+    jexpect(component.editarVendedor).toHaveBeenCalledWith(vendedor);
   });
 
   it('should show development message when editing vendedor', () => {
@@ -305,7 +316,7 @@ describe('VendedoresComponent', () => {
     
     component.editarVendedor(vendedor);
     
-    expect(snackBarSpy).toHaveBeenCalledWith(
+    jexpect(snackBarSpy).toHaveBeenCalledWith(
       'Funcionalidad en desarrollo',
       'Cerrar',
       { duration: 2000 }
@@ -314,41 +325,41 @@ describe('VendedoresComponent', () => {
 
   it('should return correct estado class for Activo', () => {
     const estadoClass = component.getEstadoClass('Activo');
-    expect(estadoClass).toBe('estado-activo');
+    jexpect(estadoClass).toBe('estado-activo');
   });
 
   it('should return correct estado class for Inactivo', () => {
     const estadoClass = component.getEstadoClass('Inactivo');
-    expect(estadoClass).toBe('estado-inactivo');
+    jexpect(estadoClass).toBe('estado-inactivo');
   });
 
   it('should return true when vendedores exist', () => {
     component.vendedores = mockVendedoresResponse.items;
-    expect(component.tieneVendedores).toBe(true);
+    jexpect(component.tieneVendedores).toBe(true);
   });
 
   it('should return false when no vendedores', () => {
     component.vendedores = [];
-    expect(component.tieneVendedores).toBe(false);
+    jexpect(component.tieneVendedores).toBe(false);
   });
 
   it('should initialize filters with translations', () => {
-    expect(component.zonas.length).toBeGreaterThan(0);
-    expect(component.estados.length).toBeGreaterThan(0);
+    jexpect(component.zonas.length).toBeGreaterThan(0);
+    jexpect(component.estados.length).toBeGreaterThan(0);
   });
 
   it('should have correct table columns', () => {
-    expect(component.displayedColumns).toEqual(['nombre', 'contacto', 'zona', 'estado', 'acciones']);
+    jexpect(component.displayedColumns).toEqual(['nombre', 'contacto', 'zona', 'estado', 'acciones']);
   });
 
   it('should display search field', () => {
     const searchField = fixture.nativeElement.querySelector('.search-field input');
-    expect(searchField).toBeTruthy();
+    jexpect(searchField).toBeTruthy();
   });
 
   it('should display zona filter', () => {
     const zonaFilter = fixture.nativeElement.querySelector('.filter-field mat-select');
-    expect(zonaFilter).toBeTruthy();
+    jexpect(zonaFilter).toBeTruthy();
   });
 
   it('should have clear button disabled when no filters applied', () => {
@@ -358,7 +369,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const clearButton: HTMLButtonElement = fixture.nativeElement.querySelector('.clear-button');
-    expect(clearButton.disabled).toBe(true);
+    jexpect(clearButton.disabled).toBe(true);
   });
 
   it('should have clear button enabled when filters are applied', () => {
@@ -366,7 +377,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const clearButton: HTMLButtonElement = fixture.nativeElement.querySelector('.clear-button');
-    expect(clearButton.disabled).toBe(false);
+    jexpect(clearButton.disabled).toBe(false);
   });
 
   it('should not add empty filters to params', fakeAsync(() => {
@@ -377,9 +388,9 @@ describe('VendedoresComponent', () => {
     tick();
     
     const callArgs = (vendedorService.obtenerVendedores as jasmine.Spy).calls.mostRecent().args[0];
-    expect(callArgs.nombre).toBeUndefined();
-    expect(callArgs.zona).toBeUndefined();
-    expect(callArgs.estado).toBeUndefined();
+    jexpect(callArgs.nombre).toBeUndefined();
+    jexpect(callArgs.zona).toBeUndefined();
+    jexpect(callArgs.estado).toBeUndefined();
   }));
 
   it('should reset page to 1 when applying filters', fakeAsync(() => {
@@ -387,7 +398,7 @@ describe('VendedoresComponent', () => {
     component.aplicarFiltros();
     tick();
     
-    expect(component.page).toBe(1);
+    jexpect(component.page).toBe(1);
   }));
 
   it('should display paginator', fakeAsync(() => {
@@ -396,7 +407,7 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     const paginator = fixture.nativeElement.querySelector('mat-paginator');
-    expect(paginator).toBeTruthy();
+    jexpect(paginator).toBeTruthy();
   }));
 
   it('should show no results message when filtered vendedores is empty', () => {
@@ -409,49 +420,49 @@ describe('VendedoresComponent', () => {
     fixture.detectChanges();
     
     // Debe mostrar el mensaje de no results
-    expect(component.tieneVendedores).toBe(false);
-    expect(component.searchTerm).toBe('test');
+    jexpect(component.tieneVendedores).toBe(false);
+    jexpect(component.searchTerm).toBe('test');
   });
 
   it('should trigger openRegistrarVendedorDialog on button click', () => {
     const spyMethod = spyOn(component, 'openRegistrarVendedorDialog');
     const button: HTMLButtonElement = fixture.nativeElement.querySelector('.register-button');
     button.click();
-    expect(spyMethod).toHaveBeenCalled();
+    jexpect(spyMethod).toHaveBeenCalled();
   });
 
   it('should have mat-icon in register button', () => {
     const icon = fixture.nativeElement.querySelector('.register-button mat-icon');
-    expect(icon).toBeTruthy();
-    expect(icon.textContent).toContain('add');
+    jexpect(icon).toBeTruthy();
+    jexpect(icon.textContent).toContain('add');
   });
 
   it('should render vendedores-container', () => {
     const container = fixture.nativeElement.querySelector('.vendedores-container');
-    expect(container).toBeTruthy();
+    jexpect(container).toBeTruthy();
   });
 
   it('should render header section', () => {
     const header = fixture.nativeElement.querySelector('.header');
-    expect(header).toBeTruthy();
+    jexpect(header).toBeTruthy();
   });
 
   it('should verify button has correct Material attributes', () => {
     const button = fixture.nativeElement.querySelector('.register-button');
-    expect(button.getAttribute('mat-raised-button')).not.toBeNull();
-    expect(button.getAttribute('color')).toBe('primary');
+    jexpect(button.getAttribute('mat-raised-button')).not.toBeNull();
+    jexpect(button.getAttribute('color')).toBe('primary');
   });
 
   it('should have MatDialog injected', () => {
-    expect(component['dialog']).toBeDefined();
+    jexpect(component['dialog']).toBeDefined();
   });
 
   it('should have VendedorHttpService injected', () => {
-    expect(component['vendedorService']).toBeDefined();
+    jexpect(component['vendedorService']).toBeDefined();
   });
 
   it('should have MatSnackBar injected', () => {
-    expect(component['snackBar']).toBeDefined();
+    jexpect(component['snackBar']).toBeDefined();
   });
 
   it('should trim search term before applying filters', fakeAsync(() => {
@@ -460,7 +471,7 @@ describe('VendedoresComponent', () => {
     tick();
     
     const callArgs = (vendedorService.obtenerVendedores as jasmine.Spy).calls.mostRecent().args[0];
-    expect(callArgs.nombre).toBe('María');
+    jexpect(callArgs.nombre).toBe('María');
   }));
 
   it('should update pagination from response', fakeAsync(() => {
@@ -475,45 +486,45 @@ describe('VendedoresComponent', () => {
     component.cargarVendedores();
     tick();
     
-    expect(component.page).toBe(2);
-    expect(component.total).toBe(50);
+    jexpect(component.page).toBe(2);
+    jexpect(component.total).toBe(50);
   }));
 
   it('should return true from hasFiltrosActivos when searchTerm is set', () => {
     component.searchTerm = 'test';
     component.selectedZona = '';
     component.selectedEstado = '';
-    expect(component.hasFiltrosActivos).toBe(true);
+    jexpect(component.hasFiltrosActivos).toBe(true);
   });
 
   it('should return true from hasFiltrosActivos when selectedZona is set', () => {
     component.searchTerm = '';
     component.selectedZona = 'Colombia';
     component.selectedEstado = '';
-    expect(component.hasFiltrosActivos).toBe(true);
+    jexpect(component.hasFiltrosActivos).toBe(true);
   });
 
   it('should return true from hasFiltrosActivos when selectedEstado is set', () => {
     component.searchTerm = '';
     component.selectedZona = '';
     component.selectedEstado = 'Activo';
-    expect(component.hasFiltrosActivos).toBe(true);
+    jexpect(component.hasFiltrosActivos).toBe(true);
   });
 
   it('should return false from hasFiltrosActivos when no filters are set', () => {
     component.searchTerm = '';
     component.selectedZona = '';
     component.selectedEstado = '';
-    expect(component.hasFiltrosActivos).toBe(false);
+    jexpect(component.hasFiltrosActivos).toBe(false);
   });
 
   it('should configure paginator on init', () => {
     const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
-    expect(paginatorIntl.itemsPerPageLabel).toBe('Elementos por página:');
-    expect(paginatorIntl.nextPageLabel).toBe('Página siguiente');
-    expect(paginatorIntl.previousPageLabel).toBe('Página anterior');
-    expect(paginatorIntl.firstPageLabel).toBe('Primera página');
-    expect(paginatorIntl.lastPageLabel).toBe('Última página');
+    jexpect(paginatorIntl.itemsPerPageLabel).toBe('Elementos por página:');
+    jexpect(paginatorIntl.nextPageLabel).toBe('Página siguiente');
+    jexpect(paginatorIntl.previousPageLabel).toBe('Página anterior');
+    jexpect(paginatorIntl.firstPageLabel).toBe('Primera página');
+    jexpect(paginatorIntl.lastPageLabel).toBe('Última página');
   });
 
   it('should update paginator labels on language change', fakeAsync(() => {
@@ -523,18 +534,18 @@ describe('VendedoresComponent', () => {
     translateService.use('en');
     tick();
     
-    expect(paginatorIntl.itemsPerPageLabel).toBe('Items per page:');
+    jexpect(paginatorIntl.itemsPerPageLabel).toBe('Items per page:');
   }));
 
   it('should return correct range label for paginator', () => {
     const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
     const rangeLabel = paginatorIntl.getRangeLabel(0, 10, 100);
-    expect(rangeLabel).toBe('1 - 10 de 100');
+    jexpect(rangeLabel).toBe('1 - 10 de 100');
   });
 
   it('should return correct range label when no items', () => {
     const paginatorIntl = fixture.debugElement.injector.get(MatPaginatorIntl);
     const rangeLabel = paginatorIntl.getRangeLabel(0, 10, 0);
-    expect(rangeLabel).toBe('0 de 0');
+    jexpect(rangeLabel).toBe('0 de 0');
   });
 });

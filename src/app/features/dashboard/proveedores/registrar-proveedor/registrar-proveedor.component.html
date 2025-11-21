@@ -58,20 +58,21 @@
         </mat-form-field>
       </div>
 
-      <!-- Fila 2: País y Estado -->
+      <!-- Fila 2: Zona y Estado -->
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>{{ 'PROVEEDORES.FIELDS.PAIS' | translate }}</mat-label>
-          <mat-select formControlName="pais">
-            <mat-option *ngFor="let pais of paises" [value]="pais.label">
-              {{ pais.label }}
+          <mat-select formControlName="pais" [disabled]="isLoadingZonas">
+            <mat-option *ngFor="let zona of zonas" [value]="zona.nombre">
+              {{ zona.nombre }}
             </mat-option>
           </mat-select>
+          <mat-hint *ngIf="isLoadingZonas">{{ 'COMMON.LOADING' | translate }}...</mat-hint>
           <button 
             mat-icon-button 
             matSuffix 
             type="button"
-            *ngIf="proveedorForm.get('pais')?.value"
+            *ngIf="proveedorForm.get('pais')?.value && !isLoadingZonas"
             (click)="clearField('pais')">
             <mat-icon>close</mat-icon>
           </button>

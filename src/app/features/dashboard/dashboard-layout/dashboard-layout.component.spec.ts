@@ -8,6 +8,8 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
+// Helper para evitar conflicto de tipos Assertion/Jasmine
+const jexpect = (v: any) => (expect(v) as any);
 
 describe('DashboardLayoutComponent', () => {
   let component: DashboardLayoutComponent;
@@ -76,20 +78,20 @@ describe('DashboardLayoutComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+  jexpect(component).toBeTruthy();
   });
 
   it('should have navigation items', () => {
     // Component may filter or modify navigation items
-    expect(component.navigationItems.length).toBeGreaterThan(0);
-    expect(component.navigationItems.some(item => item.label === 'Proveedores')).toBe(true);
+  jexpect(component.navigationItems.length).toBeGreaterThan(0);
+  jexpect(component.navigationItems.some(item => item.label === 'Proveedores')).toBe(true);
   });
 
   it('should call logout on AuthService when logging out', () => {
     component.logout();
 
-    expect(authService.logout).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
+  jexpect(authService.logout).toHaveBeenCalled();
+  jexpect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
   });
 
   it('should detect mobile breakpoint', () => {
@@ -97,7 +99,7 @@ describe('DashboardLayoutComponent', () => {
     
     component.ngOnInit();
 
-    expect(component.isMobile).toBe(true);
+  jexpect(component.isMobile).toBe(true);
   });
 
   it('should navigate to route', () => {
@@ -105,7 +107,7 @@ describe('DashboardLayoutComponent', () => {
     
     component.navigate(testRoute);
 
-    expect(router.navigate).toHaveBeenCalledWith([testRoute]);
+  jexpect(router.navigate).toHaveBeenCalledWith([testRoute]);
   });
 
   it('should identify active route', () => {
@@ -113,7 +115,7 @@ describe('DashboardLayoutComponent', () => {
     
     const isActive = component.isActiveRoute('/dashboard/proveedores');
 
-    expect(isActive).toBe(true);
+  jexpect(isActive).toBe(true);
   });
 
   it('should toggle sidenav on mobile', () => {
@@ -122,7 +124,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.toggleSidenav();
 
-    expect(component.sidenav.toggle).toHaveBeenCalled();
+  jexpect(component.sidenav.toggle).toHaveBeenCalled();
   });
 
   it('should toggle isCollapsed on desktop', () => {
@@ -131,11 +133,11 @@ describe('DashboardLayoutComponent', () => {
 
     component.toggleSidenav();
 
-    expect(component.isCollapsed).toBe(true);
+  jexpect(component.isCollapsed).toBe(true);
 
     component.toggleSidenav();
 
-    expect(component.isCollapsed).toBe(false);
+  jexpect(component.isCollapsed).toBe(false);
   });
 
   it('should close sidenav after navigation on mobile', () => {
@@ -144,8 +146,8 @@ describe('DashboardLayoutComponent', () => {
 
     component.navigate('/dashboard/proveedores');
 
-    expect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
-    expect(component.sidenav.close).toHaveBeenCalled();
+  jexpect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
+  jexpect(component.sidenav.close).toHaveBeenCalled();
   });
 
   it('should not close sidenav after navigation on desktop', () => {
@@ -154,8 +156,8 @@ describe('DashboardLayoutComponent', () => {
 
     component.navigate('/dashboard/proveedores');
 
-    expect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
-    expect(component.sidenav.close).not.toHaveBeenCalled();
+  jexpect(router.navigate).toHaveBeenCalledWith(['/dashboard/proveedores']);
+  jexpect(component.sidenav.close).not.toHaveBeenCalled();
   });
 
   it('should update current route on navigation', () => {
@@ -163,7 +165,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.updateCurrentRoute();
 
-    expect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
+  jexpect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
   });
 
   it('should set current route to Proveedores for proveedores URL', () => {
@@ -171,7 +173,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.updateCurrentRoute();
 
-    expect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
+  jexpect(component.currentRoute).toBe('DASHBOARD.MENU.PROVEEDORES');
   });
 
   it('should change language and update localStorage', () => {
@@ -181,9 +183,9 @@ describe('DashboardLayoutComponent', () => {
 
     component.changeLanguage('en');
 
-    expect(component.currentLanguage).toBe('en');
-    expect(translateService.use).toHaveBeenCalledWith('en');
-    expect(localStorage.setItem).toHaveBeenCalledWith('language', 'en');
+  jexpect(component.currentLanguage).toBe('en');
+  jexpect(translateService.use).toHaveBeenCalledWith('en');
+  jexpect(localStorage.setItem).toHaveBeenCalledWith('language', 'en');
   });
 
   it('should update route after language change', () => {
@@ -191,7 +193,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.changeLanguage('en');
 
-    expect(component.updateCurrentRoute).toHaveBeenCalled();
+  jexpect(component.updateCurrentRoute).toHaveBeenCalled();
   });
 
   it('should initialize with Spanish language from localStorage', () => {
@@ -199,7 +201,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.currentLanguage).toBe('es');
+  jexpect(component.currentLanguage).toBe('es');
   });
 
   it('should initialize with default Spanish when no language in localStorage', () => {
@@ -207,7 +209,7 @@ describe('DashboardLayoutComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.currentLanguage).toBe('es');
+  jexpect(component.currentLanguage).toBe('es');
   });
 
   it('should return false for inactive routes', () => {
@@ -215,26 +217,26 @@ describe('DashboardLayoutComponent', () => {
     
     const isActive = component.isActiveRoute('/dashboard/vendedores');
 
-    expect(isActive).toBe(false);
+  jexpect(isActive).toBe(false);
   });
 
   it('should have correct navigation items with translation keys', () => {
     const proveedoresItem = component.navigationItems.find(item => item.route === '/dashboard/proveedores');
     
-    expect(proveedoresItem).toBeDefined();
-    expect(proveedoresItem?.translationKey).toBe('DASHBOARD.MENU.PROVEEDORES');
-    expect(proveedoresItem?.icon).toBe('business');
+  jexpect(proveedoresItem).toBeDefined();
+  jexpect(proveedoresItem?.translationKey).toBe('DASHBOARD.MENU.PROVEEDORES');
+  jexpect(proveedoresItem?.icon).toBe('business');
   });
 
   it('should have all main navigation items', () => {
-    expect(component.navigationItems.length).toBe(5);
-    
+  jexpect(component.navigationItems.length).toBe(6);
     const routes = component.navigationItems.map(item => item.route);
-    expect(routes).toContain('/dashboard/proveedores');
-    expect(routes).toContain('/dashboard/vendedores');
-    expect(routes).toContain('/dashboard/planes-venta');
-    expect(routes).toContain('/dashboard/productos');
-    expect(routes).toContain('/dashboard/pedidos');
+  jexpect(routes).toContain('/dashboard/proveedores');
+  jexpect(routes).toContain('/dashboard/vendedores');
+  jexpect(routes).toContain('/dashboard/planes-venta');
+  jexpect(routes).toContain('/dashboard/productos');
+  jexpect(routes).toContain('/dashboard/pedidos');
+  jexpect(routes).toContain('/dashboard/rutas');
   });
 
   it('should call _updateContentMargins after toggle on desktop', (done) => {
@@ -244,7 +246,7 @@ describe('DashboardLayoutComponent', () => {
     component.toggleSidenav();
 
     setTimeout(() => {
-      expect(updateSpy).toHaveBeenCalled();
+  jexpect(updateSpy).toHaveBeenCalled();
       done();
     }, 10);
   });

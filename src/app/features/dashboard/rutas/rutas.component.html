@@ -1,0 +1,37 @@
+<div class="rutas-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="header-info">
+      <h1 class="title">{{ 'RUTAS.TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'RUTAS.SUBTITLE' | translate }}</p>
+    </div>
+    <button 
+      mat-raised-button 
+      color="primary"
+      class="register-button"
+      (click)="openRegistrarRutaDialog()">
+      <mat-icon>add</mat-icon>
+      {{ 'RUTAS.NEW' | translate }}
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div class="error-message" *ngIf="errorMessage && !isLoading">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary">
+      {{ 'RUTAS.RETRY' | translate }}
+    </button>
+  </div>
+
+  <!-- Contenido futuro: tabla de rutas -->
+  <div class="content" *ngIf="!isLoading && !errorMessage">
+    <!-- Aquí irá la tabla de rutas -->
+  </div>
+</div>

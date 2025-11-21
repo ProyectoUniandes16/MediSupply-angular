@@ -1,0 +1,30 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>{{ 'RUTAS.DIALOG.VIEW_ROUTE_TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'RUTAS.DIALOG.VIEW_ROUTE_SUBTITLE' | translate }}</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onClose()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <div class="html-content" [innerHTML]="htmlContent"></div>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="onClose()">
+      {{ 'COMMON.CLOSE' | translate }}
+    </button>
+  </div>
+</div>

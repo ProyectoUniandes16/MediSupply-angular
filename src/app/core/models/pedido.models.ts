@@ -9,6 +9,11 @@ export interface Pedido {
   fecha_pedido: string;
   estado: string;
   total: number;
+  latitud?: number;
+  longitud?: number;
+  direccion?: string;
+  nombre?: string;
+  codigo?: string;
 }
 
 export interface ObtenerPedidosResponse {

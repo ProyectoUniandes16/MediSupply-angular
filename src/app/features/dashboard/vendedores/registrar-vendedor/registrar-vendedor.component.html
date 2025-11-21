@@ -62,16 +62,17 @@
       <div class="form-row">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>{{ 'VENDEDORES.FIELDS.ZONA' | translate }}</mat-label>
-          <mat-select formControlName="zona">
-            <mat-option *ngFor="let zona of zonas" [value]="zona.value">
-              {{ zona.label }}
+          <mat-select formControlName="zona" [disabled]="isLoadingZonas">
+            <mat-option *ngFor="let zona of zonas" [value]="zona.nombre">
+              {{ zona.nombre }}
             </mat-option>
           </mat-select>
+          <mat-hint *ngIf="isLoadingZonas">{{ 'COMMON.LOADING' | translate }}...</mat-hint>
           <button 
             mat-icon-button 
             matSuffix 
             type="button"
-            *ngIf="vendedorForm.get('zona')?.value"
+            *ngIf="vendedorForm.get('zona')?.value && !isLoadingZonas"
             (click)="clearField('zona')">
             <mat-icon>close</mat-icon>
           </button>

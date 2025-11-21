@@ -1,0 +1,245 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>{{ 'RUTAS.DIALOG.TITLE' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'RUTAS.DIALOG.SUBTITLE' | translate }}</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="onCancel()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <!-- Mensaje de error general -->
+    <div *ngIf="errorMessage" class="error-message">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Fila 1: Nombre Ruta y Zona -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.ROUTE_NAME' | translate }}</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="nombreRuta"
+          [placeholder]="'RUTAS.DIALOG.ROUTE_NAME' | translate">
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="nombreRuta"
+          (click)="nombreRuta = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.ZONE' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedZonaId" 
+          (selectionChange)="onZonaChange()"
+          [disabled]="isLoadingZonas"
+          [placeholder]="'RUTAS.DIALOG.SELECT_ZONE' | translate">
+          <mat-option 
+            *ngFor="let zona of zonas" 
+            [value]="zona.id">
+            {{ zona.nombre }}
+          </mat-option>
+        </mat-select>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="selectedZonaId"
+          (click)="clearZona()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <!-- Fila 2: Bodega y Camión -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.WAREHOUSE' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedBodegaId" 
+          (selectionChange)="onBodegaChange()"
+          [disabled]="!selectedZonaId || isLoadingDetalle || bodegas.length === 0"
+          [placeholder]="'RUTAS.DIALOG.SELECT_WAREHOUSE' | translate">
+          <mat-option 
+            *ngFor="let bodega of bodegas" 
+            [value]="bodega.id">
+            {{ bodega.nombre }}
+          </mat-option>
+        </mat-select>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="selectedBodegaId"
+          (click)="clearBodega()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-hint *ngIf="isLoadingDetalle">
+          {{ 'COMMON.LOADING' | translate }}...
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.TRUCK' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedCamionId"
+          [disabled]="!selectedBodegaId || camiones.length === 0"
+          [placeholder]="'RUTAS.DIALOG.SELECT_TRUCK' | translate">
+          <mat-option 
+            *ngFor="let camion of camiones" 
+            [value]="camion.id">
+            {{ camion.placa }}
+          </mat-option>
+        </mat-select>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="selectedCamionId"
+          (click)="clearCamion()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <!-- Fila 3: Pedidos y Estado -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.ORDERS' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="pedidosIds"
+          multiple
+          [disabled]="!selectedZonaId || isLoadingPedidos || pedidos.length === 0"
+          [placeholder]="'RUTAS.DIALOG.SELECT_ORDERS' | translate">
+          <mat-option *ngIf="isLoadingPedidos" disabled>
+            {{ 'COMMON.LOADING' | translate }}...
+          </mat-option>
+          <mat-option *ngFor="let pedido of pedidos" [value]="pedido.id">
+            {{ pedido.nombre || pedido.codigo || pedido.id }}
+          </mat-option>
+        </mat-select>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="pedidosIds.length > 0"
+          (click)="pedidosIds = []">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>{{ 'RUTAS.DIALOG.STATUS' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedEstado"
+          [placeholder]="'RUTAS.DIALOG.SELECT_STATUS' | translate">
+          <mat-option 
+            *ngFor="let estado of estados" 
+            [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+        <button 
+          mat-icon-button 
+          matSuffix 
+          type="button"
+          *ngIf="selectedEstado"
+          (click)="selectedEstado = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <!-- Tabla de Pedidos Seleccionados -->
+    <div class="pedidos-table-container" *ngIf="pedidosSeleccionados.length > 0">
+      <h4>{{ 'RUTAS.DIALOG.ORDERS_TABLE' | translate }}</h4>
+      <table mat-table [dataSource]="pedidosSeleccionados" class="pedidos-table">
+        
+        <!-- Columna Pedido -->
+        <ng-container matColumnDef="pedido">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.DIALOG.ORDERS' | translate }}</th>
+          <td mat-cell *matCellDef="let pedido">{{ pedido.nombre || pedido.codigo || pedido.id }}</td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.DIALOG.ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let pedido">
+            <button 
+              mat-icon-button 
+              color="warn"
+              type="button"
+              (click)="eliminarPedido(pedido)"
+              [matTooltip]="'COMMON.DELETE' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPedidos"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPedidos;"></tr>
+      </table>
+    </div>
+
+    <!-- Sección Calcular ruta -->
+    <div class="section-header">
+      <h3>{{ 'RUTAS.DIALOG.CALCULATE_SECTION' | translate }}</h3>
+    </div>
+
+    <!-- Spinner de carga -->
+    <div *ngIf="isLoadingZonas || isLoadingDetalle" class="loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </div>
+
+  <!-- Acciones del Modal -->
+  <div mat-dialog-actions class="dialog-actions">
+    <div class="actions-row">
+      <button 
+        mat-raised-button 
+        color="primary"
+        [disabled]="!canCalculate"
+        (click)="onCalcular()"
+        class="action-button">
+        <mat-icon>calculate</mat-icon>
+        {{ 'RUTAS.DIALOG.CALCULATE' | translate }}
+      </button>
+      <button 
+        mat-stroked-button
+        [disabled]="!rutaCalculada"
+        (click)="onVerRuta()"
+        class="action-button secondary">
+        <mat-icon>visibility</mat-icon>
+        {{ 'RUTAS.DIALOG.VIEW' | translate }}
+      </button>
+    </div>
+    <div class="actions-row">
+      <button 
+        mat-raised-button 
+        color="primary"
+        [disabled]="!rutaCalculada || !selectedEstado"
+        (click)="onRegistrar()"
+        class="action-button">
+        {{ 'RUTAS.DIALOG.REGISTER' | translate }}
+      </button>
+      <button 
+        mat-stroked-button
+        (click)="onCancel()"
+        class="action-button secondary">
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

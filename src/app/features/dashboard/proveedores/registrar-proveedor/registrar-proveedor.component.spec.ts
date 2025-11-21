@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { RegistrarProveedorComponent } from './registrar-proveedor.component';
 import { ProveedorHttpService } from '../../../../core/services/proveedor-http.service';
+import { RutaHttpService } from '../../../../core/services/ruta-http.service';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
@@ -15,6 +16,9 @@ describe('RegistrarProveedorComponent', () => {
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<RegistrarProveedorComponent>>;
   let proveedorServiceSpy: jasmine.SpyObj<ProveedorHttpService>;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
+  let rutaServiceSpy: jasmine.SpyObj<RutaHttpService>;
+  // Helper para evitar conflicto de tipos Assertion vs Jasmine
+  const jexpect = (val: any) => (expect(val) as any);
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
@@ -23,7 +27,9 @@ describe('RegistrarProveedorComponent', () => {
       'validarDatosProveedor',
       'mapearFormularioARequest'
     ]);
-    snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+  snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+  rutaServiceSpy = jasmine.createSpyObj('RutaHttpService', ['obtenerZonas']);
+  rutaServiceSpy.obtenerZonas.and.returnValue(of({ data: [], total: 0 }));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -36,7 +42,8 @@ describe('RegistrarProveedorComponent', () => {
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: ProveedorHttpService, useValue: proveedorServiceSpy },
-        { provide: MatSnackBar, useValue: snackBarSpy },
+  { provide: MatSnackBar, useValue: snackBarSpy },
+  { provide: RutaHttpService, useValue: rutaServiceSpy },
         provideAnimations(),
         TranslateService
       ]
@@ -51,13 +58,13 @@ describe('RegistrarProveedorComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    jexpect(component).toBeTruthy();
   });
 
   it('should initialize form with empty values', () => {
-    expect(component.proveedorForm).toBeDefined();
-    expect(component.proveedorForm.get('nombreProveedor')?.value).toBe('');
-    expect(component.proveedorForm.get('nit')?.value).toBe('');
+  jexpect(component.proveedorForm).toBeDefined();
+  jexpect(component.proveedorForm.get('nombreProveedor')?.value).toBe('');
+  jexpect(component.proveedorForm.get('nit')?.value).toBe('');
   });
 
   it('should have required validators on critical fields', () => {
@@ -69,29 +76,29 @@ describe('RegistrarProveedorComponent', () => {
     nitControl?.setValue('');
     emailControl?.setValue('');
 
-    expect(nombreControl?.hasError('required')).toBe(true);
-    expect(nitControl?.hasError('required')).toBe(true);
-    expect(emailControl?.hasError('required')).toBe(true);
+  jexpect(nombreControl?.hasError('required')).toBe(true);
+  jexpect(nitControl?.hasError('required')).toBe(true);
+  jexpect(emailControl?.hasError('required')).toBe(true);
   });
 
   it('should validate email format', () => {
     const emailControl = component.proveedorForm.get('email');
     
     emailControl?.setValue('invalid-email');
-    expect(emailControl?.hasError('email')).toBe(true);
+  jexpect(emailControl?.hasError('email')).toBe(true);
 
     emailControl?.setValue('valid@email.com');
-    expect(emailControl?.hasError('email')).toBe(false);
+  jexpect(emailControl?.hasError('email')).toBe(false);
   });
 
   it('should validate NIT pattern', () => {
     const nitControl = component.proveedorForm.get('nit');
     
     nitControl?.setValue('ABC123');
-    expect(nitControl?.hasError('pattern')).toBe(true);
+  jexpect(nitControl?.hasError('pattern')).toBe(true);
 
     nitControl?.setValue('900123456');
-    expect(nitControl?.hasError('pattern')).toBe(false);
+  jexpect(nitControl?.hasError('pattern')).toBe(false);
   });
 
   it('should clear a field', () => {
@@ -99,7 +106,7 @@ describe('RegistrarProveedorComponent', () => {
     
     component.clearField('nombreProveedor');
     
-    expect(component.proveedorForm.get('nombreProveedor')?.value).toBe('');
+  jexpect(component.proveedorForm.get('nombreProveedor')?.value).toBe('');
   });
 
   it('should return correct error message for required field', () => {
@@ -107,7 +114,7 @@ describe('RegistrarProveedorComponent', () => {
     nombreControl?.setValue('');
     nombreControl?.markAsTouched();
 
-    expect(component.getErrorMessage('nombreProveedor')).toBe('Este campo es obligatorio');
+  jexpect(component.getErrorMessage('nombreProveedor')).toBe('Este campo es obligatorio');
   });
 
   it('should return correct error message for invalid email', () => {
@@ -115,7 +122,7 @@ describe('RegistrarProveedorComponent', () => {
     emailControl?.setValue('invalid-email');
     emailControl?.markAsTouched();
 
-    expect(component.getErrorMessage('email')).toBe('El correo electrónico no es válido');
+  jexpect(component.getErrorMessage('email')).toBe('El correo electrónico no es válido');
   });
 
   it('should add files to documentosAdjuntos', () => {
@@ -128,8 +135,8 @@ describe('RegistrarProveedorComponent', () => {
 
     component.onFileSelected(mockEvent);
 
-    expect(component.documentosAdjuntos.length).toBe(1);
-    expect(component.documentosAdjuntos[0].nombre).toBe('test.pdf');
+  jexpect(component.documentosAdjuntos.length).toBe(1);
+  jexpect(component.documentosAdjuntos[0].nombre).toBe('test.pdf');
   });
 
   it('should remove document from list', () => {
@@ -138,7 +145,7 @@ describe('RegistrarProveedorComponent', () => {
 
     component.eliminarDocumento(0);
 
-    expect(component.documentosAdjuntos.length).toBe(0);
+  jexpect(component.documentosAdjuntos.length).toBe(0);
   });
 
   it('should open document in new window', () => {
@@ -149,20 +156,20 @@ describe('RegistrarProveedorComponent', () => {
 
     component.verDocumento(documento);
 
-    expect(URL.createObjectURL).toHaveBeenCalledWith(mockFile);
-    expect(globalThis.open).toHaveBeenCalledWith('blob:test-url', '_blank');
+  jexpect(URL.createObjectURL).toHaveBeenCalledWith(mockFile);
+  jexpect(globalThis.open).toHaveBeenCalledWith('blob:test-url', '_blank');
   });
 
   it('should close dialog on cancel', () => {
     component.onCancel();
 
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+  jexpect(dialogRefSpy.close).toHaveBeenCalled();
   });
 
   it('should not submit if form is invalid', () => {
     component.onSubmit();
 
-    expect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
+  jexpect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
   });
 
   it('should not submit if no documents attached', () => {
@@ -179,7 +186,7 @@ describe('RegistrarProveedorComponent', () => {
 
     component.onSubmit();
 
-    expect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
+  jexpect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
   });
 
   it('should submit successfully with valid data', () => {
@@ -228,8 +235,8 @@ describe('RegistrarProveedorComponent', () => {
 
     component.onSubmit();
 
-    expect(proveedorServiceSpy.registrarProveedor).toHaveBeenCalled();
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+  jexpect(proveedorServiceSpy.registrarProveedor).toHaveBeenCalled();
+  jexpect(dialogRefSpy.close).toHaveBeenCalled();
   });
 
   it('should handle validation errors', () => {
@@ -266,8 +273,8 @@ describe('RegistrarProveedorComponent', () => {
 
     component.onSubmit();
 
-    expect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
-    expect(component.isLoading).toBe(false);
+  jexpect(proveedorServiceSpy.registrarProveedor).not.toHaveBeenCalled();
+  jexpect(component.isLoading).toBe(false);
   });
 
   it('should handle 409 conflict error (duplicate NIT)', (done: DoneFn) => {
@@ -305,8 +312,8 @@ describe('RegistrarProveedorComponent', () => {
     component.onSubmit();
 
     setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toContain('NIT');
+  jexpect(component.isLoading).toBe(false);
+  jexpect(component.errorMessage).toContain('NIT');
       done();
     }, 100);
   });
@@ -346,19 +353,20 @@ describe('RegistrarProveedorComponent', () => {
     component.onSubmit();
 
     setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toContain('Datos inválidos');
+  jexpect(component.isLoading).toBe(false);
+  jexpect(component.errorMessage).toContain('Datos inválidos');
       done();
     }, 100);
   });
 
-  it('should have paises list defined', () => {
-    expect(component.paises.length).toBeGreaterThan(0);
-    expect(component.paises[0]).toEqual({ value: 'co', label: 'Colombia' });
+  // Removed outdated test for paises (property no longer exists in component)
+  it('should define estados list', () => {
+  jexpect(component.estados.length).toBe(3);
+  jexpect(component.estados).toContain({ value: 'activo', label: 'Activo' });
   });
 
   it('should have estados list defined', () => {
-    expect(component.estados.length).toBe(3);
-    expect(component.estados).toContain({ value: 'activo', label: 'Activo' });
+  jexpect(component.estados.length).toBe(3);
+  jexpect(component.estados).toContain({ value: 'activo', label: 'Activo' });
   });
 });

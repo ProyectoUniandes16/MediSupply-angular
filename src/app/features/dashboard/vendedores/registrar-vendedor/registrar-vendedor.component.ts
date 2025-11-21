@@ -11,6 +11,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { VendedorHttpService } from '../../../../core/services/vendedor-http.service';
+import { RutaHttpService } from '../../../../core/services/ruta-http.service';
+import { Zona } from '../../../../core/models/ruta.models';
 
 @Component({
   selector: 'app-registrar-vendedor',
@@ -34,15 +36,10 @@ import { VendedorHttpService } from '../../../../core/services/vendedor-http.ser
 export class RegistrarVendedorComponent implements OnInit {
   vendedorForm!: FormGroup;
   isLoading = false;
+  isLoadingZonas = false;
   errorMessage = '';
 
-  zonas = [
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'México', label: 'México' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Perú', label: 'Perú' }
-  ];
+  zonas: Zona[] = [];
 
   estados = [
     { value: 'Activo', label: 'Activo' },
@@ -53,6 +50,7 @@ export class RegistrarVendedorComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<RegistrarVendedorComponent>,
     private readonly vendedorHttpService: VendedorHttpService,
+    private readonly rutaHttpService: RutaHttpService,
     private readonly snackBar: MatSnackBar
   ) {}
 
@@ -64,6 +62,28 @@ export class RegistrarVendedorComponent implements OnInit {
       estado: ['', Validators.required],
       telefono: ['', [Validators.required, Validators.pattern(/^[0-9+\-() ]+$/)]],
       email: ['', [Validators.required, Validators.email]]
+    });
+
+    this.cargarZonas();
+  }
+
+  /**
+   * Carga las zonas desde el servicio de rutas
+   */
+  cargarZonas(): void {
+    this.isLoadingZonas = true;
+
+    this.rutaHttpService.obtenerZonas().subscribe({
+      next: (response) => {
+        this.zonas = response.data || [];
+        this.isLoadingZonas = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar zonas:', error);
+        this.isLoadingZonas = false;
+        // Mantener zonas vacías si hay error
+        this.zonas = [];
+      }
     });
   }
 
@@ -169,9 +189,9 @@ export class RegistrarVendedorComponent implements OnInit {
       });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
-      Object.keys(this.vendedorForm.controls).forEach(key => {
+      for (const key of Object.keys(this.vendedorForm.controls)) {
         this.vendedorForm.get(key)?.markAsTouched();
-      });
+      }
     }
   }
 

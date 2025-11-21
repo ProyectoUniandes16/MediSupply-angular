@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,6 +6,9 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { RegistrarVendedorComponent } from './registrar-vendedor.component';
 import { VendedorHttpService } from '../../../../core/services/vendedor-http.service';
+import { RutaHttpService } from '../../../../core/services/ruta-http.service';
+// Helper para forzar tipo Jasmine y evitar conflicto con Assertion
+const jexpect = (v: any) => (expect(v) as any);
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../../testing/i18n-testing.helper';
 
@@ -15,6 +18,7 @@ describe('RegistrarVendedorComponent', () => {
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<RegistrarVendedorComponent>>;
   let vendedorServiceSpy: jasmine.SpyObj<VendedorHttpService>;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
+  let rutaServiceSpy: jasmine.SpyObj<RutaHttpService>;
 
   beforeEach(async () => {
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
@@ -24,6 +28,8 @@ describe('RegistrarVendedorComponent', () => {
       'mapearFormularioARequest'
     ]);
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+    rutaServiceSpy = jasmine.createSpyObj('RutaHttpService', ['obtenerZonas']);
+    rutaServiceSpy.obtenerZonas.and.returnValue(of({ data: [], total: 0 }));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -36,7 +42,8 @@ describe('RegistrarVendedorComponent', () => {
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: VendedorHttpService, useValue: vendedorServiceSpy },
-        { provide: MatSnackBar, useValue: snackBarSpy },
+  { provide: MatSnackBar, useValue: snackBarSpy },
+  { provide: RutaHttpService, useValue: rutaServiceSpy },
         provideAnimations(),
         TranslateService
       ]
@@ -48,15 +55,15 @@ describe('RegistrarVendedorComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+  jexpect(component).toBeTruthy();
   });
 
   it('should initialize form with empty values', () => {
-    expect(component.vendedorForm).toBeDefined();
-    expect(component.vendedorForm.get('nombres')?.value).toBe('');
-    expect(component.vendedorForm.get('apellidos')?.value).toBe('');
-    expect(component.vendedorForm.get('zona')?.value).toBe('');
-    expect(component.vendedorForm.get('estado')?.value).toBe('');
+  jexpect(component.vendedorForm).toBeDefined();
+  jexpect(component.vendedorForm.get('nombres')?.value).toBe('');
+  jexpect(component.vendedorForm.get('apellidos')?.value).toBe('');
+  jexpect(component.vendedorForm.get('zona')?.value).toBe('');
+  jexpect(component.vendedorForm.get('estado')?.value).toBe('');
   });
 
   it('should have required validators on critical fields', () => {
@@ -68,29 +75,29 @@ describe('RegistrarVendedorComponent', () => {
     apellidosControl?.setValue('');
     emailControl?.setValue('');
 
-    expect(nombresControl?.hasError('required')).toBe(true);
-    expect(apellidosControl?.hasError('required')).toBe(true);
-    expect(emailControl?.hasError('required')).toBe(true);
+  jexpect(nombresControl?.hasError('required')).toBe(true);
+  jexpect(apellidosControl?.hasError('required')).toBe(true);
+  jexpect(emailControl?.hasError('required')).toBe(true);
   });
 
   it('should validate email format', () => {
     const emailControl = component.vendedorForm.get('email');
     
     emailControl?.setValue('invalid-email');
-    expect(emailControl?.hasError('email')).toBe(true);
+  jexpect(emailControl?.hasError('email')).toBe(true);
 
     emailControl?.setValue('valid@email.com');
-    expect(emailControl?.hasError('email')).toBe(false);
+  jexpect(emailControl?.hasError('email')).toBe(false);
   });
 
   it('should validate telefono pattern', () => {
     const telefonoControl = component.vendedorForm.get('telefono');
     
     telefonoControl?.setValue('ABC123');
-    expect(telefonoControl?.hasError('pattern')).toBe(true);
+  jexpect(telefonoControl?.hasError('pattern')).toBe(true);
 
     telefonoControl?.setValue('3001234567');
-    expect(telefonoControl?.hasError('pattern')).toBe(false);
+  jexpect(telefonoControl?.hasError('pattern')).toBe(false);
   });
 
   it('should clear a field', () => {
@@ -98,7 +105,7 @@ describe('RegistrarVendedorComponent', () => {
     
     component.clearField('nombres');
     
-    expect(component.vendedorForm.get('nombres')?.value).toBe('');
+  jexpect(component.vendedorForm.get('nombres')?.value).toBe('');
   });
 
   it('should return correct error message for required field', () => {
@@ -106,7 +113,7 @@ describe('RegistrarVendedorComponent', () => {
     nombresControl?.setValue('');
     nombresControl?.markAsTouched();
 
-    expect(component.getErrorMessage('nombres')).toBe('Este campo es obligatorio');
+  jexpect(component.getErrorMessage('nombres')).toBe('Este campo es obligatorio');
   });
 
   it('should return correct error message for invalid email', () => {
@@ -114,7 +121,7 @@ describe('RegistrarVendedorComponent', () => {
     emailControl?.setValue('invalid-email');
     emailControl?.markAsTouched();
 
-    expect(component.getErrorMessage('email')).toBe('El correo electrónico no es válido');
+  jexpect(component.getErrorMessage('email')).toBe('El correo electrónico no es válido');
   });
 
   it('should return correct error message for pattern error', () => {
@@ -122,27 +129,27 @@ describe('RegistrarVendedorComponent', () => {
     telefonoControl?.setValue('ABC');
     telefonoControl?.markAsTouched();
 
-    expect(component.getErrorMessage('telefono')).toBe('El formato no es válido');
+  jexpect(component.getErrorMessage('telefono')).toBe('El formato no es válido');
   });
 
   it('should close dialog on cancel', () => {
     component.onCancel();
 
-    expect(dialogRefSpy.close).toHaveBeenCalled();
+  jexpect(dialogRefSpy.close).toHaveBeenCalled();
   });
 
   it('should not submit if form is invalid', () => {
     component.onSubmit();
 
-    expect(vendedorServiceSpy.registrarVendedor).not.toHaveBeenCalled();
+  jexpect(vendedorServiceSpy.registrarVendedor).not.toHaveBeenCalled();
   });
 
   it('should mark all fields as touched when submitting invalid form', () => {
     component.onSubmit();
 
-    Object.keys(component.vendedorForm.controls).forEach(key => {
-      expect(component.vendedorForm.get(key)?.touched).toBe(true);
-    });
+    for (const key of Object.keys(component.vendedorForm.controls)) {
+      jexpect(component.vendedorForm.get(key)?.touched).toBe(true);
+    }
   });
 
   it('should submit successfully with valid data', () => {
@@ -182,8 +189,8 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    expect(vendedorServiceSpy.registrarVendedor).toHaveBeenCalledWith(mockRequest);
-    expect(dialogRefSpy.close).toHaveBeenCalledWith(mockResponse);
+  jexpect(vendedorServiceSpy.registrarVendedor).toHaveBeenCalledWith(mockRequest);
+  jexpect(dialogRefSpy.close).toHaveBeenCalledWith(mockResponse);
   });
 
   it('should handle validation errors', () => {
@@ -214,11 +221,11 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    expect(vendedorServiceSpy.registrarVendedor).not.toHaveBeenCalled();
-    expect(component.isLoading).toBe(false);
+  jexpect(vendedorServiceSpy.registrarVendedor).not.toHaveBeenCalled();
+  jexpect(component.isLoading).toBe(false);
   });
 
-  it('should handle 409 conflict error (duplicate email)', (done: DoneFn) => {
+  it('should handle 409 conflict error (duplicate email)', fakeAsync(() => {
     component.vendedorForm.patchValue({
       nombres: 'Juan',
       apellidos: 'Pérez',
@@ -245,14 +252,12 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toContain('Email');
-      done();
-    }, 100);
-  });
+    tick(110);
+    jexpect(component.isLoading).toBe(false);
+    jexpect(component.errorMessage).toContain('Email');
+  }));
 
-  it('should handle 400 bad request error', (done: DoneFn) => {
+  it('should handle 400 bad request error', fakeAsync(() => {
     component.vendedorForm.patchValue({
       nombres: 'Juan',
       apellidos: 'Pérez',
@@ -279,14 +284,12 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toContain('Datos inválidos');
-      done();
-    }, 100);
-  });
+    tick(110);
+    jexpect(component.isLoading).toBe(false);
+    jexpect(component.errorMessage).toContain('Datos inválidos');
+  }));
 
-  it('should handle generic error', (done: DoneFn) => {
+  it('should handle generic error', fakeAsync(() => {
     component.vendedorForm.patchValue({
       nombres: 'Juan',
       apellidos: 'Pérez',
@@ -313,12 +316,10 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toBe('Error al registrar el vendedor');
-      done();
-    }, 100);
-  });
+    tick(110);
+    jexpect(component.isLoading).toBe(false);
+    jexpect(component.errorMessage).toBe('Error al registrar el vendedor');
+  }));
 
   it('should set isLoading to true when submitting', () => {
     component.vendedorForm.patchValue({
@@ -345,25 +346,25 @@ describe('RegistrarVendedorComponent', () => {
 
     component.onSubmit();
 
-    expect(component.isLoading).toBe(false); // Ya terminó por ser síncrono en el test
+  jexpect(component.isLoading).toBe(false); // Ya terminó por ser síncrono en el test
   });
 
-  it('should have zonas list defined', () => {
-    expect(component.zonas.length).toBeGreaterThan(0);
-    expect(component.zonas[0]).toEqual({ value: 'Colombia', label: 'Colombia' });
+  it('should initialize zonas list empty (loaded async via RutaHttpService)', () => {
+  jexpect(component.zonas).toBeDefined();
+  jexpect(Array.isArray(component.zonas)).toBeTrue();
   });
 
   it('should have estados list defined', () => {
-    expect(component.estados.length).toBe(2);
-    expect(component.estados).toContain({ value: 'Activo', label: 'Activo' });
-    expect(component.estados).toContain({ value: 'Inactivo', label: 'Inactivo' });
+  jexpect(component.estados.length).toBe(2);
+  jexpect(component.estados).toContain({ value: 'Activo', label: 'Activo' });
+  jexpect(component.estados).toContain({ value: 'Inactivo', label: 'Inactivo' });
   });
 
   it('should initialize with isLoading false', () => {
-    expect(component.isLoading).toBe(false);
+  jexpect(component.isLoading).toBe(false);
   });
 
   it('should initialize with empty errorMessage', () => {
-    expect(component.errorMessage).toBe('');
+  jexpect(component.errorMessage).toBe('');
   });
 });

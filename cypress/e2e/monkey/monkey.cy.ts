@@ -36,7 +36,9 @@ function typeIntoRandomInput() {
     const $inputs = $body.find(inputSelector);
     if ($inputs.length) {
       const el = $inputs.get(randInt(0, $inputs.length - 1));
-      cy.wrap(el).clear({ force: true }).type(randText(randInt(3, 10)), { force: true, delay: 10 });
+      // Clear and type with shorter delays to avoid DOM detachment
+      const text = randText(randInt(3, 10));
+      Cypress.$(el).val(text).trigger('input').trigger('change');
     }
   });
 }
@@ -161,6 +163,7 @@ describe('Monkey testing (random UI interactions)', () => {
       { path: '/dashboard/vendedores', label: 'vendedores' },
       { path: '/dashboard/productos', label: 'productos' },
       { path: '/dashboard/planes-venta', label: 'planes-venta' },
+      { path: '/dashboard/pedidos', label: 'pedidos' },
     ];
 
     const runSection = (path: string, label: string, actions: number) => {

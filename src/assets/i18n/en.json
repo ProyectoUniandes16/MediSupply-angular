@@ -12,6 +12,7 @@
     "DOWNLOAD": "Download",
     "UPLOAD": "Upload",
     "VIEW": "View",
+    "ADD": "Add",
     "SUCCESS": "Success",
     "ERROR": "Error",
     "WARNING": "Warning",
@@ -64,8 +65,9 @@
       "PROVEEDORES": "Suppliers",
       "VENDEDORES": "Sellers",
       "PLANES_VENTA": "Sales Plans",
-  "PEDIDOS": "Orders",
+      "PEDIDOS": "Orders",
       "PRODUCTOS": "Products",
+      "RUTAS": "Routes",
       "PROFILE": "Profile",
       "SETTINGS": "Settings"
     }
@@ -421,6 +423,38 @@
     "FILTERS": {
       "SELECT_SELLER": "Select Seller",
       "CLIENT_ID": "Client ID"
+    }
+  },
+  "RUTAS": {
+    "TITLE": "Routes",
+    "SUBTITLE": "Manage delivery routes and logistics optimization",
+    "NEW": "Register Route",
+    "RETRY": "Retry",
+    "DIALOG": {
+      "TITLE": "Add Route",
+      "SUBTITLE": "Complete stop information and calculate the optimal route",
+      "ROUTE_NAME": "Route Name",
+      "ZONE": "Select zone",
+      "SELECT_ZONE": "Select zone",
+      "WAREHOUSE": "Select Warehouse",
+      "SELECT_WAREHOUSE": "Select Warehouse",
+      "TRUCK": "Select Truck",
+      "SELECT_TRUCK": "Select Truck",
+      "ORDERS": "Select Orders",
+      "SELECT_ORDERS": "Select Orders",
+      "NO_ORDERS": "No orders available",
+      "STATUS": "Select Status",
+      "SELECT_STATUS": "Select Status",
+      "NO_STATUS": "No status available",
+      "ORDERS_TABLE": "Orders",
+      "ACTIONS": "Actions",
+      "NO_ORDERS_ADDED": "No orders added",
+      "CALCULATE_SECTION": "Calculate route",
+      "CALCULATE": "Calculate Route",
+      "VIEW": "View Route",
+      "REGISTER": "Register Route",
+      "VIEW_ROUTE_TITLE": "Optimal Route Visualization",
+      "VIEW_ROUTE_SUBTITLE": "Map and details of the calculated route"
     }
   }
 }

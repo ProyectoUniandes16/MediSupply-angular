@@ -12,6 +12,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProveedorHttpService } from '../../../../core/services/proveedor-http.service';
+import { RutaHttpService } from '../../../../core/services/ruta-http.service';
+import { Zona } from '../../../../core/models/ruta.models';
 
 interface Documento {
   nombre: string;
@@ -42,15 +44,10 @@ export class RegistrarProveedorComponent implements OnInit {
   proveedorForm!: FormGroup;
   documentosAdjuntos: Documento[] = [];
   isLoading = false;
+  isLoadingZonas = false;
   errorMessage = '';
   
-  paises = [
-    { value: 'co', label: 'Colombia' },
-    { value: 'mx', label: 'México' },
-    { value: 'ar', label: 'Argentina' },
-    { value: 'cl', label: 'Chile' },
-    { value: 'pe', label: 'Perú' }
-  ];
+  zonas: Zona[] = [];
 
   estados = [
     { value: 'activo', label: 'Activo' },
@@ -62,6 +59,7 @@ export class RegistrarProveedorComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<RegistrarProveedorComponent>,
     private readonly proveedorHttpService: ProveedorHttpService,
+    private readonly rutaHttpService: RutaHttpService,
     private readonly snackBar: MatSnackBar
   ) {}
 
@@ -75,6 +73,28 @@ export class RegistrarProveedorComponent implements OnInit {
       nombreContacto: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.required, Validators.pattern(/^[0-9+\-() ]+$/)]]
+    });
+
+    this.cargarZonas();
+  }
+
+  /**
+   * Carga las zonas desde el servicio de rutas
+   */
+  cargarZonas(): void {
+    this.isLoadingZonas = true;
+
+    this.rutaHttpService.obtenerZonas().subscribe({
+      next: (response) => {
+        this.zonas = response.data || [];
+        this.isLoadingZonas = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar zonas:', error);
+        this.isLoadingZonas = false;
+        // Mantener zonas vacías si hay error
+        this.zonas = [];
+      }
     });
   }
 
@@ -115,12 +135,12 @@ export class RegistrarProveedorComponent implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      Array.from(input.files).forEach(file => {
+      for (const file of Array.from(input.files)) {
         this.documentosAdjuntos.push({
           nombre: file.name,
           archivo: file
         });
-      });
+      }
       // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
       input.value = '';
     }
@@ -226,9 +246,9 @@ export class RegistrarProveedorComponent implements OnInit {
       });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
-      Object.keys(this.proveedorForm.controls).forEach(key => {
+      for (const key of Object.keys(this.proveedorForm.controls)) {
         this.proveedorForm.get(key)?.markAsTouched();
-      });
+      }
       
       if (this.documentosAdjuntos.length === 0) {
         this.snackBar.open('Debe adjuntar al menos una certificación', 'Cerrar', {

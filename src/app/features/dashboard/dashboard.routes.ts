@@ -30,6 +30,10 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'planes-venta',
         loadComponent: () => import('./planes-venta/planes-venta.component').then(m => m.PlanesVentaComponent)
       },
+      {
+        path: 'rutas',
+        loadComponent: () => import('./rutas/rutas.component').then(m => m.RutasComponent)
+      },
     ]
   }
 ];

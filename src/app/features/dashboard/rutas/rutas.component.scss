@@ -1,0 +1,91 @@
+.rutas-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .header-info {
+      .title {
+        font-size: 28px;
+        font-weight: 500;
+        margin: 0 0 8px 0;
+        color: #1f2937;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+      }
+    }
+
+    .register-button {
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+
+    p {
+      margin-top: 16px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  }
+
+  .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: #ef4444;
+      margin-bottom: 16px;
+    }
+
+    p {
+      color: #6b7280;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+  }
+
+  .content {
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rutas-container {
+    padding: 16px;
+
+    .header {
+      flex-direction: column;
+      align-items: stretch;
+
+      .register-button {
+        width: 100%;
+      }
+    }
+  }
+}

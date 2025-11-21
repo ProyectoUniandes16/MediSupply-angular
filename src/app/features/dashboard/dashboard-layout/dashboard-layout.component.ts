@@ -52,6 +52,7 @@ export class DashboardLayoutComponent implements OnInit {
     { icon: 'shopping_cart', label: 'Pedidos', translationKey: 'DASHBOARD.MENU.PEDIDOS', route: '/dashboard/pedidos' },
     { icon: 'inventory_2', label: 'Productos', translationKey: 'DASHBOARD.MENU.PRODUCTOS', route: '/dashboard/productos' },
     { icon: 'description', label: 'Planes de venta', translationKey: 'DASHBOARD.MENU.PLANES_VENTA', route: '/dashboard/planes-venta' },
+    { icon: 'route', label: 'Rutas', translationKey: 'DASHBOARD.MENU.RUTAS', route: '/dashboard/rutas' },
   ];
 
   constructor(

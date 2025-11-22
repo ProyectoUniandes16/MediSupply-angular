@@ -9,7 +9,7 @@
     }
   },
   "/api/zona": {
-    "target": "http://localhost:5013",
+    "target": "http://localhost:5003",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -18,7 +18,7 @@
     }
   },
   "/api/rutas": {
-    "target": "http://localhost:5013",
+    "target": "http://localhost:5003",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -27,12 +27,21 @@
     }
   },
   "/api/ruta-optima": {
-    "target": "http://localhost:5013",
+    "target": "http://localhost:5003",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
       "^/api/ruta-optima": "/ruta-optima"
+    }
+  },
+  "/api/importar-csv": {
+    "target": "http://localhost:5003",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/importar-csv": "/importar-csv"
     }
   },
   "/api": {

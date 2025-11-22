@@ -1,0 +1,102 @@
+<div class="dialog-container">
+  <!-- Encabezado -->
+  <div class="dialog-header">
+    <div>
+      <h2 mat-dialog-title>Generar Informe de Vendedor</h2>
+      <p class="dialog-subtitle">Seleccione el tipo de informe, año y mes para generar</p>
+    </div>
+    <button 
+      mat-icon-button 
+      (click)="cancelar()"
+      [disabled]="isGenerating"
+      aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Contenido del Modal -->
+  <div mat-dialog-content class="dialog-content">
+    <form [formGroup]="formulario">
+      <!-- Fila 1: Vendedor y Tipo de Reporte -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Vendedor</mat-label>
+          <mat-select formControlName="vendedor" [disabled]="isLoading || isGenerating">
+            <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor.id">
+              {{ obtenerNombreVendedor(vendedor) }} - {{ vendedor.zona }}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="isLoading">Cargando vendedores...</mat-hint>
+          <mat-error *ngIf="formulario.get('vendedor')?.invalid && formulario.get('vendedor')?.touched">
+            Vendedor es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Tipo de informe</mat-label>
+          <mat-select formControlName="tipo" [disabled]="isGenerating">
+            <mat-option *ngFor="let tipo of tiposReporte" [value]="tipo.valor">
+              {{ tipo.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched">
+            Tipo de informe es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 2: Año y Mes -->
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Año</mat-label>
+          <mat-select formControlName="anio" [disabled]="isGenerating">
+            <mat-option *ngFor="let anio of anios" [value]="anio">
+              {{ anio }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formulario.get('anio')?.invalid && formulario.get('anio')?.touched">
+            Año es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Seleccione Mes</mat-label>
+          <mat-select formControlName="mes" [disabled]="isGenerating">
+            <mat-option *ngFor="let mes of meses" [value]="mes.valor">
+              {{ mes.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formulario.get('mes')?.invalid && formulario.get('mes')?.touched">
+            Mes es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <!-- Loading spinner -->
+    <div *ngIf="isGenerating" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Generando informe...</p>
+    </div>
+  </div>
+
+  <!-- Acciones -->
+  <div class="dialog-actions">
+    <button 
+      mat-stroked-button
+      (click)="cancelar()"
+      [disabled]="isGenerating"
+      class="cancel-button">
+      Cancelar
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="generarInforme()"
+      [disabled]="formulario.invalid || isLoading || isGenerating"
+      class="submit-button">
+      <mat-icon>download</mat-icon>
+      Generar Informe
+    </button>
+  </div>
+</div>

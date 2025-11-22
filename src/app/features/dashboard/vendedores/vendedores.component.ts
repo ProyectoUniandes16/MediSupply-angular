@@ -16,6 +16,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarVendedorComponent } from './registrar-vendedor/registrar-vendedor.component';
 import { DetalleVendedorComponent } from './detalle-vendedor/detalle-vendedor.component';
+import { GenerarInformeVendedorComponent } from './generar-informe-vendedor/generar-informe-vendedor.component';
+import { VisorReporteVendedorComponent } from './visor-reporte-vendedor/visor-reporte-vendedor.component';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { Vendedor } from '../../../core/models/vendedor.models';
 import { Subscription } from 'rxjs';
@@ -277,5 +279,34 @@ export class VendedoresComponent implements OnInit {
    */
   getEstadoClass(estado: string): string {
     return estado === 'Activo' ? 'estado-activo' : 'estado-inactivo';
+  }
+
+  /**
+   * Abre el diálogo para generar informe de vendedor
+   */
+  abrirGenerarInforme(): void {
+    const dialogRef = this.dialog.open(GenerarInformeVendedorComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(reporte => {
+      console.log('Diálogo cerrado con reporte:', reporte);
+      if (reporte) {
+        console.log('Abriendo visor de PDF...');
+        // Abrir el visor de PDF con el reporte generado
+        this.dialog.open(VisorReporteVendedorComponent, {
+          width: '90vw',
+          maxWidth: '1200px',
+          height: '85vh',
+          data: reporte,
+          disableClose: false
+        });
+      } else {
+        console.log('No se recibió reporte del diálogo');
+      }
+    });
   }
 }

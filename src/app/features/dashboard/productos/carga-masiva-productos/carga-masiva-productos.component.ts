@@ -6,17 +6,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
-import { CargaMasivaResponseOk, DetalleError, DetalleExitoso } from '../../../../core/models/producto.models';
+import { CargaMasivaResponseOk, DetalleError, DetalleExitoso, ImportJobItem, ObtenerJobsResponse } from '../../../../core/models/producto.models';
+
+type EstadoJob = 'EN_COLA' | 'PROCESANDO' | 'COMPLETADO' | 'FALLIDO' | 'PARCIAL';
 
 interface CargaHistorial {
+  jobId: string;
   documento: string;
   fechaCargue: string;
   totalFilas: number;
   productsProcesados: number;
   errores: number;
-  estado: 'Procesando' | 'Completado' | 'Fallido' | 'Parcial';
+  estado: EstadoJob;
+  progreso: number;
+  fechaFinalizacion: string | null;
+  tiempoTranscurrido: number | null;
   detallesExitosos?: DetalleExitoso[];
   detallesErrores?: DetalleError[];
 }
@@ -32,6 +39,7 @@ interface CargaHistorial {
     MatProgressSpinnerModule,
     MatTableModule,
     MatSnackBarModule,
+    MatTooltipModule,
     TranslateModule
   ],
   templateUrl: './carga-masiva-productos.component.html',
@@ -42,7 +50,7 @@ export class CargaMasivaProductosComponent {
   isUploading = false;
   uploadProgress = 0;
   historialCargas: CargaHistorial[] = [];
-  displayedColumns: string[] = ['documento', 'fechaCargue', 'totalFilas', 'productsProcesados', 'errores', 'estado', 'acciones'];
+  displayedColumns: string[] = ['jobId', 'documento', 'fechaCargue', 'totalFilas', 'productsProcesados', 'errores', 'estado', 'acciones'];
   
   // Nuevas propiedades para mostrar detalles
   mostrarDetalles = false;
@@ -145,114 +153,80 @@ export class CargaMasivaProductosComponent {
         const envio = response.data.envio;
         const resumen = envio.resumen;
         
-        // Determinar el estado basado en el resumen
-        let estado: 'Completado' | 'Parcial' = 'Completado';
-        if (resumen.fallidos > 0 && resumen.exitosos > 0) {
-          estado = 'Parcial';
+        // Usar el estado que viene del servidor, o determinarlo basado en el resumen
+        let estado: EstadoJob = (envio.estado?.toUpperCase() as EstadoJob) || 'COMPLETADO';
+        
+        // Si no viene el estado del servidor, determinarlo basado en el resumen
+        if (!envio.estado) {
+          if (resumen.fallidos > 0 && resumen.exitosos > 0) {
+            estado = 'PARCIAL';
+          } else if (resumen.fallidos > 0) {
+            estado = 'FALLIDO';
+          }
         }
         
-        // Agregar al historial
-        const nuevaCarga: CargaHistorial = {
-          documento: this.selectedFile!.name,
-          fechaCargue: new Date().toLocaleDateString('es-CO', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          }),
-          totalFilas: resumen.total_filas,
-          productsProcesados: resumen.exitosos,
-          errores: resumen.fallidos,
-          estado: estado,
-          detallesExitosos: envio.detalles_exitosos,
-          detallesErrores: envio.detalles_errores
-        };
+        // Recargar el historial desde el servidor después de la carga
+        this.cargarHistorial();
         
-        this.historialCargas.unshift(nuevaCarga);
-        this.guardarHistorial();
-        
-        // Mostrar mensaje de éxito
-        if (estado === 'Completado') {
+        // Mostrar mensaje según el estado
+        if (estado === 'EN_COLA') {
+          this.snackBar.open(
+            `⏱ Carga en cola: El archivo se procesará próximamente`,
+            'Cerrar',
+            { duration: 5000, panelClass: ['info-snackbar'] }
+          );
+        } else if (estado === 'COMPLETADO') {
           this.snackBar.open(
             `✓ Carga completada: ${resumen.exitosos} productos procesados exitosamente`,
             'Cerrar',
             { duration: 5000, panelClass: ['success-snackbar'] }
           );
-        } else {
+        } else if (estado === 'PARCIAL') {
           this.snackBar.open(
             `⚠ Carga parcial: ${resumen.exitosos} exitosos, ${resumen.fallidos} con errores`,
-            'Ver detalles',
+            'Cerrar',
             { duration: 7000, panelClass: ['warning-snackbar'] }
-          ).onAction().subscribe(() => {
-            this.verDetallesErrores(nuevaCarga);
-          });
+          );
+        } else if (estado === 'PROCESANDO') {
+          this.snackBar.open(
+            `⏳ Procesando: El archivo está siendo procesado`,
+            'Cerrar',
+            { duration: 5000, panelClass: ['info-snackbar'] }
+          );
         }
         
+        // Detener el spinner y limpiar el archivo seleccionado
         this.isUploading = false;
         this.uploadProgress = 100;
         this.selectedFile = null;
-        
-        // Notificar al componente padre para recargar el listado
-        this.dialogRef.close({ reload: true });
       },
       error: (error: any) => {
         console.error('Error en carga masiva:', error);
         
-        let totalFilas = 0;
-        let exitosos = 0;
         let fallidos = 0;
-        let detallesErrores: DetalleError[] = [];
-        let detallesExitosos: DetalleExitoso[] = [];
         
         // Intentar extraer información del error
         if (error.error?.detail) {
           const detail = error.error.detail;
           if (detail.resumen) {
-            totalFilas = detail.resumen.total_filas || 0;
-            exitosos = detail.resumen.exitosos || 0;
-            fallidos = detail.resumen.fallidos || 0;
+            fallidos = detail.resumen.fallidos || 1;
           }
-          // Extraer detalles de errores y exitosos
-          detallesErrores = detail.detalles_errores || [];
-          detallesExitosos = detail.detalles_exitosos || [];
         }
         
-        // Si no hay información en el resumen, usar valores por defecto
-        if (totalFilas === 0 && exitosos === 0 && fallidos === 0) {
-          totalFilas = 1;
+        // Si no hay información en el resumen, usar valor por defecto
+        if (fallidos === 0) {
           fallidos = 1;
         }
         
-        // Agregar al historial con error
-        const nuevaCarga: CargaHistorial = {
-          documento: this.selectedFile!.name,
-          fechaCargue: new Date().toLocaleDateString('es-CO', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          }),
-          totalFilas: totalFilas,
-          productsProcesados: exitosos,
-          errores: fallidos,
-          estado: 'Fallido',
-          detallesExitosos: detallesExitosos,
-          detallesErrores: detallesErrores
-        };
-        
-        this.historialCargas.unshift(nuevaCarga);
-        this.guardarHistorial();
+        // Recargar el historial desde el servidor después del error
+        this.cargarHistorial();
         
         // Mostrar mensaje de error
         this.snackBar.open(
           `✗ Error en la carga: ${fallidos} filas fallidas`,
-          'Ver detalles',
+          'Cerrar',
           { duration: 7000, panelClass: ['error-snackbar'] }
-        ).onAction().subscribe(() => {
-          this.verDetallesErrores(nuevaCarga);
-        });
+        );
         
         this.isUploading = false;
         this.selectedFile = null;
@@ -268,62 +242,73 @@ export class CargaMasivaProductosComponent {
   }
 
   /**
-   * Carga el historial desde localStorage
+   * Carga el historial desde el servicio GET /importar-csv/jobs
    */
   private cargarHistorial(): void {
-    const historialGuardado = localStorage.getItem('historialCargasProductos');
-    if (historialGuardado) {
-      try {
-        this.historialCargas = JSON.parse(historialGuardado);
-      } catch (error) {
+    const params = {
+      limit: 10,
+      offset: 0
+    };
+
+    this.productoService.obtenerJobsImportacion(params).subscribe({
+      next: (response: ObtenerJobsResponse) => {
+        this.historialCargas = response.data.jobs.map((job: ImportJobItem) => this.mapearJobAHistorial(job));
+      },
+      error: (error: any) => {
         console.error('Error al cargar historial:', error);
         this.historialCargas = [];
       }
+    });
+  }
+
+  /**
+   * Mapea un ImportJobItem a CargaHistorial
+   */
+  private mapearJobAHistorial(job: ImportJobItem): CargaHistorial {
+    // Mapear el estado del job al estado del historial
+    let estado: EstadoJob = job.estado as EstadoJob;
+    
+    // Si está completado y tiene errores y exitosos, es parcial
+    if (job.estado === 'COMPLETADO' && job.fallidos > 0 && job.exitosos > 0) {
+      estado = 'PARCIAL';
     }
+
+    return {
+      jobId: job.job_id,
+      documento: job.nombre_archivo,
+      fechaCargue: new Date(job.fecha_creacion).toLocaleDateString('es-CO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      totalFilas: job.total_filas,
+      productsProcesados: job.exitosos,
+      errores: job.fallidos,
+      estado: estado,
+      progreso: job.progreso,
+      fechaFinalizacion: job.fecha_finalizacion ? new Date(job.fecha_finalizacion).toLocaleDateString('es-CO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : null,
+      tiempoTranscurrido: job.tiempo_transcurrido_segundos
+    };
   }
 
   /**
-   * Guarda el historial en localStorage
-   */
-  private guardarHistorial(): void {
-    localStorage.setItem('historialCargasProductos', JSON.stringify(this.historialCargas));
-  }
-
-  /**
-   * Descarga un archivo del historial
-   */
-  descargarArchivo(carga: CargaHistorial): void {
-    console.log('Descargar archivo:', carga.documento);
-    // Implementar descarga si es necesario
-  }
-
-  /**
-   * Elimina un registro del historial
-   */
-  eliminarRegistro(carga: CargaHistorial): void {
-    const index = this.historialCargas.indexOf(carga);
-    if (index > -1) {
-      this.historialCargas.splice(index, 1);
-      this.guardarHistorial();
-    }
-  }
-
-  /**
-   * Ver más acciones para un registro
-   */
-  verMasAcciones(carga: CargaHistorial): void {
-    console.log('Más acciones para:', carga.documento);
-    // Implementar menú de acciones adicionales
-  }
-
-  /**
-   * Muestra los detalles de errores de una carga
+   * Muestra los detalles de una carga
+   * Solo se permite ver detalles si el estado es diferente a EN_COLA
    */
   verDetallesErrores(carga: CargaHistorial): void {
-    if (carga.detallesErrores && carga.detallesErrores.length > 0) {
-      this.cargaSeleccionada = carga;
-      this.mostrarDetalles = true;
+    if (carga.estado === 'EN_COLA') {
+      return;
     }
+    this.cargaSeleccionada = carga;
+    this.mostrarDetalles = true;
   }
 
   /**
@@ -360,11 +345,5 @@ export class CargaMasivaProductosComponent {
     link.remove();
   }
 
-  /**
-   * Determina si una fila tiene errores y se puede hacer click para ver detalles
-   */
-  tieneErrores(carga: CargaHistorial): boolean {
-    return (carga.detallesErrores?.length || 0) > 0;
-  }
 }
 

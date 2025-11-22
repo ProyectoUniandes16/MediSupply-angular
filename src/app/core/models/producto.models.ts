@@ -102,7 +102,7 @@ export interface ResumenImportacion {
  * Interfaz para el detalle de la importación
  */
 export interface DetalleImportacion {
-  estado: 'completado' | 'fallido' | 'parcial';
+  estado: 'completado' | 'fallido' | 'parcial' | 'EN_COLA' | 'PROCESANDO';
   mensaje: string;
   procesamiento: 'sincrono' | 'asincrono';
   resumen: ResumenImportacion;
@@ -141,6 +141,56 @@ export interface CargaMasivaResponse {
   errores: number;
   mensaje?: string;
   detalles?: string[];
+}
+
+/**
+ * Interfaz para un job de importación CSV
+ */
+export interface ImportJobItem {
+  estado: string;
+  exitosos: number;
+  fallidos: number;
+  fecha_creacion: string;
+  fecha_finalizacion: string | null;
+  fecha_inicio_proceso: string | null;
+  filas_procesadas: number;
+  job_id: string;
+  local_path: string;
+  nombre_archivo: string;
+  progreso: number;
+  reintentos: number;
+  tiempo_transcurrido_segundos: number | null;
+  total_filas: number;
+  usuario_registro: string;
+}
+
+/**
+ * Interfaz para los filtros de jobs
+ */
+export interface JobsFiltros {
+  estado: string | null;
+  usuario: string | null;
+}
+
+/**
+ * Interfaz para la paginación de jobs
+ */
+export interface JobsPaginacion {
+  limit: number;
+  offset: number;
+  tiene_mas: boolean;
+  total: number;
+}
+
+/**
+ * Interfaz para la respuesta del endpoint GET /importar-csv/jobs
+ */
+export interface ObtenerJobsResponse {
+  data: {
+    filtros: JobsFiltros;
+    jobs: ImportJobItem[];
+    paginacion: JobsPaginacion;
+  };
 }
 
 /**

@@ -123,6 +123,7 @@
     "TITLE": "Sellers",
     "SUBTITLE": "Manage sellers who supply products to the company",
     "NEW": "Register Seller",
+    "GENERATE_REPORT": "Generate Report",
     "LIST_EMPTY": "Click on \"Register Seller\" to add a new seller to the system.",
     "RETRY": "Retry",
     "NO_RESULTS": "No sellers found with the applied filters",

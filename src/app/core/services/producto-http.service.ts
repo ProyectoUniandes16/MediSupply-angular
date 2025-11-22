@@ -9,7 +9,8 @@ import {
   ObtenerProductosResponse,
   ObtenerProductoDetalleResponse,
   ObtenerInventariosProductoResponse,
-  ProductoDetalle
+  ProductoDetalle,
+  ObtenerJobsResponse
 } from '../models/producto.models';
 
 /**
@@ -313,6 +314,40 @@ export class ProductoHttpService {
     return this.http.get<ObtenerInventariosProductoResponse>(`${this.apiUrl}/producto/${id}/inventarios`).pipe(
       catchError(error => {
         console.error(`Error al obtener inventarios del producto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene el historial de jobs de importación CSV
+   * 
+   * @param params - Parámetros de paginación y filtros (estado, usuario, limit, offset)
+   * @returns Observable con la respuesta de jobs
+   * 
+   * Endpoint: GET /api/importar-csv/jobs
+   * 
+   * @example
+   * const params = { limit: 10, offset: 0, estado: 'COMPLETADO' };
+   * this.productoHttpService.obtenerJobsImportacion(params).subscribe({
+   *   next: (response) => console.log('Jobs:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerJobsImportacion(params?: any): Observable<ObtenerJobsResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      for (const key of Object.keys(params)) {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      }
+    }
+    
+    return this.http.get<ObtenerJobsResponse>(`${this.apiUrl}/importar-csv/jobs`, { params: httpParams }).pipe(
+      catchError(error => {
+        console.error('Error al obtener jobs de importación:', error);
         return throwError(() => error);
       })
     );

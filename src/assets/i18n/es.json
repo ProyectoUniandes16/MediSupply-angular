@@ -123,6 +123,7 @@
     "TITLE": "Vendedores",
     "SUBTITLE": "Gestiona vendedores que suministran productos a la compañía",
     "NEW": "Registrar Vendedor",
+    "GENERATE_REPORT": "Generar Informe",
     "LIST_EMPTY": "Haz clic en \"Registrar Vendedor\" para agregar un nuevo vendedor al sistema.",
     "RETRY": "Reintentar",
     "NO_RESULTS": "No se encontraron vendedores con los filtros aplicados",

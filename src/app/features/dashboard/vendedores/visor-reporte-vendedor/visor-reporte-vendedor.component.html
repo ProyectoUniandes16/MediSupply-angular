@@ -1,0 +1,39 @@
+<div class="visor-container">
+  <h2 mat-dialog-title>
+    <mat-icon>description</mat-icon>
+    Reporte de Ventas - {{ data.vendedor.nombre_completo }}
+  </h2>
+
+  <mat-dialog-content>
+    <div *ngIf="isGenerating" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Generando PDF...</p>
+    </div>
+
+    <div *ngIf="!isGenerating && pdfUrl" class="pdf-container">
+      <iframe [src]="pdfUrl" frameborder="0"></iframe>
+    </div>
+
+    <div *ngIf="!isGenerating && !pdfUrl" class="error-container">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <p>No se pudo generar el PDF. Por favor, intente nuevamente.</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button 
+      mat-button 
+      (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+      Cerrar
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="descargarPDF()"
+      [disabled]="isGenerating || !pdfBlob">
+      <mat-icon>download</mat-icon>
+      Descargar PDF
+    </button>
+  </mat-dialog-actions>
+</div>

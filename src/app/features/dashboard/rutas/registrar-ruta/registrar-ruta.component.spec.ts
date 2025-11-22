@@ -210,6 +210,90 @@ describe('RegistrarRutaComponent', () => {
   jexpect(component.ultimaRespuestaCalculo).toBeNull();
   jexpect(sbSpy).toHaveBeenCalled();
     });
+
+    it('should parse bodega ubicacion string format', () => {
+      // Usar formato string "latitud,longitud" (como viene del backend)
+      component.bodegas = [
+        { id: 'b1', nombre: 'Bodega', ubicacion: '4.636767,-74.140675', fecha_creacion: new Date().toISOString(), camiones: [] }
+      ];
+      const mockResponse = { mensaje: 'ok', orden_optimo: [] };
+      rutaServiceSpy.calcularRutaOptima.and.returnValue(of(mockResponse));
+      component.onCalcular();
+      // Verificar que se llamó con coordenadas parseadas correctamente [longitud, latitud]
+  jexpect(rutaServiceSpy.calcularRutaOptima).toHaveBeenCalledWith([-74.140675, 4.636767], [[-74.05, 4.68]]);
+  jexpect(component.rutaCalculada).toBeTrue();
+    });
+
+    it('should warn if bodega ubicacion has invalid format', () => {
+      component.bodegas = [
+        { id: 'b1', nombre: 'Bodega', ubicacion: 'invalid-format', fecha_creacion: new Date().toISOString(), camiones: [] }
+      ];
+      const sbSpy = spyOn(component['snackBar'], 'open');
+      component.onCalcular();
+  jexpect(rutaServiceSpy.calcularRutaOptima).not.toHaveBeenCalled();
+  jexpect(sbSpy).toHaveBeenCalled();
+      const callArgs = sbSpy.calls.mostRecent().args;
+  jexpect(callArgs[0]).toContain('formato de ubicación inválido');
+    });
+
+    it('should warn if bodega has no ubicacion at all', () => {
+      component.bodegas = [
+        { id: 'b1', nombre: 'Bodega', ubicacion: '', fecha_creacion: new Date().toISOString(), camiones: [] }
+      ];
+      const sbSpy = spyOn(component['snackBar'], 'open');
+      component.onCalcular();
+  jexpect(rutaServiceSpy.calcularRutaOptima).not.toHaveBeenCalled();
+  jexpect(sbSpy).toHaveBeenCalled();
+      const callArgs = sbSpy.calls.mostRecent().args;
+  jexpect(callArgs[0]).toContain('no tiene ubicación configurada');
+    });
+
+    it('should parse pedido cliente_ubicacion string format', () => {
+      // Usar formato string "latitud,longitud" para pedidos (como viene del backend)
+      component.pedidos = [
+        { id: 'p1', nombre: 'Pedido 1', cliente_ubicacion: '4.673880616955981,-74.07767056299195' }
+      ];
+      component.pedidosIds = ['p1'];
+      component.bodegas = [
+        { id: 'b1', nombre: 'Bodega', longitud: -74.07, latitud: 4.71, ubicacion: 'Bogotá', fecha_creacion: new Date().toISOString(), camiones: [] }
+      ];
+      const mockResponse = { mensaje: 'ok', orden_optimo: [] };
+      rutaServiceSpy.calcularRutaOptima.and.returnValue(of(mockResponse));
+      component.onCalcular();
+      // Verificar que se llamó con coordenadas parseadas correctamente [longitud, latitud]
+  jexpect(rutaServiceSpy.calcularRutaOptima).toHaveBeenCalledWith([-74.07, 4.71], [[-74.07767056299195, 4.673880616955981]]);
+  jexpect(component.rutaCalculada).toBeTrue();
+    });
+
+    it('should warn if pedido has invalid cliente_ubicacion format', () => {
+      component.pedidos = [
+        { id: 'p1', nombre: 'Pedido 1', cliente_ubicacion: 'invalid-format' }
+      ];
+      component.pedidosIds = ['p1'];
+      const sbSpy = spyOn(component['snackBar'], 'open');
+      component.onCalcular();
+  jexpect(rutaServiceSpy.calcularRutaOptima).not.toHaveBeenCalled();
+  jexpect(sbSpy).toHaveBeenCalled();
+      const callArgs = sbSpy.calls.mostRecent().args;
+  jexpect(callArgs[0]).toContain('no tienen ubicación configurada');
+    });
+
+    it('should handle mixed location formats (longitud/latitud and cliente_ubicacion)', () => {
+      component.pedidos = [
+        { id: 'p1', nombre: 'Pedido 1', longitud: -74.05, latitud: 4.68 },
+        { id: 'p2', nombre: 'Pedido 2', cliente_ubicacion: '4.673880616955981,-74.07767056299195' }
+      ];
+      component.pedidosIds = ['p1', 'p2'];
+      const mockResponse = { mensaje: 'ok', orden_optimo: [] };
+      rutaServiceSpy.calcularRutaOptima.and.returnValue(of(mockResponse));
+      component.onCalcular();
+      // Verificar que ambos formatos se procesaron correctamente
+  jexpect(rutaServiceSpy.calcularRutaOptima).toHaveBeenCalledWith(
+        [-74.07, 4.71],
+        [[-74.05, 4.68], [-74.07767056299195, 4.673880616955981]]
+      );
+  jexpect(component.rutaCalculada).toBeTrue();
+    });
   });
 
   describe('onRegistrar', () => {
@@ -260,6 +344,32 @@ describe('RegistrarRutaComponent', () => {
       const sbSpy = spyOn(component['snackBar'], 'open');
       component.onRegistrar();
   jexpect(sbSpy).toHaveBeenCalled();
+    });
+
+    it('should match pedidos with cliente_ubicacion format to route stops', () => {
+      // Pedidos con cliente_ubicacion
+      component.pedidos = [
+        { id: 'p1', nombre: 'Pedido 1', cliente_ubicacion: '4.68,-74.05' },
+        { id: 'p2', nombre: 'Pedido 2', cliente_ubicacion: '4.69,-74.06' }
+      ];
+      component.pedidosIds = ['p1', 'p2'];
+      component.ultimaRespuestaCalculo = {
+        orden_optimo: [
+          { job_id: 'inicio/fin', ubicacion: [-74.07, 4.71] },
+          { job_id: 'pedido-1', ubicacion: [-74.05, 4.68] },
+          { job_id: 'pedido-2', ubicacion: [-74.06, 4.69] },
+          { job_id: 'inicio/fin', ubicacion: [-74.07, 4.71] }
+        ]
+      };
+      
+      rutaServiceSpy.registrarRuta.and.returnValue(of({ mensaje: 'ok' }));
+      component.onRegistrar();
+      
+  jexpect(rutaServiceSpy.registrarRuta).toHaveBeenCalled();
+      const callArg = rutaServiceSpy.registrarRuta.calls.mostRecent().args[0];
+  jexpect(callArg.ruta.length).toBe(2);
+  jexpect(callArg.ruta[0].pedido_id).toBe('p1');
+  jexpect(callArg.ruta[1].pedido_id).toBe('p2');
     });
   });
 });

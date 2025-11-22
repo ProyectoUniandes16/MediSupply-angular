@@ -42,14 +42,58 @@ export interface ObtenerZonasResponse {
   total: number;
 }
 
+export interface RutaDetalle {
+  id: string;
+  ruta_id: string;
+  pedido_id: string;
+  ubicacion: [number, number];
+  orden: number;
+  estado: string;
+  fecha_visita: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Ruta {
   id: string;
   zona_id: string;
   bodega_id: string;
   camion_id: string;
   estado: string;
-  fecha_creacion: string;
-  pedidos?: any[];
+  fecha_asignacion: string;
+  fecha_inicio: string | null;
+  fecha_fin: string | null;
+  created_at: string;
+  updated_at: string;
+  zona?: {
+    id: string;
+    nombre: string;
+    descripcion: string | null;
+  };
+  bodega?: {
+    id: string;
+    nombre: string;
+    ubicacion: string;
+  };
+  camion?: {
+    id: string;
+    placa: string;
+    capacidad_kg: number;
+    capacidad_m3: number;
+    disponible: boolean;
+    estado: string;
+    tipo?: {
+      id: string;
+      nombre: string;
+      descripcion: string;
+    };
+  };
+  detalles?: RutaDetalle[];
+}
+
+export interface ObtenerRutasResponse {
+  data: Ruta[];
+  total: number;
 }
 
 export interface RutaOptimaRequest {

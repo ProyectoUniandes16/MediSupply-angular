@@ -35,15 +35,6 @@
       "^/api/ruta-optima": "/ruta-optima"
     }
   },
-  "/api/pedido": {
-    "target": "http://localhost:5013",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/api/pedido": "/pedido"
-    }
-  },
   "/api": {
     "target": "http://localhost:5002",
     "secure": false,

@@ -1,18 +1,19 @@
-<div class="rutas-container">
+<div class="page-container">
   <!-- Encabezado -->
-  <div class="header">
-    <div class="header-info">
-      <h1 class="title">{{ 'RUTAS.TITLE' | translate }}</h1>
+  <div class="page-header">
+    <div class="header-content">
+      <h1>{{ 'RUTAS.TITLE' | translate }}</h1>
       <p class="subtitle">{{ 'RUTAS.SUBTITLE' | translate }}</p>
     </div>
-    <button 
-      mat-raised-button 
-      color="primary"
-      class="register-button"
-      (click)="openRegistrarRutaDialog()">
-      <mat-icon>add</mat-icon>
-      {{ 'RUTAS.NEW' | translate }}
-    </button>
+    <div class="header-actions">
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="openRegistrarRutaDialog()">
+        <mat-icon>add</mat-icon>
+        {{ 'RUTAS.NEW' | translate }}
+      </button>
+    </div>
   </div>
 
   <!-- Loading Spinner -->
@@ -25,13 +26,156 @@
   <div class="error-message" *ngIf="errorMessage && !isLoading">
     <mat-icon>error_outline</mat-icon>
     <p>{{ errorMessage }}</p>
-    <button mat-raised-button color="primary">
-      {{ 'RUTAS.RETRY' | translate }}
+    <button mat-raised-button color="primary" (click)="cargarRutas()">
+      {{ 'COMMON.RETRY' | translate }}
     </button>
   </div>
 
-  <!-- Contenido futuro: tabla de rutas -->
-  <div class="content" *ngIf="!isLoading && !errorMessage">
-    <!-- Aquí irá la tabla de rutas -->
+  <!-- Estado vacío (sin filtros y sin datos) -->
+  <div class="empty-state" *ngIf="!isLoading && !errorMessage && !tieneRutas && !hasFiltrosActivos">
+    <mat-icon class="empty-icon">route</mat-icon>
+    <p class="empty-message">{{ 'RUTAS.LIST_EMPTY' | translate }}</p>
+  </div>
+
+  <!-- Barra de Filtros y Tabla -->
+  <div *ngIf="!isLoading && !errorMessage && (tieneRutas || hasFiltrosActivos)">
+    <div class="filters-bar">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'RUTAS.FILTERS.ZONE' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedZonaId"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+          <mat-option *ngIf="isLoadingZonas" disabled>
+            {{ 'COMMON.LOADING' | translate }}...
+          </mat-option>
+          <mat-option *ngFor="let zona of zonas" [value]="zona.id">
+            {{ zona.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'RUTAS.TABLE.ESTADO' | translate }}</mat-label>
+        <mat-select 
+          [(ngModel)]="selectedEstado"
+          (ngModelChange)="aplicarFiltros()">
+          <mat-option *ngFor="let estado of estados" [value]="estado.value">
+            {{ estado.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button 
+        mat-stroked-button 
+        class="clear-button"
+        (click)="limpiarFiltros()"
+        [disabled]="!selectedZonaId && !selectedEstado">
+        <mat-icon>close</mat-icon>
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
+
+    <!-- Tabla de Rutas -->
+    <div class="table-container" *ngIf="tieneRutas">
+      <table mat-table [dataSource]="rutas" class="rutas-table">
+        
+        <!-- Columna ID -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.ID' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            <span class="id-text">{{ ruta.id.substring(0, 8) }}...</span>
+          </td>
+        </ng-container>
+
+        <!-- Columna Camión -->
+        <ng-container matColumnDef="camion">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.CAMION' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            <div class="camion-info">
+              <strong>{{ ruta.camion?.placa || 'N/A' }}</strong>
+              <span class="tipo-camion" *ngIf="ruta.camion?.tipo">
+                {{ ruta.camion.tipo.nombre }}
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Columna Zona -->
+        <ng-container matColumnDef="zona">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.ZONA' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            {{ ruta.zona?.nombre || 'N/A' }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Bodega -->
+        <ng-container matColumnDef="bodega">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.BODEGA' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            {{ ruta.bodega?.nombre || 'N/A' }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.ESTADO' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            <mat-chip [class]="getEstadoClass(ruta.estado)">
+              {{ formatearEstado(ruta.estado) }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Columna Fecha Asignación -->
+        <ng-container matColumnDef="fecha_asignacion">
+          <th mat-header-cell *matHeaderCellDef>{{ 'RUTAS.TABLE.FECHA_ASIGNACION' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta">
+            {{ ruta.fecha_asignacion | date: 'short' }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="actions-column">{{ 'RUTAS.TABLE.ACCIONES' | translate }}</th>
+          <td mat-cell *matCellDef="let ruta" class="actions-column">
+            <button 
+              mat-icon-button 
+              [matTooltip]="'RUTAS.TABLE.VIEW_DETAILS' | translate"
+              color="primary">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button 
+              mat-icon-button 
+              [matTooltip]="'RUTAS.TABLE.EDIT' | translate"
+              color="accent">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <!-- Paginador -->
+      <mat-paginator
+        [length]="total"
+        [pageSize]="size"
+        [pageIndex]="page - 1"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+    <!-- Estado vacío con filtros (no hay resultados) -->
+    <div class="empty-state" *ngIf="!tieneRutas && hasFiltrosActivos">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <p class="empty-message">{{ 'RUTAS.NO_RESULTS' | translate }}</p>
+      <button mat-raised-button (click)="limpiarFiltros()">
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
+      </button>
+    </div>
   </div>
 </div>

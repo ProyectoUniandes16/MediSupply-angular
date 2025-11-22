@@ -72,7 +72,7 @@ export class RutaHttpService {
       destinos
     };
 
-    return this.http.post<any>(`${this.apiUrl}/ruta-optima`, payload)
+    return this.http.post<any>(`${this.apiUrl}/ruta-optima?formato=json`, payload)
       .pipe(
         catchError(error => {
           console.error('Error al calcular ruta óptima:', error);
@@ -113,6 +113,30 @@ export class RutaHttpService {
       .pipe(
         catchError(error => {
           console.error('Error al registrar ruta:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
+   * Obtiene el listado de rutas con filtros y paginación
+   * Endpoint: GET /rutas
+   */
+  obtenerRutas(params?: { [key: string]: string | number }): Observable<{ data: any[]; total: number }> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      for (const key of Object.keys(params)) {
+        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+          httpParams = httpParams.set(key, params[key].toString());
+        }
+      }
+    }
+
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/rutas`, { params: httpParams })
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener rutas:', error);
           return throwError(() => error);
         })
       );

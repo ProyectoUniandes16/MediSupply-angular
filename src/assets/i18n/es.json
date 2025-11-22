@@ -425,6 +425,22 @@
     "SUBTITLE": "Gestiona rutas de entrega y optimización logística",
     "NEW": "Registrar Ruta",
     "RETRY": "Reintentar",
+    "LIST_EMPTY": "No hay rutas registradas. Haz clic en \"Registrar Ruta\" para crear una nueva ruta de entrega",
+    "NO_RESULTS": "No se encontraron rutas con los filtros aplicados",
+    "FILTERS": {
+      "ZONE": "Zona"
+    },
+    "TABLE": {
+      "ID": "ID",
+      "CAMION": "Camión",
+      "ZONA": "Zona",
+      "BODEGA": "Bodega",
+      "ESTADO": "Estado",
+      "FECHA_ASIGNACION": "Fecha de Asignación",
+      "ACCIONES": "Acciones",
+      "VIEW_DETAILS": "Ver detalles",
+      "EDIT": "Editar ruta"
+    },
     "DIALOG": {
       "TITLE": "Agregar Ruta",
       "SUBTITLE": "Complete la información de las paradas y calcule la ruta más óptima",

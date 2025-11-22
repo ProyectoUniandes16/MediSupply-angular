@@ -3,6 +3,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RutaHttpService } from './ruta-http.service';
 
+// Jasmine expect typing workaround (Assertion vs JasmineMatchers)
+const jexpect = (expect as any);
+
 describe('RutaHttpService', () => {
   let service: RutaHttpService;
   let httpMock: HttpTestingController;
@@ -25,14 +28,14 @@ describe('RutaHttpService', () => {
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    jexpect(service).toBeTruthy();
   });
 
   it('should get zonas with optional params', () => {
     const mockResponse = { data: [], total: 0 };
 
     service.obtenerZonas({ page: 1, size: 10 }).subscribe(res => {
-      expect(res).toEqual(mockResponse);
+      jexpect(res).toEqual(mockResponse);
     });
 
     const req = httpMock.expectOne(request => 
@@ -41,7 +44,7 @@ describe('RutaHttpService', () => {
       request.params.get('size') === '10'
     );
 
-    expect(req.request.method).toBe('GET');
+  jexpect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
 
@@ -49,13 +52,13 @@ describe('RutaHttpService', () => {
     const mockDetalle: any = { id: 'zona-1', bodegas: [] };
 
     service.obtenerDetalleZona('zona-1').subscribe(res => {
-      expect(res).toEqual(mockDetalle);
+      jexpect(res).toEqual(mockDetalle);
     });
 
     const req = httpMock.expectOne(request => 
       request.url.endsWith('/zona/zona-1/detalle')
     );
-    expect(req.request.method).toBe('GET');
+  jexpect(req.request.method).toBe('GET');
     req.flush(mockDetalle);
   });
 
@@ -63,7 +66,7 @@ describe('RutaHttpService', () => {
     const mockResponse = { data: [{ id: 'p1' }] };
 
     service.obtenerPedidosPorZona('Colombia - Bogotá').subscribe(res => {
-      expect(res).toEqual(mockResponse);
+      jexpect(res).toEqual(mockResponse);
     });
 
     const req = httpMock.expectOne(request => 
@@ -71,7 +74,7 @@ describe('RutaHttpService', () => {
       request.params.get('zona') === 'Colombia - Bogotá'
     );
 
-    expect(req.request.method).toBe('GET');
+  jexpect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
 
@@ -81,15 +84,16 @@ describe('RutaHttpService', () => {
     const mockResponse = { mensaje: 'ok' };
 
     service.calcularRutaOptima(bodega, destinos).subscribe(res => {
-      expect(res).toEqual(mockResponse);
+      jexpect(res).toEqual(mockResponse);
     });
 
+    // Endpoint now includes the formato=json query param
     const req = httpMock.expectOne(request => 
-      request.url.endsWith('/ruta-optima')
+      request.url.endsWith('/ruta-optima?formato=json')
     );
 
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ bodega, destinos });
+  jexpect(req.request.method).toBe('POST');
+  jexpect(req.request.body).toEqual({ bodega, destinos });
     req.flush(mockResponse);
   });
 
@@ -99,15 +103,15 @@ describe('RutaHttpService', () => {
     const mockHtml = '<html><body>Ruta</body></html>';
 
     service.obtenerRutaOptimaHTML(bodega, destinos).subscribe(res => {
-      expect(res).toBe(mockHtml);
+      jexpect(res).toBe(mockHtml);
     });
 
     const req = httpMock.expectOne(request => 
       request.url.endsWith('/ruta-optima?formato=html')
     );
 
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ bodega, destinos });
+  jexpect(req.request.method).toBe('POST');
+  jexpect(req.request.body).toEqual({ bodega, destinos });
     req.flush(mockHtml);
   });
 
@@ -125,15 +129,15 @@ describe('RutaHttpService', () => {
     const mockResponse = { mensaje: 'Ruta registrada exitosamente' };
 
     service.registrarRuta(payload).subscribe(res => {
-      expect(res).toEqual(mockResponse);
+      jexpect(res).toEqual(mockResponse);
     });
 
     const req = httpMock.expectOne(request => 
       request.url.endsWith('/rutas')
     );
 
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(payload);
+  jexpect(req.request.method).toBe('POST');
+  jexpect(req.request.body).toEqual(payload);
     req.flush(mockResponse);
   });
 });

@@ -270,8 +270,34 @@ export class RegistrarRutaComponent implements OnInit {
       return;
     }
 
-    // Validar que la bodega tenga coordenadas
-    if (!bodegaSeleccionada.longitud || !bodegaSeleccionada.latitud) {
+    // Obtener coordenadas de la bodega (desde ubicacion string o propiedades separadas)
+    let bodegaLongitud: number;
+    let bodegaLatitud: number;
+
+    if (bodegaSeleccionada.longitud && bodegaSeleccionada.latitud) {
+      // Usar propiedades separadas si están disponibles
+      bodegaLongitud = bodegaSeleccionada.longitud;
+      bodegaLatitud = bodegaSeleccionada.latitud;
+    } else if (bodegaSeleccionada.ubicacion) {
+      // Parsear desde ubicacion string "latitud,longitud"
+      const coords = bodegaSeleccionada.ubicacion.split(',').map(c => Number.parseFloat(c.trim()));
+      if (coords.length === 2 && !Number.isNaN(coords[0]) && !Number.isNaN(coords[1])) {
+        bodegaLatitud = coords[0];
+        bodegaLongitud = coords[1];
+      } else {
+        this.snackBar.open(
+          'La bodega seleccionada tiene un formato de ubicación inválido',
+          'Cerrar',
+          {
+            duration: 4000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          }
+        );
+        return;
+      }
+    } else {
       this.snackBar.open(
         'La bodega seleccionada no tiene ubicación configurada',
         'Cerrar',
@@ -290,8 +316,26 @@ export class RegistrarRutaComponent implements OnInit {
     const pedidosSinUbicacion: any[] = [];
 
     for (const pedido of this.pedidosSeleccionados) {
+      let pedidoLongitud: number | undefined;
+      let pedidoLatitud: number | undefined;
+
+      // Intentar obtener coordenadas de propiedades separadas
       if (pedido.longitud && pedido.latitud) {
-        destinos.push([pedido.longitud, pedido.latitud]);
+        pedidoLongitud = pedido.longitud;
+        pedidoLatitud = pedido.latitud;
+      }
+      // Intentar parsear desde cliente_ubicacion "latitud,longitud"
+      else if (pedido.cliente_ubicacion) {
+        const coords = pedido.cliente_ubicacion.split(',').map((c: string) => Number.parseFloat(c.trim()));
+        if (coords.length === 2 && !Number.isNaN(coords[0]) && !Number.isNaN(coords[1])) {
+          pedidoLatitud = coords[0];
+          pedidoLongitud = coords[1];
+        }
+      }
+
+      // Si se obtuvieron coordenadas válidas, agregar al array de destinos
+      if (pedidoLongitud !== undefined && pedidoLatitud !== undefined) {
+        destinos.push([pedidoLongitud, pedidoLatitud]);
       } else {
         pedidosSinUbicacion.push(pedido);
       }
@@ -315,8 +359,8 @@ export class RegistrarRutaComponent implements OnInit {
 
     // Construir ubicación de la bodega [longitud, latitud]
     const bodegaUbicacion: [number, number] = [
-      bodegaSeleccionada.longitud,
-      bodegaSeleccionada.latitud
+      bodegaLongitud,
+      bodegaLatitud
     ];
 
     // Llamar al servicio de ruta óptima
@@ -447,11 +491,27 @@ export class RegistrarRutaComponent implements OnInit {
       // Buscar el pedido que corresponde a esta ubicación
       const ubicacionParada = parada.ubicacion; // [longitud, latitud]
       const pedido = this.pedidosSeleccionados.find((p: any) => {
+        // Obtener coordenadas del pedido
+        let pedidoLon: number | undefined;
+        let pedidoLat: number | undefined;
+
+        if (p.longitud && p.latitud) {
+          pedidoLon = p.longitud;
+          pedidoLat = p.latitud;
+        } else if (p.cliente_ubicacion) {
+          const coords = p.cliente_ubicacion.split(',').map((c: string) => Number.parseFloat(c.trim()));
+          if (coords.length === 2 && !Number.isNaN(coords[0]) && !Number.isNaN(coords[1])) {
+            pedidoLat = coords[0];
+            pedidoLon = coords[1];
+          }
+        }
+
         // Comparar las coordenadas con una pequeña tolerancia para errores de precisión
-        const esMismaUbicacion = 
-          Math.abs(p.longitud - ubicacionParada[0]) < 0.0001 && 
-          Math.abs(p.latitud - ubicacionParada[1]) < 0.0001;
-        return esMismaUbicacion;
+        if (pedidoLon !== undefined && pedidoLat !== undefined) {
+          return Math.abs(pedidoLon - ubicacionParada[0]) < 0.0001 && 
+                 Math.abs(pedidoLat - ubicacionParada[1]) < 0.0001;
+        }
+        return false;
       });
 
       if (pedido) {

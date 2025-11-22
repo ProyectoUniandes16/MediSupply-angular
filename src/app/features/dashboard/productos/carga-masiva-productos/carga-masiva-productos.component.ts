@@ -69,8 +69,8 @@ export class CargaMasivaProductosComponent {
    * Descarga la plantilla CSV de ejemplo
    */
   descargarPlantilla(): void {
-    const csvContent = 'Nombre,SKU,Categoria,Precio,Fecha Vencimiento,Condiciones Almacenamiento,Bodega,Lote\n' +
-      'Ejemplo Producto,SKU-001,Medicamentos,15000,31/12/2025,Almacenar en un lugar fresco y seco,Bodega Central,LOTE-001\n';
+    const csvContent = 'nombre,codigo_sku,categoria,precio_unitario,condiciones_almacenamiento,fecha_vencimiento,proveedor_id,usuario_registro,estado,url_certificacion,tipo_certificacion,fecha_vencimiento_cert,cantidad,ubicacion\n' +
+      'Producto 2,SKU-DIS-002,dispositivo,159.89,"Temperatura ambiente (15-25C)",14/11/2028,2,tester@demo.com,Activo,https://certs.medisupply.com/dispositivo/sku-DIS-002.pdf,FDA,14/11/2028,1,bodega_refrigerada\n';
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');

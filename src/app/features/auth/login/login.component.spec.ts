@@ -135,7 +135,7 @@ describe('LoginComponent', () => {
   });
 
   it('should show error message on login failure', () => {
-    authService.login.and.returnValue(throwError(() => new Error('Login failed')));
+    authService.login.and.returnValue(throwError(() => ({ status: 401, message: 'Invalid credentials' } as any)));
 
     component.loginForm.patchValue({
       email: 'test@example.com',

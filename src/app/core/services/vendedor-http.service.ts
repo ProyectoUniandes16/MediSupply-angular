@@ -7,7 +7,8 @@ import {
   RegistrarVendedorRequest,
   RegistrarVendedorResponse,
   Vendedor,
-  ObtenerVendedoresResponse
+  ObtenerVendedoresResponse,
+  ReporteVentasVendedor
 } from '../models/vendedor.models';
 
 /**
@@ -222,5 +223,37 @@ export class VendedorHttpService {
       telefono: formValue.telefono,
       correo: formValue.email
     };
+  }
+
+  /**
+   * Obtiene el reporte de ventas de un vendedor
+   * 
+   * @param vendedorId - ID del vendedor (UUID)
+   * @param mes - Mes del reporte (1-12)
+   * @param anio - Año del reporte
+   * @returns Observable con el reporte de ventas
+   * 
+   * Endpoint: GET /api/vendedor/{id}/reporte-ventas?mes={mes}&anio={anio}&formato=json
+   * 
+   * @example
+   * this.vendedorHttpService.obtenerReporteVentas('993987b4-6a58-45da-a216-4c2da0a03978', 11, 2024).subscribe({
+   *   next: (reporte) => console.log('Reporte:', reporte),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerReporteVentas(vendedorId: string, mes: number, anio: number): Observable<ReporteVentasVendedor> {
+    const params = new HttpParams()
+      .set('mes', mes.toString())
+      .set('anio', anio.toString())
+      .set('formato', 'json');
+
+    return this.http.get<ReporteVentasVendedor>(`${this.apiUrl}/vendedor/${vendedorId}/reporte-ventas`, {
+      params
+    }).pipe(
+      catchError(error => {
+        console.error(`Error al obtener reporte de ventas del vendedor ${vendedorId}:`, error);
+        return throwError(() => error);
+      })
+    );
   }
 }

@@ -80,6 +80,14 @@
       <h3>{{ 'PRODUCTOS.BULK.HISTORY.TITLE' | translate }}</h3>
       
       <table mat-table [dataSource]="historialCargas" class="historial-table" *ngIf="historialCargas.length > 0">
+        <!-- Columna Job ID -->
+        <ng-container matColumnDef="jobId">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let carga" class="job-id-cell">
+            <span class="job-id-badge">{{ carga.jobId }}</span>
+          </td>
+        </ng-container>
+
         <!-- Columna Documento -->
         <ng-container matColumnDef="documento">
           <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.HISTORY.COLUMNS.FILE' | translate }}</th>
@@ -124,26 +132,18 @@
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
           <td mat-cell *matCellDef="let carga">
-            <button mat-icon-button (click)="descargarArchivo(carga)">
-              <mat-icon>download</mat-icon>
-            </button>
-            <button mat-icon-button (click)="eliminarRegistro(carga)">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button mat-icon-button (click)="verMasAcciones(carga)">
-              <mat-icon>more_horiz</mat-icon>
+            <button 
+              mat-icon-button 
+              [disabled]="carga.estado === 'EN_COLA'"
+              [matTooltip]="carga.estado === 'EN_COLA' ? 'El cargue está en cola' : 'Ver detalles'"
+              (click)="verDetallesErrores(carga); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
             </button>
           </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr 
-          mat-row 
-          *matRowDef="let row; columns: displayedColumns;"
-          [class.clickable-row]="tieneErrores(row)"
-          [attr.title]="tieneErrores(row) ? ('PRODUCTOS.BULK.HISTORY.CLICK_ERRORS' | translate) : ''"
-          (click)="tieneErrores(row) && verDetallesErrores(row)">
-        </tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
       <div class="empty-historial" *ngIf="historialCargas.length === 0">

@@ -67,3 +67,45 @@ export interface ObtenerVendedoresResponse {
   size: number;
   total: number;
 }
+
+/**
+ * Interfaz para el reporte de ventas de un vendedor
+ */
+export interface ReporteVentasVendedor {
+  metricas: {
+    clientes_unicos: number;
+    cumplimiento_porcentaje: number;
+    meta_ingresos_total: number;
+    monto_promedio: number;
+    monto_total: number;
+    ventas_realizadas: number;
+  };
+  pedidos_detalle: PedidoDetalle[];
+  periodo: {
+    anio: number;
+    mes: number;
+    mes_nombre: string;
+    periodo_formato: string;
+  };
+  planes: PlanVenta[];
+  vendedor: {
+    correo: string;
+    id: string;
+    nombre_completo: string;
+    zona: string;
+  };
+}
+
+export interface PedidoDetalle {
+  cliente: string;
+  fecha: string;
+  id: string;
+  monto: number;
+  productos: number;
+}
+
+export interface PlanVenta {
+  id: string;
+  meta_ingresos: number;
+  periodo: string;
+}

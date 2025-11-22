@@ -5,14 +5,24 @@
       <h1 class="title">{{ 'VENDEDORES.TITLE' | translate }}</h1>
       <p class="subtitle">{{ 'VENDEDORES.SUBTITLE' | translate }}</p>
     </div>
-    <button 
-      mat-raised-button 
-      color="primary"
-      class="register-button"
-      (click)="openRegistrarVendedorDialog()">
-      <mat-icon>add</mat-icon>
-      {{ 'VENDEDORES.NEW' | translate }}
-    </button>
+    <div class="header-actions">
+      <button 
+        mat-raised-button 
+        color="accent"
+        class="report-button"
+        (click)="abrirGenerarInforme()">
+        <mat-icon>description</mat-icon>
+        {{ 'VENDEDORES.GENERATE_REPORT' | translate }}
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary"
+        class="register-button"
+        (click)="openRegistrarVendedorDialog()">
+        <mat-icon>add</mat-icon>
+        {{ 'VENDEDORES.NEW' | translate }}
+      </button>
+    </div>
   </div>
 
   <!-- Loading Spinner -->

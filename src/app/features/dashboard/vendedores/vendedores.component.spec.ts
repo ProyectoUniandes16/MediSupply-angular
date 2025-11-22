@@ -548,4 +548,40 @@ describe('VendedoresComponent', () => {
     const rangeLabel = paginatorIntl.getRangeLabel(0, 10, 0);
     jexpect(rangeLabel).toBe('0 de 0');
   });
+
+  it('should open generar informe and then open visor on reporte result', () => {
+    const reporteMock = {
+      metricas: { clientes_unicos: 0, cumplimiento_porcentaje: 0, meta_ingresos_total: 0, monto_promedio: 0, monto_total: 0, ventas_realizadas: 0 },
+      pedidos_detalle: [],
+      periodo: { anio: 2025, mes: 2, mes_nombre: 'Febrero', periodo_formato: '2025-02' },
+      planes: [],
+      vendedor: { correo: 'juan@test.com', id: '1', nombre_completo: 'Juan Pérez', zona: 'Colombia' }
+    };
+    const afterClosedFirst = of(reporteMock);
+    const afterClosedSecond = of(null);
+    const dialogRefFirst: any = { afterClosed: () => afterClosedFirst };
+    const dialogRefSecond: any = { afterClosed: () => afterClosedSecond };
+    const openSpy = spyOn(component['dialog'], 'open').and.returnValues(dialogRefFirst, dialogRefSecond);
+
+    component.abrirGenerarInforme();
+
+    jexpect(openSpy.calls.count()).toBe(2); // diálogo de generar y luego visor
+  });
+
+  it('should not open visor when generar informe returns null', () => {
+    const dialogRefFirst: any = { afterClosed: () => of(null) };
+    const openSpy = spyOn(component['dialog'], 'open').and.returnValue(dialogRefFirst);
+
+    component.abrirGenerarInforme();
+
+    jexpect(openSpy.calls.count()).toBe(1); // Solo diálogo principal
+  });
+
+  it('should open detalle vendedor dialog', () => {
+    const vendedor = mockVendedoresResponse.items[0];
+    const dialogRef: any = { afterClosed: () => of(null) };
+    const openSpy = spyOn(component['dialog'], 'open').and.returnValue(dialogRef);
+    component.verDetalleVendedor(vendedor as any);
+    jexpect(openSpy).toHaveBeenCalled();
+  });
 });

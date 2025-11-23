@@ -20,7 +20,8 @@ import { GenerarInformeVendedorComponent } from './generar-informe-vendedor/gene
 import { VisorReporteVendedorComponent } from './visor-reporte-vendedor/visor-reporte-vendedor.component';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { Vendedor } from '../../../core/models/vendedor.models';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vendedores',
@@ -62,6 +63,7 @@ export class VendedoresComponent implements OnInit {
   
   // Estados
   isLoading = false;
+  isSearching = false;
   errorMessage = '';
   
   // Listas para filtros
@@ -80,6 +82,9 @@ export class VendedoresComponent implements OnInit {
     { value: 'Inactivo', label: 'Inactivo' }
   ];
 
+  // Subject para manejar debounce en búsqueda
+  private readonly searchSubject = new Subject<string>();
+
   constructor(
     private readonly dialog: MatDialog,
     private readonly vendedorService: VendedorHttpService,
@@ -92,6 +97,28 @@ export class VendedoresComponent implements OnInit {
     this.cargarVendedores();
     this.inicializarFiltros();
     this.configurarPaginador();
+    this.configurarBusquedaConDebounce();
+  }
+
+  /**
+   * Configura el debounce para la búsqueda
+   */
+  private configurarBusquedaConDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      if (this.searchTerm?.trim()) {
+        this.isSearching = true;
+        this.cargarVendedores(true, false); // No mostrar loading para mantener el foco
+      } else {
+        // Si está vacío, solo limpiar sin hacer petición al servidor
+        this.isSearching = false;
+        if (!this.selectedZona && !this.selectedEstado) {
+          this.cargarVendedores(true, false);
+        }
+      }
+    });
   }
 
   /**
@@ -153,12 +180,14 @@ export class VendedoresComponent implements OnInit {
   /**
    * Carga la lista de vendedores desde el backend con filtros
    */
-  cargarVendedores(resetearPagina: boolean = false): void {
+  cargarVendedores(resetearPagina: boolean = false, mostrarLoading: boolean = true): void {
     if (resetearPagina) {
       this.page = 1;
     }
 
-    this.isLoading = true;
+    if (mostrarLoading) {
+      this.isLoading = true;
+    }
     this.errorMessage = '';
 
     const params: any = {
@@ -184,18 +213,28 @@ export class VendedoresComponent implements OnInit {
           this.page = response.page;
           this.total = response.total;
           this.isLoading = false;
+          this.isSearching = false;
         },
         error: (error) => {
           console.error('Error al cargar vendedores:', error);
           this.errorMessage = 'Error al cargar los vendedores. Por favor, intente nuevamente.';
           this.isLoading = false;
+          this.isSearching = false;
           this.snackBar.open('Error al cargar vendedores', 'Cerrar', { duration: 5000 });
         }
       });
   }
 
   /**
+   * Maneja cambios en el campo de búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  /**
    * Aplica los filtros y recarga desde el backend
+   * Para selectores (sin debounce)
    */
   aplicarFiltros(): void {
     this.cargarVendedores(true);

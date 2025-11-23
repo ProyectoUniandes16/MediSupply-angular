@@ -113,6 +113,10 @@
 .search-field {
   flex: 1;
   min-width: 300px;
+
+  .search-spinner {
+    margin-right: 8px;
+  }
 }
 
 .filter-field {

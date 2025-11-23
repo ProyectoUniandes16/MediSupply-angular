@@ -52,16 +52,23 @@
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>{{ 'PRODUCTOS.FILTERS.SEARCH_PLACEHOLDER' | translate }}</mat-label>
         <input 
+          #searchInput
           matInput 
           [(ngModel)]="searchTerm"
-          (ngModelChange)="aplicarFiltros()"
+          (ngModelChange)="onSearchChange()"
           [placeholder]="'PRODUCTOS.FILTERS.SEARCH_PLACEHOLDER' | translate">
         <mat-icon matPrefix>search</mat-icon>
+        <mat-spinner 
+          *ngIf="isSearching" 
+          diameter="20" 
+          matSuffix 
+          class="search-spinner">
+        </mat-spinner>
         <button 
           mat-icon-button 
           matSuffix
-          *ngIf="searchTerm"
-          (click)="searchTerm = ''; aplicarFiltros()">
+          *ngIf="searchTerm && !isSearching"
+          (click)="searchTerm = ''; onSearchChange()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>

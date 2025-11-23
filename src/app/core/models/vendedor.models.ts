@@ -97,11 +97,14 @@ export interface ReporteVentasVendedor {
 }
 
 export interface PedidoDetalle {
-  cliente: string;
-  fecha: string;
-  id: string;
-  monto: number;
-  productos: number;
+  id: number;
+  cliente_id: number;
+  vendedor_id: string;
+  fecha_pedido: string;
+  fecha_entrega: string | null;
+  estado: string;
+  total: number;
+  total_productos: number;
 }
 
 export interface PlanVenta {

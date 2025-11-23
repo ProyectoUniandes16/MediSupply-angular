@@ -162,21 +162,23 @@ export class VisorReporteVendedorComponent implements OnInit {
         },
         pedidos_detalle.length > 0 ? {
           table: {
-            widths: ['auto', '*', 'auto', 'auto', 'auto'],
+            widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto'],
             body: [
               [
                 { text: 'ID Pedido', style: 'tableHeader' },
-                { text: 'Cliente', style: 'tableHeader' },
-                { text: 'Fecha', style: 'tableHeader' },
+                { text: 'Cliente ID', style: 'tableHeader' },
+                { text: 'Fecha Pedido', style: 'tableHeader' },
+                { text: 'Estado', style: 'tableHeader' },
                 { text: 'Productos', style: 'tableHeader' },
-                { text: 'Monto', style: 'tableHeader' }
+                { text: 'Total', style: 'tableHeader' }
               ],
               ...pedidos_detalle.map(pedido => [
-                { text: pedido.id, fontSize: 9 },
-                { text: pedido.cliente, fontSize: 9 },
-                { text: this.formatearFecha(pedido.fecha), fontSize: 9, alignment: 'center' },
-                { text: pedido.productos.toString(), fontSize: 9, alignment: 'center' },
-                { text: this.formatearMoneda(pedido.monto), fontSize: 9, alignment: 'right' }
+                { text: pedido.id.toString(), fontSize: 9 },
+                { text: pedido.cliente_id.toString(), fontSize: 9 },
+                { text: this.formatearFecha(pedido.fecha_pedido), fontSize: 9, alignment: 'center' },
+                { text: pedido.estado, fontSize: 9, alignment: 'center' },
+                { text: pedido.total_productos.toString(), fontSize: 9, alignment: 'center' },
+                { text: this.formatearMoneda(pedido.total), fontSize: 9, alignment: 'right' }
               ])
             ]
           },

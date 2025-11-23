@@ -10,7 +10,8 @@ import {
   ObtenerProductoDetalleResponse,
   ObtenerInventariosProductoResponse,
   ProductoDetalle,
-  ObtenerJobsResponse
+  ObtenerJobsResponse,
+  ObtenerJobStatusResponse
 } from '../models/producto.models';
 
 /**
@@ -348,6 +349,34 @@ export class ProductoHttpService {
     return this.http.get<ObtenerJobsResponse>(`${this.apiUrl}/importar-csv/jobs`, { params: httpParams }).pipe(
       catchError(error => {
         console.error('Error al obtener jobs de importación:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene el status detallado de un job de importación CSV incluyendo errores
+   * 
+   * @param jobId - ID del job a consultar
+   * @returns Observable con la respuesta del status del job
+   * 
+   * Endpoint: GET /api/importar-csv/status/{job_id}?include_errors=true
+   * 
+   * @example
+   * this.productoHttpService.obtenerJobStatus('767eb564-33ad-4a5f-b585-b41392fd478e').subscribe({
+   *   next: (response) => console.log('Status:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerJobStatus(jobId: string): Observable<ObtenerJobStatusResponse> {
+    const params = new HttpParams().set('include_errors', 'true');
+    
+    return this.http.get<ObtenerJobStatusResponse>(
+      `${this.apiUrl}/importar-csv/status/${jobId}`,
+      { params }
+    ).pipe(
+      catchError(error => {
+        console.error(`Error al obtener status del job ${jobId}:`, error);
         return throwError(() => error);
       })
     );

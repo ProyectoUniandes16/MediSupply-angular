@@ -9,6 +9,7 @@ import { ObtenerZonasResponse, ZonaDetalle, ObtenerBodegasResponse } from '../mo
 })
 export class RutaHttpService {
   private readonly apiUrl = environment.apiProductoUrl;
+  private readonly apiUrlPedido = environment.apiUrl;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -52,7 +53,7 @@ export class RutaHttpService {
       params = params.set('zona', zonaNombre);
     }
 
-    return this.http.get<{ data: any[] }>(`${this.apiUrl}/pedido`, { params })
+    return this.http.get<{ data: any[] }>(`${this.apiUrlPedido}/pedido`, { params })
       .pipe(
         catchError(error => {
           console.error('Error al obtener pedidos por zona:', error);

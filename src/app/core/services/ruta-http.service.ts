@@ -8,7 +8,7 @@ import { ObtenerZonasResponse, ZonaDetalle } from '../models/ruta.models';
   providedIn: 'root'
 })
 export class RutaHttpService {
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.apiProductoUrl;
 
   constructor(private readonly http: HttpClient) {}
 

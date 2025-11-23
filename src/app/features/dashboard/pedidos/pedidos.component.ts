@@ -10,6 +10,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
 import { PedidoHttpService } from '../../../core/services/pedido-http.service';
 import { Vendedor } from '../../../core/models/vendedor.models';
@@ -53,7 +55,11 @@ export class PedidosComponent implements OnInit {
 
   // Estados
   isLoading = false;
+  isSearching = false;
   errorMessage = '';
+
+  // Subject para debounce de búsqueda
+  private readonly searchSubject = new Subject<string>();
 
   constructor(
     private readonly vendedorService: VendedorHttpService,
@@ -63,6 +69,34 @@ export class PedidosComponent implements OnInit {
   ngOnInit(): void {
     this.cargarVendedores();
     this.cargarPedidos();
+    this.configurarBusquedaConDebounce();
+  }
+
+  /**
+   * Configura el debounce para la búsqueda por ID de pedido
+   */
+  private configurarBusquedaConDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      if (this.clienteId !== null && this.clienteId !== '') {
+        this.isSearching = true;
+        this.cargarPedidos(true, false); // No mostrar loading general para mantener el foco
+      } else {
+        this.isSearching = false;
+        if (!this.selectedVendedor) {
+          this.cargarPedidos(true, false);
+        }
+      }
+    });
+  }
+
+  /**
+   * Maneja cambios en el campo de búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.clienteId?.toString() || '');
   }
 
   private cargarVendedores(): void {
@@ -77,12 +111,14 @@ export class PedidosComponent implements OnInit {
     });
   }
 
-  cargarPedidos(resetearPagina: boolean = false): void {
+  cargarPedidos(resetearPagina: boolean = false, mostrarLoading: boolean = true): void {
     if (resetearPagina) {
       this.page = 1;
     }
 
-    this.isLoading = true;
+    if (mostrarLoading) {
+      this.isLoading = true;
+    }
     this.errorMessage = '';
 
     const params: any = {
@@ -115,15 +151,20 @@ export class PedidosComponent implements OnInit {
         }
 
         this.isLoading = false;
+        this.isSearching = false;
       },
       error: (err) => {
         console.error('Error al obtener pedidos:', err);
         this.errorMessage = 'Error al cargar los pedidos';
         this.isLoading = false;
+        this.isSearching = false;
       }
     });
   }
 
+  /**
+   * Aplica los filtros (para selectores, sin debounce)
+   */
   aplicarFiltros(): void {
     this.cargarPedidos(true);
   }

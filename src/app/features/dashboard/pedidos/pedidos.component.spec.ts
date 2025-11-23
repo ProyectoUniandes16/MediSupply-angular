@@ -13,6 +13,9 @@ describe('PedidosComponent', () => {
   let vendedorService: VendedorHttpService;
   let pedidoService: PedidoHttpService;
 
+  // Helper para evitar problemas de tipos con matchers de Jasmine
+  const jexpect = (v: any) => (expect(v) as any);
+
   const mockVendedoresResponse = {
     items: [
       { id: 'abc-123-def', nombre: 'María', apellidos: 'González', zona: 'Colombia', estado: 'Activo', telefono: '111', correo: 'm@x.com', fechaCreacion: '', fechaActualizacion: '', usuarioCreacion: '', usuarioActualizacion: null },
@@ -62,27 +65,27 @@ describe('PedidosComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    jexpect(component).toBeTruthy();
   });
 
   it('should display title and subtitle', () => {
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.title')?.textContent).toContain('Pedidos');
-    expect(el.querySelector('.subtitle')?.textContent).toBeTruthy();
+    jexpect(el.querySelector('.title')?.textContent).toContain('Pedidos');
+    jexpect(el.querySelector('.subtitle')?.textContent).toBeTruthy();
   });
 
   it('should load vendedores and pedidos on init', () => {
-    expect(vendedorService.obtenerVendedores).toHaveBeenCalledWith({ page: 1, size: 100 });
-    expect(pedidoService.obtenerPedidos).toHaveBeenCalled();
-    expect(component.pedidos.length).toBe(2);
-    expect(component.total).toBe(2);
+    jexpect(vendedorService.obtenerVendedores).toHaveBeenCalledWith({ page: 1, size: 100 });
+    jexpect(pedidoService.obtenerPedidos).toHaveBeenCalled();
+    jexpect(component.pedidos.length).toBe(2);
+    jexpect(component.total).toBe(2);
   });
 
   it('should render filters bar and table when data present', () => {
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.filters-bar')).toBeTruthy();
-    expect(el.querySelector('.table-container')).toBeTruthy();
-    expect(el.querySelector('table.pedidos-table')).toBeTruthy();
+    jexpect(el.querySelector('.filters-bar')).toBeTruthy();
+    jexpect(el.querySelector('.table-container')).toBeTruthy();
+    jexpect(el.querySelector('table.pedidos-table')).toBeTruthy();
   });
 
   it('should apply filters and reset to first page', fakeAsync(() => {
@@ -92,8 +95,20 @@ describe('PedidosComponent', () => {
     component.aplicarFiltros();
     tick();
 
-    expect(component.page).toBe(1);
-    expect(pedidoService.obtenerPedidos).toHaveBeenCalledWith(jasmine.objectContaining({ vendedor_id: 'abc-123-def', cliente_id: '123', page: 1, size: 10 }));
+    jexpect(component.page).toBe(1);
+    jexpect(pedidoService.obtenerPedidos).toHaveBeenCalledWith(jasmine.objectContaining({ vendedor_id: 'abc-123-def', cliente_id: '123', page: 1, size: 10 }));
+  }));
+
+  it('should not include cliente_id param when non-numeric value entered', fakeAsync(() => {
+    // Reset spy calls to isolate this test
+    (pedidoService.obtenerPedidos as jasmine.Spy).calls.reset();
+    component.clienteId = 'ABC123';
+    component.onSearchChange();
+    tick(600); // debounce + buffer
+    jexpect(pedidoService.obtenerPedidos).toHaveBeenCalled();
+    const args = (pedidoService.obtenerPedidos as jasmine.Spy).calls.mostRecent().args[0];
+    jexpect(args.cliente_id).toBeUndefined();
+    jexpect(component.errorMessage).toContain('numérico');
   }));
 
   it('should clear filters', fakeAsync(() => {
@@ -101,9 +116,9 @@ describe('PedidosComponent', () => {
     component.clienteId = '999';
     component.limpiarFiltros();
     tick();
-    expect(component.selectedVendedor).toBe('');
-    expect(component.clienteId).toBe('');
-    expect(pedidoService.obtenerPedidos).toHaveBeenCalled();
+    jexpect(component.selectedVendedor).toBe('');
+    jexpect(component.clienteId).toBe('');
+    jexpect(pedidoService.obtenerPedidos).toHaveBeenCalled();
   }));
 
   it('should handle page change', () => {
@@ -111,14 +126,14 @@ describe('PedidosComponent', () => {
     (pedidoService.obtenerPedidos as jasmine.Spy).and.returnValue(of(newResp));
 
     component.onPageChange({ pageIndex: 1, pageSize: 20, length: 50, previousPageIndex: 0 });
-    expect(component.page).toBe(2);
-    expect(component.size).toBe(20);
+    jexpect(component.page).toBe(2);
+    jexpect(component.size).toBe(20);
   });
 
   it('should show loading spinner when loading', () => {
     component.isLoading = true;
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('mat-spinner')).toBeTruthy();
+    jexpect(fixture.nativeElement.querySelector('mat-spinner')).toBeTruthy();
   });
 
   it('should show empty state when no pedidos and no filters', () => {
@@ -128,7 +143,7 @@ describe('PedidosComponent', () => {
     component.selectedVendedor = '';
     component.clienteId = '';
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.empty-state')).toBeTruthy();
+    jexpect(fixture.nativeElement.querySelector('.empty-state')).toBeTruthy();
   });
 
   it('should show no-results when filtered but no data', () => {
@@ -137,21 +152,21 @@ describe('PedidosComponent', () => {
     component.errorMessage = '';
     component.selectedVendedor = 'abc-123-def';
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.no-results')).toBeTruthy();
+    jexpect(fixture.nativeElement.querySelector('.no-results')).toBeTruthy();
   });
 
   it('should handle error on load pedidos', fakeAsync(() => {
     (pedidoService.obtenerPedidos as jasmine.Spy).and.returnValue(throwError(() => ({ status: 500 })));
     component.cargarPedidos();
     tick();
-    expect(component.errorMessage).toBeTruthy();
-    expect(component.isLoading).toBeFalse();
+    jexpect(component.errorMessage).toBeTruthy();
+    jexpect(component.isLoading).toBeFalse();
   }));
 
   it('should compute getters correctly', () => {
     component.pedidos = mockPedidosResponse.data as any;
-    expect(component.tienePedidos).toBeTrue();
+    jexpect(component.tienePedidos).toBeTrue();
     component.selectedVendedor = 'abc-123-def';
-    expect(component.hasFiltrosActivos).toBeTrue();
+    jexpect(component.hasFiltrosActivos).toBeTrue();
   });
 });

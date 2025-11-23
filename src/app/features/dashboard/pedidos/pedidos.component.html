@@ -41,7 +41,7 @@
 
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>{{ 'PEDIDOS.FILTERS.CLIENT_ID' | translate }}</mat-label>
-        <input matInput type="text" [(ngModel)]="clienteId" (ngModelChange)="onSearchChange()" placeholder="123" />
+        <input matInput type="number" inputmode="numeric" pattern="\\d*" [(ngModel)]="clienteId" (ngModelChange)="onSearchChange()" placeholder="123" />
         <mat-icon matPrefix>search</mat-icon>
         <button 
           mat-icon-button 

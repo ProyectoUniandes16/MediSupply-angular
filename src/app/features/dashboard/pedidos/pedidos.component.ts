@@ -130,7 +130,13 @@ export class PedidosComponent implements OnInit {
       params.vendedor_id = this.selectedVendedor;
     }
     if (this.clienteId !== null && this.clienteId !== '') {
-      params.cliente_id = this.clienteId.toString();
+      const valor = this.clienteId.toString();
+      if (/^\d+$/.test(valor)) {
+        params.cliente_id = valor;
+      } else {
+        // Si el valor no es numérico, ignoramos el filtro y mostramos un mensaje de error suave
+        this.errorMessage = 'El ID debe ser numérico';
+      }
     }
 
     this.pedidoService.obtenerPedidos(params).subscribe({

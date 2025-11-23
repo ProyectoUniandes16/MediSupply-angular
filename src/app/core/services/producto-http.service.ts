@@ -175,7 +175,8 @@ export class ProductoHttpService {
       precio_unitario: Number.parseFloat(formValue.precioUnitario),
       condiciones_almacenamiento: formValue.condicionesAlmacenamiento,
       fecha_vencimiento: formValue.fechaVencimiento,
-      ubicacion: formValue.bodega,
+      // formValue.bodega now contains the bodega nombre (was id previously)
+      ubicacion: formValue.bodega, // sending bodega nombre per new requirement
       lote: formValue.lote,
       cantidad_inicial: Number.parseInt(formValue.cantidadInicial, 10),
       certificaciones: certificaciones

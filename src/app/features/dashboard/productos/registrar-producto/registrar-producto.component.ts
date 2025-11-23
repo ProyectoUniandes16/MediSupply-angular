@@ -14,6 +14,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
+import { RutaHttpService } from '../../../../core/services/ruta-http.service';
+import { BodegaSimple } from '../../../../core/models/ruta.models';
 
 interface Documento {
   nombre: string;
@@ -46,6 +48,7 @@ export class RegistrarProductoComponent implements OnInit {
   productoForm!: FormGroup;
   documentosAdjuntos: Documento[] = [];
   isLoading = false;
+  isLoadingBodegas = false;
   errorMessage = '';
   
   categorias = [
@@ -60,16 +63,13 @@ export class RegistrarProductoComponent implements OnInit {
     { value: 'inactivo', label: 'Inactivo' }
   ];
 
-  bodegas = [
-    { value: 'bodega_principal', label: 'Bodega Principal' },
-    { value: 'bodega_secundaria', label: 'Bodega Secundaria' },
-    { value: 'bodega_refrigerada', label: 'Bodega Refrigerada' }
-  ];
+  bodegas: BodegaSimple[] = [];
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly dialogRef: MatDialogRef<RegistrarProductoComponent>,
     private readonly productoHttpService: ProductoHttpService,
+    private readonly rutaHttpService: RutaHttpService,
     private readonly snackBar: MatSnackBar
   ) {}
 
@@ -85,6 +85,29 @@ export class RegistrarProductoComponent implements OnInit {
       lote: ['', Validators.required],
       cantidadInicial: ['', [Validators.required, Validators.min(1)]],
       estado: ['', Validators.required]
+    });
+    
+    this.cargarBodegas();
+  }
+
+  /**
+   * Carga las bodegas desde el servicio
+   */
+  private cargarBodegas(): void {
+    this.isLoadingBodegas = true;
+    this.rutaHttpService.obtenerBodegas().subscribe({
+      next: (response) => {
+        this.bodegas = response.data;
+        this.isLoadingBodegas = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar bodegas:', error);
+        this.isLoadingBodegas = false;
+        this.snackBar.open('Error al cargar las bodegas', 'Cerrar', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
     });
   }
 
@@ -122,12 +145,12 @@ export class RegistrarProductoComponent implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      Array.from(input.files).forEach(file => {
+      for (const file of Array.from(input.files)) {
         this.documentosAdjuntos.push({
           nombre: file.name,
           archivo: file
         });
-      });
+      }
       // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
       input.value = '';
     }
@@ -233,9 +256,9 @@ export class RegistrarProductoComponent implements OnInit {
       });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
-      Object.keys(this.productoForm.controls).forEach(key => {
+      for (const key of Object.keys(this.productoForm.controls)) {
         this.productoForm.get(key)?.markAsTouched();
-      });
+      }
       
       if (this.documentosAdjuntos.length === 0) {
         this.snackBar.open('Debe adjuntar al menos una certificación', 'Cerrar', {

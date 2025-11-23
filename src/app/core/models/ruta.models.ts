@@ -131,3 +131,16 @@ export interface RegistrarRutaRequest {
   zona_id: string;
   estado: string;
 }
+
+export interface BodegaSimple {
+  id: string;
+  nombre: string;
+  ubicacion: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ObtenerBodegasResponse {
+  data: BodegaSimple[];
+  total: number;
+}

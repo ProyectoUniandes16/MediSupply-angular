@@ -8,12 +8,14 @@ import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
 import { ProductoHttpService } from '../../../core/services/producto-http.service';
 import { PageEvent } from '@angular/material/paginator';
 import { ObtenerProductosResponse } from '../../../core/models/producto.models';
+import { RutaHttpService } from '../../../core/services/ruta-http.service';
 
 describe('ProductosComponent', () => {
   let component: ProductosComponent;
   let fixture: ComponentFixture<ProductosComponent>;
   let dialog: MatDialog;
   let productoService: jasmine.SpyObj<ProductoHttpService>;
+  let rutaService: jasmine.SpyObj<RutaHttpService>;
 
   const mockResponse: ObtenerProductosResponse = {
     data: {
@@ -53,8 +55,10 @@ describe('ProductosComponent', () => {
   };
 
   beforeEach(async () => {
-    productoService = jasmine.createSpyObj('ProductoHttpService', ['obtenerProductos']);
+  productoService = jasmine.createSpyObj('ProductoHttpService', ['obtenerProductos']);
     productoService.obtenerProductos.and.returnValue(of(mockResponse));
+  rutaService = jasmine.createSpyObj('RutaHttpService', ['obtenerBodegas']);
+  rutaService.obtenerBodegas.and.returnValue(of({ data: [], total: 0 }));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -66,7 +70,8 @@ describe('ProductosComponent', () => {
       ],
       providers: [
         TranslateService,
-        { provide: ProductoHttpService, useValue: productoService }
+  { provide: ProductoHttpService, useValue: productoService },
+  { provide: RutaHttpService, useValue: rutaService }
       ]
     }).compileComponents();
 

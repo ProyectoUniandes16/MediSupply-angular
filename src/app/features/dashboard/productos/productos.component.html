@@ -14,6 +14,15 @@
         <mat-icon>upload_file</mat-icon>
         {{ 'PRODUCTOS.BULK_UPLOAD' | translate }}
       </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="inventarios-button"
+        (click)="openInventariosPorBodegaDialog()"
+        [matTooltip]="'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TITLE' | translate">
+        <mat-icon>warehouse</mat-icon>
+        {{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TITLE' | translate }}
+      </button>
       <button 
         mat-raised-button 
         color="primary"
@@ -52,16 +61,23 @@
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>{{ 'PRODUCTOS.FILTERS.SEARCH_PLACEHOLDER' | translate }}</mat-label>
         <input 
+          #searchInput
           matInput 
           [(ngModel)]="searchTerm"
-          (ngModelChange)="aplicarFiltros()"
+          (ngModelChange)="onSearchChange()"
           [placeholder]="'PRODUCTOS.FILTERS.SEARCH_PLACEHOLDER' | translate">
         <mat-icon matPrefix>search</mat-icon>
+        <mat-spinner 
+          *ngIf="isSearching" 
+          diameter="20" 
+          matSuffix 
+          class="search-spinner">
+        </mat-spinner>
         <button 
           mat-icon-button 
           matSuffix
-          *ngIf="searchTerm"
-          (click)="searchTerm = ''; aplicarFiltros()">
+          *ngIf="searchTerm && !isSearching"
+          (click)="searchTerm = ''; onSearchChange()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>

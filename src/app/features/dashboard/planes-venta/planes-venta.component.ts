@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { AgregarPlanComponent } from './agregar-plan/agregar-plan.component';
 import { PlanVentaHttpService } from '../../../core/services/plan-venta-http.service';
 import { VendedorHttpService } from '../../../core/services/vendedor-http.service';
@@ -71,6 +71,7 @@ export class PlanesVentaComponent implements OnInit {
   // Estados de carga
   isLoading = false;
   isLoadingVendedores = false;
+  isSearching = false;
   errorMessage = '';
   
   // Subject para debounce de búsqueda
@@ -94,18 +95,36 @@ export class PlanesVentaComponent implements OnInit {
    */
   setupSearchDebounce(): void {
     this.searchSubject.pipe(
-      debounceTime(300)
+      debounceTime(500),
+      distinctUntilChanged()
     ).subscribe(() => {
-      this.page = 1;
-      this.cargarPlanesVenta();
+      if (this.searchTerm?.trim()) {
+        this.isSearching = true;
+        this.page = 1;
+        this.cargarPlanesVenta(false); // No mostrar loading general para mantener el foco
+      } else {
+        this.isSearching = false;
+        if (!this.selectedVendedor && !this.selectedEstado) {
+          this.page = 1;
+          this.cargarPlanesVenta(false);
+        }
+      }
     });
   }
 
   /**
-   * Aplica los filtros
+   * Maneja cambios en el campo de búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  /**
+   * Aplica los filtros (para selectores, sin debounce)
    */
   aplicarFiltros(): void {
-    this.searchSubject.next(this.searchTerm);
+    this.page = 1;
+    this.cargarPlanesVenta();
   }
 
   /**
@@ -132,8 +151,10 @@ export class PlanesVentaComponent implements OnInit {
   /**
    * Carga los planes de venta con filtros y paginación
    */
-  cargarPlanesVenta(): void {
-    this.isLoading = true;
+  cargarPlanesVenta(mostrarLoading: boolean = true): void {
+    if (mostrarLoading) {
+      this.isLoading = true;
+    }
     this.errorMessage = '';
 
     this.planVentaHttpService.obtenerPlanesVenta({
@@ -148,11 +169,13 @@ export class PlanesVentaComponent implements OnInit {
         this.total = response.total;
         this.pages = response.pages;
         this.isLoading = false;
+        this.isSearching = false;
       },
       error: (error) => {
         console.error('Error al cargar planes de venta:', error);
         this.errorMessage = 'Error al cargar los planes de venta';
         this.isLoading = false;
+        this.isSearching = false;
         this.snackBar.open('Error al cargar los planes de venta', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']

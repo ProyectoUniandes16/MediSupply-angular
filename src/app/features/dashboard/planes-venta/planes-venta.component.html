@@ -45,14 +45,14 @@
         <input 
           matInput 
           [(ngModel)]="searchTerm"
-          (ngModelChange)="aplicarFiltros()"
+          (ngModelChange)="onSearchChange()"
           [placeholder]="'PLANES_VENTA.FILTERS.SEARCH_NAME_PLACEHOLDER' | translate">
         <mat-icon matPrefix>search</mat-icon>
         <button 
           mat-icon-button 
           matSuffix
           *ngIf="searchTerm"
-          (click)="searchTerm = ''; aplicarFiltros()">
+          (click)="searchTerm = ''; onSearchChange()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>

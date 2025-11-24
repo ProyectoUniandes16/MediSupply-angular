@@ -155,19 +155,29 @@
     <!-- Vista de detalles de errores -->
     <div *ngIf="mostrarDetalles && cargaSeleccionada" class="vista-detalles">
       <!-- Resumen -->
-      <div class="resumen-section" *ngIf="cargaSeleccionada.detallesExitosos && cargaSeleccionada.detallesExitosos.length > 0">
-        <div class="info-message">
-          <mat-icon>info</mat-icon>
+      <div class="resumen-section">
+        <div class="info-message" *ngIf="cargaSeleccionada.productsProcesados > 0">
+          <mat-icon>check_circle</mat-icon>
           <span>
-            Se procesaron exitosamente <strong>{{ cargaSeleccionada.detallesExitosos.length }}</strong> productos.
-            A continuación se muestran los <strong>{{ cargaSeleccionada.detallesErrores?.length || 0 }}</strong> errores encontrados:
+            Se procesaron exitosamente <strong>{{ cargaSeleccionada.productsProcesados }}</strong> productos.
+          </span>
+        </div>
+        <div class="error-message" *ngIf="cargaSeleccionada.errores > 0">
+          <mat-icon>error</mat-icon>
+          <span>
+            Total de errores: <strong>{{ totalErroresCarga }}</strong>
+            <span *ngIf="errorLimitNote"> - {{ errorLimitNote }}</span>
           </span>
         </div>
       </div>
 
       <!-- Tabla de errores -->
       <div class="errores-section">
-        <table mat-table [dataSource]="cargaSeleccionada.detallesErrores || []" class="errores-table">
+        <div class="empty-historial" *ngIf="!cargaSeleccionada.detallesErrores || cargaSeleccionada.detallesErrores.length === 0">
+          <p>No hay errores para mostrar</p>
+        </div>
+        
+        <table mat-table [dataSource]="cargaSeleccionada.detallesErrores || []" class="errores-table" *ngIf="cargaSeleccionada.detallesErrores && cargaSeleccionada.detallesErrores.length > 0">
           <!-- Columna Fila -->
           <ng-container matColumnDef="fila">
             <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.BULK.ERRORS.TABLE.ROW' | translate }}</th>

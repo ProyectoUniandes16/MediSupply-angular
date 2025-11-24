@@ -280,6 +280,8 @@ export interface ObtenerProductoDetalleResponse {
 export interface InventarioDetalle {
   id: string;
   productoId: number;
+  productoNombre?: string;
+  productoSku?: string;
   ubicacion: string;
   cantidad: number;
   usuarioCreacion: string;
@@ -299,4 +301,65 @@ export interface ObtenerInventariosProductoResponse {
     totalCantidad: number;
     source: string;
   };
+}
+
+/**
+ * Interfaz para la respuesta de inventarios por ubicación
+ */
+export interface ObtenerInventariosPorUbicacionResponse {
+  inventarios: InventarioDetalle[];
+  total: number;
+  limite: number;
+  offset: number;
+}
+
+/**
+ * Interfaz para los detalles de errores en el status del job
+ */
+export interface DetallesErroresJob {
+  errores: DetalleError[];
+  errores_capturados: number;
+  nota: string;
+  total_errores: number;
+}
+
+/**
+ * Interfaz para las validaciones del job
+ */
+export interface ValidacionesJob {
+  nota: string;
+  productos_con_errores: number;
+  productos_validados_ok: number;
+  tasa_exito: number;
+}
+
+/**
+ * Interfaz para el status detallado de un job de importación
+ */
+export interface JobStatusDetalle {
+  detalles_errores: DetallesErroresJob;
+  estado: string;
+  exitosos: number;
+  fallidos: number;
+  fecha_creacion: string;
+  fecha_finalizacion: string | null;
+  fecha_inicio_proceso: string | null;
+  filas_procesadas: number;
+  job_id: string;
+  local_path: string;
+  mensaje: string;
+  nombre_archivo: string;
+  progreso: number;
+  reintentos: number;
+  tiempo_transcurrido_segundos: number;
+  total_filas: number;
+  usuario_registro: string;
+  validaciones: ValidacionesJob;
+}
+
+/**
+ * Interfaz para la respuesta del endpoint GET /importar-csv/status/{job_id}
+ */
+export interface ObtenerJobStatusResponse {
+  data: JobStatusDetalle;
 }

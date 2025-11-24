@@ -44,6 +44,24 @@
       "^/api/importar-csv": "/importar-csv"
     }
   },
+  "/api/bodega": {
+    "target": "http://localhost:5003",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/bodega": "/bodega"
+    }
+  },
+  "/api/inventarios": {
+    "target": "http://localhost:5003",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/inventarios": "/inventarios"
+    }
+  },
   "/api": {
     "target": "http://localhost:5002",
     "secure": false,

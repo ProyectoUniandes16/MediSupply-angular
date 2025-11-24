@@ -5,6 +5,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { ProveedorHttpService } from '../../../core/services/proveedor-http.service';
+import { RutaHttpService } from '../../../core/services/ruta-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { FakeTranslateLoader } from '../../../testing/i18n-testing.helper';
@@ -15,6 +16,9 @@ describe('ProveedoresComponent', () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>;
   let dialogRefSpyObj: jasmine.SpyObj<MatDialogRef<any>>;
   let proveedorServiceSpy: jasmine.SpyObj<ProveedorHttpService>;
+  let rutaServiceSpy: jasmine.SpyObj<RutaHttpService>;
+
+  const jexpect = (v: any) => (expect(v) as any);
 
   beforeEach(async () => {
     dialogRefSpyObj = jasmine.createSpyObj({
@@ -37,6 +41,14 @@ describe('ProveedoresComponent', () => {
       }
     }));
 
+    const rutaHttpServiceSpy = jasmine.createSpyObj('RutaHttpService', ['obtenerZonas']);
+    rutaHttpServiceSpy.obtenerZonas.and.returnValue(of({
+      data: [
+        { id: '1', nombre: 'Colombia', descripcion: 'País Colombia' },
+        { id: '2', nombre: 'México', descripcion: 'País México' }
+      ]
+    }));
+
     const matSnackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
@@ -49,6 +61,7 @@ describe('ProveedoresComponent', () => {
       providers: [
         { provide: MatDialog, useValue: matDialogSpy },
         { provide: ProveedorHttpService, useValue: proveedorHttpServiceSpy },
+        { provide: RutaHttpService, useValue: rutaHttpServiceSpy },
         { provide: MatSnackBar, useValue: matSnackBarSpy },
         provideAnimations(),
         provideHttpClient(),
@@ -61,22 +74,23 @@ describe('ProveedoresComponent', () => {
 
     dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     proveedorServiceSpy = TestBed.inject(ProveedorHttpService) as jasmine.SpyObj<ProveedorHttpService>;
+    rutaServiceSpy = TestBed.inject(RutaHttpService) as jasmine.SpyObj<RutaHttpService>;
     fixture = TestBed.createComponent(ProveedoresComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    jexpect(component).toBeTruthy();
   });
 
   it('should have empty proveedores array initially', () => {
-    expect(component.proveedores).toEqual([]);
-    expect(component.proveedores.length).toBe(0);
+    jexpect(component.proveedores).toEqual([]);
+    jexpect(component.proveedores.length).toBe(0);
   });
 
   it('should have correct table columns', () => {
-    expect(component.displayedColumns).toEqual(['nombre', 'pais', 'estado', 'contacto', 'acciones']);
+    jexpect(component.displayedColumns).toEqual(['nombre', 'pais', 'estado', 'contacto', 'acciones']);
   });
 
   it('should clear filters', () => {
@@ -87,10 +101,10 @@ describe('ProveedoresComponent', () => {
     
     component.limpiarFiltros();
     
-    expect(component.searchTerm).toBe('');
-    expect(component.selectedPais).toBe('Todos');
-    expect(component.selectedEstado).toBe('Todos');
-    expect(component.cargarProveedores).toHaveBeenCalledWith(true);
+    jexpect(component.searchTerm).toBe('');
+    jexpect(component.selectedPais).toBe('Todos');
+    jexpect(component.selectedEstado).toBe('Todos');
+    jexpect(component.cargarProveedores).toHaveBeenCalledWith(true);
   });
 
   it('should call editarProveedor with correct proveedor', () => {
@@ -112,23 +126,23 @@ describe('ProveedoresComponent', () => {
 
     component.editarProveedor(testProveedor);
 
-    expect(console.log).toHaveBeenCalledWith('Editar proveedor:', testProveedor);
+    jexpect(console.log).toHaveBeenCalledWith('Editar proveedor:', testProveedor);
   });
 
   it('should initialize with Todos selectedEstado', () => {
-    expect(component.selectedEstado).toBe('Todos');
+    jexpect(component.selectedEstado).toBe('Todos');
   });
 
   it('should initialize with empty searchTerm', () => {
-    expect(component.searchTerm).toBe('');
+    jexpect(component.searchTerm).toBe('');
   });
 
   it('should initialize with Todos selectedPais', () => {
-    expect(component.selectedPais).toBe('Todos');
+    jexpect(component.selectedPais).toBe('Todos');
   });
 
   it('should call cargarProveedores on init', () => {
-    expect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalled();
+    jexpect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalled();
   });
 
   it('should load proveedores successfully', () => {
@@ -162,9 +176,9 @@ describe('ProveedoresComponent', () => {
 
     component.cargarProveedores();
 
-    expect(component.proveedores).toEqual(mockProveedores);
-    expect(component.isLoading).toBe(false);
-    expect(component.errorMessage).toBe('');
+    jexpect(component.proveedores).toEqual(mockProveedores);
+    jexpect(component.isLoading).toBe(false);
+    jexpect(component.errorMessage).toBe('');
   });
 
   it('should update pagination from response', () => {
@@ -182,10 +196,10 @@ describe('ProveedoresComponent', () => {
     component.paginacion.por_pagina = 50; // Usuario seleccionó 50
     component.cargarProveedores();
 
-    expect(component.paginacion.pagina).toBe(2);
-    expect(component.paginacion.total).toBe(100);
-    expect(component.paginacion.total_paginas).toBe(2);
-    expect(component.paginacion.por_pagina).toBe(50); // Debe mantener la selección del usuario
+    jexpect(component.paginacion.pagina).toBe(2);
+    jexpect(component.paginacion.total).toBe(100);
+    jexpect(component.paginacion.total_paginas).toBe(2);
+    jexpect(component.paginacion.por_pagina).toBe(50); // Debe mantener la selección del usuario
   });
 
   it('should apply filters and reset page', () => {
@@ -196,7 +210,7 @@ describe('ProveedoresComponent', () => {
     
     component.aplicarFiltros();
     
-    expect(component.cargarProveedores).toHaveBeenCalledWith(true);
+    jexpect(component.cargarProveedores).toHaveBeenCalledWith(true);
   });
 
   it('should handle page change event', () => {
@@ -210,16 +224,16 @@ describe('ProveedoresComponent', () => {
     
     component.onPageChange(pageEvent as any);
     
-    expect(component.paginacion.pagina).toBe(3); // pageIndex + 1
-    expect(component.paginacion.por_pagina).toBe(50);
-    expect(component.cargarProveedores).toHaveBeenCalled();
+    jexpect(component.paginacion.pagina).toBe(3); // pageIndex + 1
+    jexpect(component.paginacion.por_pagina).toBe(50);
+    jexpect(component.cargarProveedores).toHaveBeenCalled();
   });
 
   it('should open dialog for registrar proveedor', () => {
     const spy = spyOn(component, 'openRegistrarProveedorDialog');
     component.openRegistrarProveedorDialog();
     
-    expect(spy).toHaveBeenCalled();
+    jexpect(spy).toHaveBeenCalled();
   });
 
   it('should call matDialog.open and reload on successful close', () => {
@@ -232,10 +246,10 @@ describe('ProveedoresComponent', () => {
 
     component.openRegistrarProveedorDialog();
 
-    expect(openProtoSpy).toHaveBeenCalled();
+    jexpect(openProtoSpy).toHaveBeenCalled();
     // afterClosed(true) dispara recarga y snackbar
-    expect(cargarSpy).toHaveBeenCalled();
-    expect(snackOpenSpy).toHaveBeenCalled();
+    jexpect(cargarSpy).toHaveBeenCalled();
+    jexpect(snackOpenSpy).toHaveBeenCalled();
   });
 
   it('should reload proveedores after successful registration', () => {
@@ -249,7 +263,7 @@ describe('ProveedoresComponent', () => {
       }
     });
     
-    expect(cargarSpy).toHaveBeenCalled();
+    jexpect(cargarSpy).toHaveBeenCalled();
   });
 
   it('should return true for tieneProveedores when proveedores array has items', () => {
@@ -268,13 +282,13 @@ describe('ProveedoresComponent', () => {
       total_certificaciones: 1
     }];
     
-    expect(component.tieneProveedores).toBe(true);
+    jexpect(component.tieneProveedores).toBe(true);
   });
 
   it('should return false for tieneProveedores when proveedores array is empty', () => {
     component.proveedores = [];
     
-    expect(component.tieneProveedores).toBe(false);
+    jexpect(component.tieneProveedores).toBe(false);
   });
 
   it('should build params correctly with all filters', () => {
@@ -286,7 +300,7 @@ describe('ProveedoresComponent', () => {
 
     component.cargarProveedores();
 
-    expect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalledWith(
+    jexpect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalledWith(
       jasmine.objectContaining({
         pagina: 2,
         por_pagina: 50,
@@ -305,9 +319,9 @@ describe('ProveedoresComponent', () => {
     component.cargarProveedores();
 
     const callArgs = proveedorServiceSpy.obtenerProveedores.calls.mostRecent().args[0];
-    expect(callArgs?.nombre).toBeUndefined();
-    expect(callArgs?.pais).toBe('Colombia');
-    expect(callArgs?.estado).toBe('Activo');
+    jexpect(callArgs?.nombre).toBeUndefined();
+    jexpect(callArgs?.pais).toBe('Colombia');
+    jexpect(callArgs?.estado).toBe('Activo');
   });
 
   it('should reset page to 1 when cargarProveedores is called with resetearPagina=true', () => {
@@ -315,7 +329,7 @@ describe('ProveedoresComponent', () => {
     
     component.cargarProveedores(true);
     
-    expect(component.paginacion.pagina).toBe(1);
+    jexpect(component.paginacion.pagina).toBe(1);
   });
 
   it('should handle error when loading proveedores fails', (done) => {
@@ -328,9 +342,9 @@ describe('ProveedoresComponent', () => {
     component.cargarProveedores();
 
     setTimeout(() => {
-      expect(component.isLoading).toBe(false);
-      expect(component.errorMessage).toContain('Error al cargar');
-      expect(console.error).toHaveBeenCalled();
+      jexpect(component.isLoading).toBe(false);
+      jexpect(component.errorMessage).toContain('Error al cargar');
+      jexpect(console.error).toHaveBeenCalled();
       done();
     }, 100);
   });
@@ -341,45 +355,63 @@ describe('ProveedoresComponent', () => {
     component.cargarProveedores();
     
     // isLoading se establece a true inmediatamente
-    expect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalled();
+    jexpect(proveedorServiceSpy.obtenerProveedores).toHaveBeenCalled();
   });
 
-  it('should have correct paises list', () => {
-    expect(component.paises.length).toBe(6);
-    expect(component.paises[0].label).toBe('Todos');
-    expect(component.paises[1].value).toBe('Colombia');
+  it('should load zonas on init', () => {
+    jexpect(rutaServiceSpy.obtenerZonas).toHaveBeenCalled();
+  });
+
+  it('should populate paises list from zonas', () => {
+    jexpect(component.paises.length).toBeGreaterThan(0);
+    jexpect(component.paises[0].label).toContain('Todos');
+    // Verificar que se agregaron las zonas
+    jexpect(component.zonas.length).toBe(2);
+  });
+
+  it('should handle error loading zonas', () => {
+    rutaServiceSpy.obtenerZonas.and.returnValue(
+      throwError(() => new Error('Network error'))
+    );
+    
+    const newFixture = TestBed.createComponent(ProveedoresComponent);
+    const newComponent = newFixture.componentInstance;
+    newFixture.detectChanges();
+
+    jexpect(newComponent.paises.length).toBe(1); // Solo "Todos"
+    jexpect(newComponent.paises[0].label).toContain('Todos');
   });
 
   it('should have correct estados list', () => {
-    expect(component.estados.length).toBe(3);
-    expect(component.estados[0].label).toBe('Todos');
-    expect(component.estados[1].value).toBe('Activo');
-    expect(component.estados[2].value).toBe('Inactivo');
+    jexpect(component.estados.length).toBe(3);
+    jexpect(component.estados[0].label).toBe('Todos');
+    jexpect(component.estados[1].value).toBe('Activo');
+    jexpect(component.estados[2].value).toBe('Inactivo');
   });
 
   it('should compute hasFiltrosActivos correctly', () => {
     component.searchTerm = '';
     component.selectedPais = 'Todos';
     component.selectedEstado = 'Todos';
-    expect(component.hasFiltrosActivos).toBeFalse();
+    jexpect(component.hasFiltrosActivos).toBeFalse();
 
     component.searchTerm = 'abc';
-    expect(component.hasFiltrosActivos).toBeTrue();
+    jexpect(component.hasFiltrosActivos).toBeTrue();
 
     component.searchTerm = '';
     component.selectedPais = 'Colombia';
-    expect(component.hasFiltrosActivos).toBeTrue();
+    jexpect(component.hasFiltrosActivos).toBeTrue();
 
     component.selectedPais = 'Todos';
     component.selectedEstado = 'Activo';
-    expect(component.hasFiltrosActivos).toBeTrue();
+    jexpect(component.hasFiltrosActivos).toBeTrue();
   });
 
   it('should return proper chip classes', () => {
-    expect(component.getEstadoClass('Activo')).toBe('estado-activo');
-    expect(component.getEstadoClass('Inactivo')).toBe('estado-inactivo');
-    expect(component.getEstadoCertificacionClass('vigente')).toBe('certificacion-vigente');
-    expect(component.getEstadoCertificacionClass('vencida')).toBe('certificacion-vencida');
+    jexpect(component.getEstadoClass('Activo')).toBe('estado-activo');
+    jexpect(component.getEstadoClass('Inactivo')).toBe('estado-inactivo');
+    jexpect(component.getEstadoCertificacionClass('vigente')).toBe('certificacion-vigente');
+    jexpect(component.getEstadoCertificacionClass('vencida')).toBe('certificacion-vencida');
   });
 });
 

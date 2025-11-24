@@ -109,6 +109,10 @@
 .search-field {
   flex: 1;
   min-width: 300px;
+
+  .search-spinner {
+    margin-right: 8px;
+  }
 }
 
 .filter-field {
@@ -143,7 +147,8 @@
 }
 
 .register-button,
-.bulk-upload-button {
+.bulk-upload-button,
+.inventarios-button {
   height: 40px;
   min-width: 180px;
   font-weight: 500;

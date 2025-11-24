@@ -16,10 +16,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarProductoComponent } from './registrar-producto/registrar-producto.component';
 import { CargaMasivaProductosComponent } from './carga-masiva-productos/carga-masiva-productos.component';
+import { InventariosPorBodegaDialogComponent } from './inventarios-por-bodega-dialog/inventarios-por-bodega-dialog.component';
 import { DetalleProductoComponent } from './detalle-producto/detalle-producto.component';
 import { ProductoHttpService } from '../../../core/services/producto-http.service';
 import { Producto } from '../../../core/models/producto.models';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-productos',
@@ -61,11 +63,15 @@ export class ProductosComponent implements OnInit {
   
   // Estados
   isLoading = false;
+  isSearching = false;
   errorMessage = '';
   
   // Listas para filtros (se configuran en ngOnInit con traducciones)
   categorias: Array<{ value: string; label: string }> = [];
   estados: Array<{ value: string; label: string }> = [];
+
+  // Subject para manejar debounce en búsqueda
+  private readonly searchSubject = new Subject<string>();
 
   constructor(
     private readonly dialog: MatDialog,
@@ -81,6 +87,28 @@ export class ProductosComponent implements OnInit {
     this.configurarPaginador();
     this.configurarCategorias();
     this.configurarEstados();
+    this.configurarBusquedaConDebounce();
+  }
+
+  /**
+   * Configura el debounce para la búsqueda
+   */
+  private configurarBusquedaConDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      if (this.searchTerm?.trim()) {
+        this.isSearching = true;
+        this.cargarProductos(true, false); // No mostrar loading para mantener el foco
+      } else {
+        // Si está vacío, solo limpiar sin hacer petición al servidor
+        this.isSearching = false;
+        if (!this.selectedCategoria && !this.selectedEstado) {
+          this.cargarProductos(true, false);
+        }
+      }
+    });
   }
 
   /**
@@ -164,12 +192,14 @@ export class ProductosComponent implements OnInit {
   /**
    * Carga la lista de productos desde el backend con filtros
    */
-  cargarProductos(resetearPagina: boolean = false): void {
+  cargarProductos(resetearPagina: boolean = false, mostrarLoading: boolean = true): void {
     if (resetearPagina) {
       this.page = 1;
     }
 
-    this.isLoading = true;
+    if (mostrarLoading) {
+      this.isLoading = true;
+    }
     this.errorMessage = '';
 
     const params: any = {
@@ -195,18 +225,28 @@ export class ProductosComponent implements OnInit {
           this.page = response.data.paginacion.pagina_actual;
           this.total = response.data.paginacion.total_productos;
           this.isLoading = false;
+          this.isSearching = false;
         },
         error: (error) => {
           console.error('Error al cargar productos:', error);
           this.errorMessage = 'Error al cargar los productos. Por favor, intente nuevamente.';
           this.isLoading = false;
+          this.isSearching = false;
           this.snackBar.open('Error al cargar productos', 'Cerrar', { duration: 5000 });
         }
       });
   }
 
   /**
+   * Maneja cambios en el campo de búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  /**
    * Aplica los filtros y recarga desde el backend
+   * Para selectores (sin debounce)
    */
   aplicarFiltros(): void {
     this.cargarProductos(true);
@@ -258,6 +298,24 @@ export class ProductosComponent implements OnInit {
         this.snackBar.open('Carga masiva completada', 'Cerrar', { duration: 3000 });
         this.cargarProductos();
       }
+    });
+  }
+
+  /**
+   * Abre el modal para consultar inventarios por bodega
+   */
+  openInventariosPorBodegaDialog(): void {
+    // Lazy import del componente para mantener performance si se requiere en el futuro
+    const dialogRef = this.dialog.open(InventariosPorBodegaDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true,
+      maxHeight: '90vh'
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      // No se requiere acción al cerrar por ahora
     });
   }
 

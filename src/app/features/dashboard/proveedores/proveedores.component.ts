@@ -16,8 +16,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarProveedorComponent } from './registrar-proveedor/registrar-proveedor.component';
 import { ProveedorHttpService } from '../../../core/services/proveedor-http.service';
+import { RutaHttpService } from '../../../core/services/ruta-http.service';
 import { Proveedor, Paginacion } from '../../../core/models/proveedor.models';
-import { Subscription } from 'rxjs';
+import { Zona } from '../../../core/models/ruta.models';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-proveedores',
@@ -62,17 +65,13 @@ export class ProveedoresComponent implements OnInit {
   
   // Estados
   isLoading = false;
+  isLoadingZonas = false;
+  isSearching = false;
   errorMessage = '';
   
   // Listas para filtros
-  paises = [
-    { value: '', label: 'Todos' },
-    { value: 'Colombia', label: 'Colombia' },
-    { value: 'México', label: 'México' },
-    { value: 'Argentina', label: 'Argentina' },
-    { value: 'Chile', label: 'Chile' },
-    { value: 'Perú', label: 'Perú' }
-  ];
+  paises: { value: string; label: string }[] = [];
+  zonas: Zona[] = [];
   
   estados = [
     { value: '', label: 'Todos' },
@@ -80,18 +79,45 @@ export class ProveedoresComponent implements OnInit {
     { value: 'Inactivo', label: 'Inactivo' }
   ];
 
+  // Subject para manejar debounce en búsqueda
+  private readonly searchSubject = new Subject<string>();
+
   constructor(
     private readonly dialog: MatDialog,
     private readonly proveedorService: ProveedorHttpService,
+    private readonly rutaHttpService: RutaHttpService,
     private readonly snackBar: MatSnackBar,
     private readonly translate: TranslateService,
     private readonly paginatorIntl: MatPaginatorIntl
   ) {}
 
   ngOnInit(): void {
+    this.cargarZonas();
     this.cargarProveedores();
     this.inicializarFiltros();
     this.configurarPaginador();
+    this.configurarBusquedaConDebounce();
+  }
+
+  /**
+   * Configura el debounce para la búsqueda
+   */
+  private configurarBusquedaConDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500), // Esperar 500ms después de que el usuario deje de escribir
+      distinctUntilChanged() // Solo emitir si el valor cambió
+    ).subscribe(() => {
+      if (this.searchTerm?.trim()) {
+        this.isSearching = true;
+        this.cargarProveedores(true, false); // No mostrar loading general para mantener el foco
+      } else {
+        // Si está vacío, solo limpiar sin hacer petición al servidor
+        this.isSearching = false;
+        if (this.selectedPais === 'Todos' && this.selectedEstado === 'Todos') {
+          this.cargarProveedores(true, false);
+        }
+      }
+    });
   }
 
   /**
@@ -131,17 +157,37 @@ export class ProveedoresComponent implements OnInit {
   }
 
   /**
+   * Carga las zonas desde el servicio de rutas
+   */
+  private cargarZonas(): void {
+    this.isLoadingZonas = true;
+
+    this.rutaHttpService.obtenerZonas().subscribe({
+      next: (response) => {
+        this.zonas = response.data || [];
+        // Inicializar la lista de países con las zonas cargadas
+        this.paises = [
+          { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_COUNTRIES') || 'Todos' },
+          ...this.zonas.map(zona => ({ value: zona.nombre, label: zona.nombre }))
+        ];
+        this.isLoadingZonas = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar zonas:', error);
+        // Si hay error, inicializar con lista vacía
+        this.paises = [
+          { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_COUNTRIES') || 'Todos' }
+        ];
+        this.isLoadingZonas = false;
+      }
+    });
+  }
+
+  /**
    * Inicializa las opciones de filtros con traducciones
    */
   private inicializarFiltros(): void {
-    this.paises = [
-      { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_COUNTRIES') || 'Todos' },
-      { value: 'Colombia', label: 'Colombia' },
-      { value: 'México', label: 'México' },
-      { value: 'Argentina', label: 'Argentina' },
-      { value: 'Chile', label: 'Chile' },
-      { value: 'Perú', label: 'Perú' }
-    ];
+    // Los países se cargan desde cargarZonas()
     
     this.estados = [
       { value: '', label: this.translate.instant('PROVEEDORES.FILTERS.ALL_STATUSES') || 'Todos' },
@@ -153,12 +199,14 @@ export class ProveedoresComponent implements OnInit {
   /**
    * Carga la lista de proveedores desde el backend con filtros
    */
-  cargarProveedores(resetearPagina: boolean = false): void {
+  cargarProveedores(resetearPagina: boolean = false, mostrarLoading: boolean = true): void {
     if (resetearPagina) {
       this.paginacion.pagina = 1;
     }
 
-    this.isLoading = true;
+    if (mostrarLoading) {
+      this.isLoading = true;
+    }
     this.errorMessage = '';
 
     const params: any = {
@@ -187,18 +235,28 @@ export class ProveedoresComponent implements OnInit {
           this.paginacion.total_paginas = response.paginacion.total_paginas;
           // No sobrescribir por_pagina con el del backend para mantener la selección del usuario
           this.isLoading = false;
+          this.isSearching = false;
         },
         error: (error) => {
           console.error('Error al cargar proveedores:', error);
           this.errorMessage = 'Error al cargar los proveedores. Por favor, intente nuevamente.';
           this.isLoading = false;
+          this.isSearching = false;
           this.snackBar.open('Error al cargar proveedores', 'Cerrar', { duration: 5000 });
         }
       });
   }
 
   /**
+   * Maneja cambios en el campo de búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  /**
    * Aplica los filtros y recarga desde el backend
+   * Para selectores (sin debounce)
    */
   aplicarFiltros(): void {
     this.cargarProveedores(true);

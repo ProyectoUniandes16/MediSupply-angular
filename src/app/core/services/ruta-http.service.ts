@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ObtenerZonasResponse, ZonaDetalle } from '../models/ruta.models';
+import { ObtenerZonasResponse, ZonaDetalle, ObtenerBodegasResponse } from '../models/ruta.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RutaHttpService {
   private readonly apiUrl = environment.apiProductoUrl;
+  private readonly apiUrlPedido = environment.apiUrl;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -52,7 +53,7 @@ export class RutaHttpService {
       params = params.set('zona', zonaNombre);
     }
 
-    return this.http.get<{ data: any[] }>(`${this.apiUrl}/pedido`, { params })
+    return this.http.get<{ data: any[] }>(`${this.apiUrlPedido}/pedido`, { params })
       .pipe(
         catchError(error => {
           console.error('Error al obtener pedidos por zona:', error);
@@ -137,6 +138,20 @@ export class RutaHttpService {
       .pipe(
         catchError(error => {
           console.error('Error al obtener rutas:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
+   * Obtiene el listado de bodegas
+   * Endpoint: GET /bodega
+   */
+  obtenerBodegas(): Observable<ObtenerBodegasResponse> {
+    return this.http.get<ObtenerBodegasResponse>(`${this.apiUrl}/bodega`)
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener bodegas:', error);
           return throwError(() => error);
         })
       );

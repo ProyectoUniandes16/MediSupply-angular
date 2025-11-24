@@ -79,7 +79,8 @@ describe('CargaMasivaProductosComponent', () => {
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
     const productoServiceSpy = jasmine.createSpyObj('ProductoHttpService', [
       'cargarProductosMasivo',
-      'obtenerJobsImportacion'
+      'obtenerJobsImportacion',
+      'obtenerJobStatus'
     ]);
     const snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
 
@@ -370,7 +371,7 @@ describe('CargaMasivaProductosComponent', () => {
     jexpect(component.mostrarDetalles).toBe(false);
   });
 
-  it('should show details for COMPLETADO job', () => {
+  it('should show details for COMPLETADO job', fakeAsync(() => {
     const carga = {
       jobId: 'job-1',
       documento: 'test.csv',
@@ -384,10 +385,51 @@ describe('CargaMasivaProductosComponent', () => {
       tiempoTranscurrido: 300
     };
 
+    const mockJobStatusResponse = {
+      data: {
+        job_id: 'job-1',
+        nombre_archivo: 'test.csv',
+        estado: 'COMPLETADO',
+        exitosos: 90,
+        fallidos: 10,
+        total_filas: 100,
+        filas_procesadas: 100,
+        progreso: 100,
+        fecha_creacion: '2025-11-22T10:00:00',
+        fecha_inicio_proceso: '2025-11-22T10:00:00',
+        fecha_finalizacion: '2025-11-22T10:05:00',
+        tiempo_transcurrido_segundos: 300,
+        reintentos: 0,
+        local_path: '/tmp/test.csv',
+        mensaje: 'Completado',
+        usuario_registro: 'admin',
+        detalles_errores: {
+          errores: [
+            { fila: 1, sku: 'SKU-001', codigo: 'E001', error: 'Error de prueba' }
+          ],
+          total_errores: 10,
+          errores_capturados: 1,
+          nota: 'Mostrando primeros 100 errores'
+        },
+        validaciones: {
+          productos_validados_ok: 90,
+          productos_con_errores: 10,
+          tasa_exito: 90,
+          nota: ''
+        }
+      }
+    };
+
+    productoService.obtenerJobStatus.and.returnValue(of(mockJobStatusResponse));
+
     component.verDetallesErrores(carga);
+    tick();
+
     jexpect(component.mostrarDetalles).toBe(true);
-    jexpect(component.cargaSeleccionada).toBe(carga);
-  });
+    jexpect(component.totalErroresCarga).toBe(10);
+    jexpect(component.errorLimitNote).toBe('Mostrando primeros 100 errores');
+    jexpect(component.cargaSeleccionada?.detallesErrores?.length).toBe(1);
+  }));
 
   it('should go back to historial', () => {
     component.mostrarDetalles = true;

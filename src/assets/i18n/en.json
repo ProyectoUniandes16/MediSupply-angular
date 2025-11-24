@@ -187,6 +187,28 @@
     "LIST_EMPTY": "Click on \"Register Product\" to add a new product to the inventory.",
     "RETRY": "Retry",
     "NO_RESULTS": "No products found with the applied filters",
+    "INVENTORY_BY_WAREHOUSE": {
+      "TITLE": "Inventory by Warehouse",
+      "SUBTITLE": "Query available inventory in each warehouse",
+      "SELECT_WAREHOUSE": "Select Warehouse",
+      "WAREHOUSE_LABEL": "Warehouse",
+      "SELECT_PLACEHOLDER": "-- Select a warehouse --",
+      "QUERY_BUTTON": "Query",
+      "LOADING": "Loading inventory...",
+      "RESULTS": "Inventory Results",
+      "EMPTY": "No inventory registered for this warehouse",
+      "ERROR_LOADING": "Error loading inventory",
+      "TABLE": {
+        "PRODUCT_ID": "Product ID",
+        "PRODUCT_NAME": "Product Name",
+        "PRODUCT_SKU": "SKU",
+        "LOCATION": "Location",
+        "QUANTITY": "Quantity",
+        "UPDATED_DATE": "Last Update",
+        "ACTIONS": "Actions",
+        "VIEW_DETAIL": "View product detail"
+      }
+    },
     "TABLE": {
       "NAME": "Name",
       "SKU": "SKU Code",

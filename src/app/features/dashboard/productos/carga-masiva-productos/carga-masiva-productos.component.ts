@@ -9,7 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductoHttpService } from '../../../../core/services/producto-http.service';
-import { CargaMasivaResponseOk, DetalleError, DetalleExitoso, ImportJobItem, ObtenerJobsResponse } from '../../../../core/models/producto.models';
+import { CargaMasivaResponseOk, DetalleError, DetalleExitoso, ImportJobItem, ObtenerJobsResponse, ObtenerJobStatusResponse } from '../../../../core/models/producto.models';
 
 type EstadoJob = 'EN_COLA' | 'PROCESANDO' | 'COMPLETADO' | 'FALLIDO' | 'PARCIAL';
 
@@ -56,6 +56,8 @@ export class CargaMasivaProductosComponent {
   mostrarDetalles = false;
   cargaSeleccionada: CargaHistorial | null = null;
   displayedColumnsErrores: string[] = ['fila', 'sku', 'codigo', 'error'];
+  totalErroresCarga = 0;
+  errorLimitNote = '';
 
   constructor(
     private readonly dialogRef: MatDialogRef<CargaMasivaProductosComponent>,
@@ -276,27 +278,42 @@ export class CargaMasivaProductosComponent {
     return {
       jobId: job.job_id,
       documento: job.nombre_archivo,
-      fechaCargue: new Date(job.fecha_creacion).toLocaleDateString('es-CO', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
+      fechaCargue: this.formatearFechaLocal(job.fecha_creacion),
       totalFilas: job.total_filas,
       productsProcesados: job.exitosos,
       errores: job.fallidos,
       estado: estado,
       progreso: job.progreso,
-      fechaFinalizacion: job.fecha_finalizacion ? new Date(job.fecha_finalizacion).toLocaleDateString('es-CO', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : null,
+      fechaFinalizacion: job.fecha_finalizacion ? this.formatearFechaLocal(job.fecha_finalizacion) : null,
       tiempoTranscurrido: job.tiempo_transcurrido_segundos
     };
+  }
+
+  /**
+   * Formatea una fecha UTC a hora local de Colombia (UTC-5)
+   * @param fechaUTC - Fecha en formato UTC string (ej: "2025-11-23T03:11:00")
+   * @returns Fecha formateada en hora local colombiana
+   */
+  private formatearFechaLocal(fechaUTC: string): string {
+    // Crear fecha desde UTC
+    const fecha = new Date(fechaUTC);
+    
+    // Si la fecha incluye 'Z' al final, ya está marcada como UTC
+    // Si no, necesitamos tratarla como UTC explícitamente
+    const fechaUTC_obj = fechaUTC.endsWith('Z') 
+      ? fecha 
+      : new Date(fechaUTC + 'Z');
+    
+    // Formatear en hora local del navegador (automáticamente ajusta la zona horaria)
+    return fechaUTC_obj.toLocaleString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/Bogota' // Forzar zona horaria de Colombia
+    });
   }
 
   /**
@@ -305,10 +322,58 @@ export class CargaMasivaProductosComponent {
    */
   verDetallesErrores(carga: CargaHistorial): void {
     if (carga.estado === 'EN_COLA') {
+      this.snackBar.open(
+        'El job está en cola, no se pueden ver detalles aún',
+        'Cerrar',
+        { duration: 3000 }
+      );
       return;
     }
-    this.cargaSeleccionada = carga;
-    this.mostrarDetalles = true;
+    
+    console.log('Solicitando detalles del job:', carga.jobId);
+    
+    // Llamar al servicio para obtener los detalles con errores
+    this.productoService.obtenerJobStatus(carga.jobId).subscribe({
+      next: (response: ObtenerJobStatusResponse) => {
+        console.log('Respuesta completa del job:', response);
+        console.log('Data del job:', response.data);
+        console.log('Detalles de errores:', response.data.detalles_errores);
+        
+        // Extraer información de errores
+        const detallesErrores = response.data.detalles_errores;
+        this.totalErroresCarga = detallesErrores?.total_errores || 0;
+        this.errorLimitNote = detallesErrores?.nota || '';
+        
+        // Actualizar la carga seleccionada con los detalles obtenidos
+        this.cargaSeleccionada = {
+          ...carga,
+          detallesErrores: detallesErrores?.errores || [],
+          detallesExitosos: [] // Los exitosos no vienen en este endpoint
+        };
+        
+        console.log('Carga seleccionada actualizada:', this.cargaSeleccionada);
+        console.log('Mostrando detalles:', true);
+        
+        this.mostrarDetalles = true;
+        
+        console.log('Estado mostrarDetalles después de asignar:', this.mostrarDetalles);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener detalles del job:', error);
+        console.error('Detalles del error:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          error: error.error
+        });
+        
+        this.snackBar.open(
+          `Error al cargar los detalles del job: ${error.status || 'Error desconocido'}`,
+          'Cerrar',
+          { duration: 5000, panelClass: ['error-snackbar'] }
+        );
+      }
+    });
   }
 
   /**
@@ -317,6 +382,8 @@ export class CargaMasivaProductosComponent {
   volverAlHistorial(): void {
     this.mostrarDetalles = false;
     this.cargaSeleccionada = null;
+    this.totalErroresCarga = 0;
+    this.errorLimitNote = '';
   }
 
   /**

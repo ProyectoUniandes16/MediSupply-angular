@@ -1,0 +1,108 @@
+<div class="inventarios-por-bodega-dialog">
+  <h2 mat-dialog-title>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TITLE' | translate }}</h2>
+  <p class="subtitle">{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.SUBTITLE' | translate }}</p>
+
+  <mat-dialog-content>
+    <div class="vista-principal">
+      <!-- Sección de filtros -->
+      <div class="filters-section">
+        <h3>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.SELECT_WAREHOUSE' | translate }}</h3>
+        <div class="filters">
+          <mat-form-field appearance="outline" class="bodega-select">
+            <mat-label>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.WAREHOUSE_LABEL' | translate }}</mat-label>
+            <mat-select [(ngModel)]="selectedBodega" [disabled]="isLoadingBodegas" (selectionChange)="consultarInventarios()">
+              <mat-option value="">{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.SELECT_PLACEHOLDER' | translate }}</mat-option>
+              <mat-option *ngFor="let bodega of bodegas" [value]="bodega.nombre">
+                {{ bodega.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-progress-spinner *ngIf="isLoadingBodegas" diameter="20" mode="indeterminate" matSuffix class="inline-spinner"></mat-progress-spinner>
+          </mat-form-field>
+          <button 
+            mat-stroked-button 
+            class="clear-button"
+            (click)="limpiarFiltro()" 
+            [disabled]="!selectedBodega">
+            <mat-icon>close</mat-icon>
+            {{ 'COMMON.CLEAR_FILTERS' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="error-message">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Loading spinner -->
+      <div *ngIf="isLoadingInventarios" class="loading-section">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.LOADING' | translate }}</p>
+      </div>
+
+      <!-- Tabla de inventarios -->
+      <div *ngIf="!isLoadingInventarios && inventarios.length > 0" class="inventarios-section">
+        <h3>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.RESULTS' | translate }}</h3>
+        <table mat-table [dataSource]="inventarios" class="inventarios-table">
+          <ng-container matColumnDef="productoId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.PRODUCT_ID' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.productoId }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productoNombre">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.PRODUCT_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.productoNombre || '-' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="productoSku">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.PRODUCT_SKU' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">
+              <code class="sku-code">{{ inv.productoSku || '-' }}</code>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.QUANTITY' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">
+              <span class="cantidad-badge">{{ inv.cantidad }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ubicacion">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.LOCATION' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.ubicacion }}</td>
+          </ng-container>
+          <ng-container matColumnDef="fechaActualizacion">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.UPDATED_DATE' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.fechaActualizacion | date:'short' }}</td>
+          </ng-container>
+          
+          <!-- Columna de Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.ACTIONS' | translate }}</th>
+            <td mat-cell *matCellDef="let inv">
+              <button 
+                mat-icon-button 
+                color="primary"
+                [matTooltip]="'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TABLE.VIEW_DETAIL' | translate"
+                (click)="verDetalleProducto(inv.productoId)"
+                class="action-button">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <!-- Estado vacío -->
+      <div *ngIf="!isLoadingInventarios && selectedBodega && inventarios.length === 0 && !errorMessage" class="empty-historial">
+        <mat-icon>inventory_2</mat-icon>
+        <p>{{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.EMPTY' | translate }}</p>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="cerrar()">{{ 'COMMON.CLOSE' | translate }}</button>
+  </mat-dialog-actions>
+</div>

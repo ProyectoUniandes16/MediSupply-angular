@@ -62,7 +62,7 @@ describe('RutaHttpService', () => {
     req.flush(mockDetalle);
   });
 
-  it('should get pedidos by zona', () => {
+  it('should get pedidos by zona with estado pendiente', () => {
     const mockResponse = { data: [{ id: 'p1' }] };
 
     service.obtenerPedidosPorZona('Colombia - Bogotá').subscribe(res => {
@@ -71,7 +71,8 @@ describe('RutaHttpService', () => {
 
     const req = httpMock.expectOne(request => 
       request.url.endsWith('/pedido') &&
-      request.params.get('zona') === 'Colombia - Bogotá'
+      request.params.get('zona') === 'Colombia - Bogotá' &&
+      request.params.get('estado') === 'pendiente'
     );
 
   jexpect(req.request.method).toBe('GET');

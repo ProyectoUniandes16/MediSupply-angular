@@ -178,7 +178,7 @@ export class RegistrarRutaComponent implements OnInit {
   }
 
   /**
-   * Carga los pedidos correspondientes a una zona (por nombre)
+   * Carga los pedidos correspondientes a una zona (por nombre) con estado pendiente
    */
   cargarPedidosPorZona(zonaNombre: string): void {
     this.isLoadingPedidos = true;
@@ -187,10 +187,10 @@ export class RegistrarRutaComponent implements OnInit {
         this.pedidos = resp.data || [];
         this.isLoadingPedidos = false;
         
-        // Mostrar alerta si no hay pedidos en la zona
+        // Mostrar alerta si no hay pedidos pendientes en la zona
         if (this.pedidos.length === 0) {
           this.snackBar.open(
-            `No se encontraron pedidos en la zona "${zonaNombre}"`,
+            `No se encontraron pedidos pendientes en la zona "${zonaNombre}"`,
             'Cerrar',
             {
               duration: 5000,
@@ -208,7 +208,7 @@ export class RegistrarRutaComponent implements OnInit {
         
         // Mostrar alerta de error
         this.snackBar.open(
-          'Error al cargar los pedidos de la zona',
+          'Error al cargar los pedidos pendientes de la zona',
           'Cerrar',
           {
             duration: 5000,

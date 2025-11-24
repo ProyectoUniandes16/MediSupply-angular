@@ -44,14 +44,16 @@ export class RutaHttpService {
   }
 
   /**
-   * Obtiene los pedidos filtrando por zona.
-   * Endpoint esperado: GET /pedido?zona={zonaNombre}
+   * Obtiene los pedidos filtrando por zona y estado pendiente.
+   * Endpoint esperado: GET /pedido?zona={zonaNombre}&estado=pendiente
    */
   obtenerPedidosPorZona(zonaNombre: string): Observable<{ data: any[] }>{
     let params = new HttpParams();
     if (zonaNombre) {
       params = params.set('zona', zonaNombre);
     }
+    // Agregar filtro de estado pendiente
+    params = params.set('estado', 'pendiente');
 
     return this.http.get<{ data: any[] }>(`${this.apiUrlPedido}/pedido`, { params })
       .pipe(

@@ -280,6 +280,8 @@ export interface ObtenerProductoDetalleResponse {
 export interface InventarioDetalle {
   id: string;
   productoId: number;
+  productoNombre?: string;
+  productoSku?: string;
   ubicacion: string;
   cantidad: number;
   usuarioCreacion: string;
@@ -299,6 +301,16 @@ export interface ObtenerInventariosProductoResponse {
     totalCantidad: number;
     source: string;
   };
+}
+
+/**
+ * Interfaz para la respuesta de inventarios por ubicación
+ */
+export interface ObtenerInventariosPorUbicacionResponse {
+  inventarios: InventarioDetalle[];
+  total: number;
+  limite: number;
+  offset: number;
 }
 
 /**

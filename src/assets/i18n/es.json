@@ -187,6 +187,28 @@
     "LIST_EMPTY": "Haz clic en \"Registrar Producto\" para agregar un nuevo producto al inventario.",
     "RETRY": "Reintentar",
     "NO_RESULTS": "No se encontraron productos con los filtros aplicados",
+    "INVENTORY_BY_WAREHOUSE": {
+      "TITLE": "Inventarios por Bodega",
+      "SUBTITLE": "Consulta inventarios disponibles en cada bodega",
+      "SELECT_WAREHOUSE": "Seleccionar Bodega",
+      "WAREHOUSE_LABEL": "Bodega",
+      "SELECT_PLACEHOLDER": "-- Seleccione una bodega --",
+      "QUERY_BUTTON": "Consultar",
+      "LOADING": "Cargando inventarios...",
+      "RESULTS": "Resultados de Inventarios",
+      "EMPTY": "No hay inventarios registrados para esta bodega",
+      "ERROR_LOADING": "Error al cargar inventarios",
+      "TABLE": {
+        "PRODUCT_ID": "ID Producto",
+        "PRODUCT_NAME": "Nombre Producto",
+        "PRODUCT_SKU": "SKU",
+        "LOCATION": "Ubicación",
+        "QUANTITY": "Cantidad",
+        "UPDATED_DATE": "Última Actualización",
+        "ACTIONS": "Acciones",
+        "VIEW_DETAIL": "Ver detalle del producto"
+      }
+    },
     "TABLE": {
       "NAME": "Nombre",
       "SKU": "Código SKU",

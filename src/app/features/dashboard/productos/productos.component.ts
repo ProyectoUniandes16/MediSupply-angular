@@ -16,6 +16,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RegistrarProductoComponent } from './registrar-producto/registrar-producto.component';
 import { CargaMasivaProductosComponent } from './carga-masiva-productos/carga-masiva-productos.component';
+import { InventariosPorBodegaDialogComponent } from './inventarios-por-bodega-dialog/inventarios-por-bodega-dialog.component';
 import { DetalleProductoComponent } from './detalle-producto/detalle-producto.component';
 import { ProductoHttpService } from '../../../core/services/producto-http.service';
 import { Producto } from '../../../core/models/producto.models';
@@ -297,6 +298,24 @@ export class ProductosComponent implements OnInit {
         this.snackBar.open('Carga masiva completada', 'Cerrar', { duration: 3000 });
         this.cargarProductos();
       }
+    });
+  }
+
+  /**
+   * Abre el modal para consultar inventarios por bodega
+   */
+  openInventariosPorBodegaDialog(): void {
+    // Lazy import del componente para mantener performance si se requiere en el futuro
+    const dialogRef = this.dialog.open(InventariosPorBodegaDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+      disableClose: false,
+      autoFocus: true,
+      maxHeight: '90vh'
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      // No se requiere acción al cerrar por ahora
     });
   }
 

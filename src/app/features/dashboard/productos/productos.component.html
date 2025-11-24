@@ -14,6 +14,15 @@
         <mat-icon>upload_file</mat-icon>
         {{ 'PRODUCTOS.BULK_UPLOAD' | translate }}
       </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="inventarios-button"
+        (click)="openInventariosPorBodegaDialog()"
+        [matTooltip]="'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TITLE' | translate">
+        <mat-icon>warehouse</mat-icon>
+        {{ 'PRODUCTOS.INVENTORY_BY_WAREHOUSE.TITLE' | translate }}
+      </button>
       <button 
         mat-raised-button 
         color="primary"

@@ -9,6 +9,7 @@ import {
   ObtenerProductosResponse,
   ObtenerProductoDetalleResponse,
   ObtenerInventariosProductoResponse,
+  ObtenerInventariosPorUbicacionResponse,
   ProductoDetalle,
   ObtenerJobsResponse,
   ObtenerJobStatusResponse
@@ -316,6 +317,26 @@ export class ProductoHttpService {
     return this.http.get<ObtenerInventariosProductoResponse>(`${this.apiUrl}/producto/${id}/inventarios`).pipe(
       catchError(error => {
         console.error(`Error al obtener inventarios del producto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene los inventarios filtrados por ubicación (bodega)
+   * Endpoint: GET /api/inventarios?ubicacion={bodegaNombre}
+   * 
+   * @example
+   * this.productoHttpService.obtenerInventariosPorUbicacion('Bodega Central').subscribe({
+   *   next: (response) => console.log('Inventarios:', response),
+   *   error: (error) => console.error('Error:', error)
+   * });
+   */
+  obtenerInventariosPorUbicacion(ubicacion: string): Observable<ObtenerInventariosPorUbicacionResponse> {
+    const params = new HttpParams().set('ubicacion', ubicacion);
+    return this.http.get<ObtenerInventariosPorUbicacionResponse>(`${this.apiUrl}/inventarios`, { params }).pipe(
+      catchError(error => {
+        console.error(`Error al obtener inventarios por ubicación ${ubicacion}:`, error);
         return throwError(() => error);
       })
     );
